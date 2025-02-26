@@ -4,7 +4,7 @@ import BasicFooter from '@/components/BasicFooter.vue'
 </script>
 
 <template>
-  <div class="w-full block">
+  <div class="w-full block h-full dark:bg-black9">
     <BasicHeader />
     <div class="pl-[93px] pr-[93px] h-full dark:bg-black9"></div>
 
