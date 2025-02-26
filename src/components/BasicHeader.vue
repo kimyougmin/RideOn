@@ -28,7 +28,7 @@ watchEffect(() => {
 </script>
 
 <template>
-<div class="pl-[93px] pr-[93px] w-[1440px] pt-[30px] bg-black1 dark:bg-black9 block pb-4">
+<div class="pl-[93px] pr-[93px] w-[1440px] pt-[30px] mx-auto bg-black1 dark:bg-black9 block pb-4">
   <div class="flex justify-between">
     <!-- RideOn  -->
     <div>
