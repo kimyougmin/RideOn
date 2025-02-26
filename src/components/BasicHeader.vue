@@ -28,7 +28,7 @@ watchEffect(() => {
 </script>
 
 <template>
-<div class="pl-[93px] pr-[93px] w-full pt-[30px] bg-black1 dark:bg-black9 block">
+<div class="pl-[93px] pr-[93px] w-[1440px] pt-[30px] bg-black1 dark:bg-black9 block pb-4">
   <div class="flex justify-between">
     <!-- RideOn  -->
     <div>
@@ -73,8 +73,22 @@ watchEffect(() => {
       </svg>
     </div>
   </div>
-  <div>
-
+  <div class="flex mt-4 w-[540px] justify-between max-w-[540px]">
+    <router-link to="bicycle">
+      <p class="font-bold dark:text-black1">자전거</p>
+    </router-link>
+    <router-link to="riderParts">
+      <p class="font-bold dark:text-black1">라이더 용품</p>
+    </router-link>
+    <router-link to="roadMap">
+      <p class="font-bold dark:text-black1">자전거 도로</p>
+    </router-link>
+    <router-link to="freeBoard">
+      <p class="font-bold dark:text-black1">자유게시판</p>
+    </router-link>
+    <router-link to="qnaBoard">
+      <p class="font-bold dark:text-black1">Q & A</p>
+    </router-link>
   </div>
 </div>
 </template>
