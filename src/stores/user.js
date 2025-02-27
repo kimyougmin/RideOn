@@ -1,33 +1,36 @@
-import { defineStore } from "pinia";
-import { ref, computed } from "vue";
+import { defineStore } from 'pinia'
+import { ref, computed } from 'vue'
 
-export const useUserStore = defineStore("user", () => {
+export const useUserStore = defineStore('user', () => {
   const user = ref({
     email: null,
     name: null,
     isLoggedIn: false,
-  });
+  })
 
-  const login = (email, name) => {
-    user.value.email = email;
-    user.value.name = name;
-    user.value.isLoggedIn = true;
-    localStorage.setItem("user", JSON.stringify(user.value));
-  };
+  const login = (email, fullName) => {
+    const name = fullName.split('|')[0]
+
+    user.value.email = email
+    user.value.name = name
+    user.value.isLoggedIn = true
+
+    localStorage.setItem('user', JSON.stringify(user.value))
+  }
 
   const logout = () => {
-    user.value.email = null;
-    user.value.name = null;
-    user.value.isLoggedIn = false;
-    localStorage.removeItem("user");
-  };
+    user.value.email = null
+    user.value.name = null
+    user.value.isLoggedIn = false
+    localStorage.removeItem('user')
+  }
 
   const loadUser = () => {
-    const savedUser = localStorage.getItem("user");
+    const savedUser = localStorage.getItem('user')
     if (savedUser) {
-      user.value = JSON.parse(savedUser);
+      user.value = JSON.parse(savedUser)
     }
-  };
+  }
 
   return {
     user,
@@ -35,5 +38,5 @@ export const useUserStore = defineStore("user", () => {
     logout,
     loadUser,
     isLoggedIn: computed(() => user.value.isLoggedIn),
-  };
-});
+  }
+})

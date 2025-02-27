@@ -1,3 +1,56 @@
+<script>
+import { ref, onMounted, watchEffect } from 'vue'
+import { useRouter } from 'vue-router'
+import LoginForm from './LoginForm.vue'
+import BasicHeader from '@/components/BasicHeader.vue'
+import BasicFooter from '@/components/BasicFooter.vue'
+
+export default {
+  components: { LoginForm, BasicHeader, BasicFooter },
+  setup() {
+    const isLogin = ref(true)
+    const router = useRouter()
+    const isDarkMode = ref(false)
+
+    // 다크 모드 토글 함수
+    const toggleDarkMode = () => {
+      isDarkMode.value = !isDarkMode.value
+      if (isDarkMode.value) {
+        document.documentElement.classList.add('dark')
+        localStorage.setItem('theme', 'dark')
+      } else {
+        document.documentElement.classList.remove('dark')
+        localStorage.setItem('theme', 'light')
+      }
+    }
+
+    // 페이지가 로드될 때 저장된 테마 적용
+    onMounted(() => {
+      if (localStorage.getItem('theme') === 'dark') {
+        document.documentElement.classList.add('dark')
+        isDarkMode.value = true
+      }
+    })
+
+    watchEffect(() => {
+      document.documentElement.classList.toggle('dark', isDarkMode.value)
+    })
+
+    // 회원가입 페이지 이동
+    const goToSignup = () => {
+      router.push('/signup')
+    }
+
+    return {
+      isLogin,
+      goToSignup,
+      isDarkMode,
+      darkMode: toggleDarkMode,
+    }
+  },
+}
+</script>
+
 <template>
   <div class="flex flex-col min-h-screen dark:bg-black9 dark:text-white">
     <BasicHeader :isDarkMode="isDarkMode" @toggle-dark-mode="darkMode" />
@@ -54,59 +107,7 @@
       <LoginForm v-if="isLogin" />
     </div>
 
-    <BasicFooter />
+    <BasicFooter class="mt-[100px]" />
   </div>
 </template>
 
-<script>
-import { ref, onMounted, watchEffect } from 'vue'
-import { useRouter } from 'vue-router'
-import LoginForm from './LoginForm.vue'
-import BasicHeader from '@/components/BasicHeader.vue'
-import BasicFooter from '@/components/BasicFooter.vue'
-
-export default {
-  components: { LoginForm, BasicHeader, BasicFooter },
-  setup() {
-    const isLogin = ref(true)
-    const router = useRouter()
-    const isDarkMode = ref(false)
-
-    // 다크 모드 토글 함수
-    const toggleDarkMode = () => {
-      isDarkMode.value = !isDarkMode.value
-      if (isDarkMode.value) {
-        document.documentElement.classList.add('dark')
-        localStorage.setItem('theme', 'dark')
-      } else {
-        document.documentElement.classList.remove('dark')
-        localStorage.setItem('theme', 'light')
-      }
-    }
-
-    // 페이지가 로드될 때 저장된 테마 적용
-    onMounted(() => {
-      if (localStorage.getItem('theme') === 'dark') {
-        document.documentElement.classList.add('dark')
-        isDarkMode.value = true
-      }
-    })
-
-    watchEffect(() => {
-      document.documentElement.classList.toggle('dark', isDarkMode.value)
-    })
-
-    // 회원가입 페이지 이동
-    const goToSignup = () => {
-      router.push('/signup')
-    }
-
-    return {
-      isLogin,
-      goToSignup,
-      isDarkMode,
-      darkMode: toggleDarkMode,
-    }
-  },
-}
-</script>

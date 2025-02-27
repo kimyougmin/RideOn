@@ -84,6 +84,6 @@ const goToLogin = () => {
       <SignupForm class="w-[428px]" />
     </div>
 
-    <BasicFooter />
+    <BasicFooter class="mt-[100px]"/>
   </div>
 </template>

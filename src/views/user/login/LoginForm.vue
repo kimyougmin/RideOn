@@ -1,94 +1,4 @@
-<template>
-  <form @submit.prevent="handleSubmit" class="w-full flex flex-col items-center">
-    <div class="w-[428px]">
-      <label class="block text-sm font-medium mb-1 text-black7 dark:text-black3">이메일</label>
-      <p
-        ref="emailRef"
-        contenteditable="true"
-        class="w-full h-[48px] p-3 border rounded text-base bg-transparent focus:border-primaryRed outline-none"
-        :class="
-          isDarkMode ? 'border-black1 text-black1' : 'border-black text-black placeholder-gray-400'
-        "
-        @input="updateEmail"
-        @focus="handleFocus('email')"
-        @blur="validateEmail"
-      >
-        <span
-          v-if="!email && !isFocused.email"
-          class="placeholder"
-          :style="{ color: isDarkMode ? 'black1' : 'black7' }"
-        >
-          이메일을 입력하세요.
-        </span>
-      </p>
-      <p class="text-primaryRed text-sm h-5">{{ emailError }}</p>
-    </div>
 
-    <div class="w-[428px]">
-      <label class="block text-sm font-medium mb-1 text-black7 dark:text-black3">비밀번호</label>
-      <p
-        ref="passwordRef"
-        contenteditable="true"
-        class="w-full h-[48px] p-3 border rounded text-base bg-transparent focus:border-primaryRed outline-none"
-        :class="
-          isDarkMode ? 'border-black1 text-black1' : 'border-black7 text-black7 placeholder-gray-400'
-        "
-        @input="updatePassword"
-        @focus="handleFocus('password')"
-        @blur="validatePassword"
-      >
-        <span
-          v-if="!password && !isFocused.password"
-          class="placeholder"
-          :style="{ color: isDarkMode ? 'black1' : 'black7' }"
-        >
-          비밀번호를 입력하세요.
-        </span>
-      </p>
-      <p class="text-primaryRed text-sm h-5">{{ passwordError }}</p>
-    </div>
-
-    <div class="flex justify-between items-center text-sm mb-1 w-[428px] -mt-[16px]">
-      <div class="flex items-center">
-        <label class="flex items-center cursor-pointer">
-          <input type="checkbox" class="mr-2" v-model="rememberMe" />
-          <p class="cursor-pointer" :class="isDarkMode ? 'text-black3 mt-[15px]' : 'text-black7 mt-[15px]'">
-            아이디 저장
-          </p>
-        </label>
-      </div>
-      <div>
-        <a href="#" :class="isDarkMode ? 'text-black4' : 'text-black5'" class="mr-2">아이디 찾기</a>
-        <a href="#" :class="isDarkMode ? 'text-black4' : 'text-black5'">비밀번호 찾기</a>
-      </div>
-    </div>
-
-    <LoginButtons class="mt-[15px]" />
-
-    <p
-      class="w-[428px] h-[47px] border rounded text-lg font-bold mt-[15px] transition-all focus:ring-2 focus:ring-primaryRed flex items-center justify-center cursor-pointer"
-      :class="
-        isDarkMode
-          ? 'bg-black1 text-black7 border-black1 hover:bg-primaryRed hover:text-white'
-          : 'bg-black7 text-black1 border-black7 hover:bg-primaryRed hover:text-white'
-      "
-      @click="handleSubmit"
-    >
-      {{ isLoading ? '로그인 중...' : '로그인' }}
-    </p>
-
-    <p v-if="apiError" class="text-primaryRed text-sm text-center mt-2">
-      {{ apiError }}
-    </p>
-
-    <p class="mt-[15px] text-sm" :class="isDarkMode ? 'text-black4' : 'text-black5'">
-      Wherever you want, <span class="text-primaryRed font-bold">RideOn</span>
-      <a href="/" class="underline ml-1" :class="isDarkMode ? 'text-blue-400' : 'text-blue-600'">
-        홈으로 돌아가기
-      </a>
-    </p>
-  </form>
-</template>
 
 <script>
 import { ref, onMounted, watchEffect, nextTick } from 'vue'
@@ -127,7 +37,6 @@ export default {
       password.value = event.target.innerText
     }
 
-    // 로그인 요청 
     const handleSubmit = async () => {
       validateEmail()
       validatePassword()
@@ -139,10 +48,17 @@ export default {
 
           const response = await postSigninApi({ email: email.value, password: password.value })
 
-          userStore.login(response.email, response.fullName)
-          alert('로그인 성공!')
+          console.log(' 로그인에 성공한 데이터', response)
+
+          if (!response || !response.user || !response.user.email || !response.user.fullName) {
+            throw new Error('잘못된 응답 데이터입니다.')
+          }
+
+          userStore.login(response.user.email, response.user.fullName)
+          alert('로그인에 성공 하셨습니다.')
           router.push('/')
         } catch (error) {
+          console.error(' 로그인 실패:', error.response?.data || error.message)
           apiError.value = '이메일 또는 비밀번호가 올바르지 않습니다.'
           alert('이메일 또는 비밀번호가 올바르지 않습니다.')
         } finally {
@@ -206,8 +122,108 @@ export default {
       updatePassword,
       validateEmail,
       validatePassword,
-      handleSubmit, 
+      handleSubmit,
     }
   },
 }
 </script>
+
+
+<template>
+  <form @submit.prevent="handleSubmit" class="w-full flex flex-col items-center">
+    <div class="w-[428px]">
+      <label class="block text-sm font-medium mb-1 text-black7 dark:text-black3">이메일</label>
+      <p
+        ref="emailRef"
+        contenteditable="true"
+        class="w-full h-[48px] p-3 border rounded text-base bg-transparent focus:border-primaryRed outline-none"
+        :class="
+          isDarkMode
+            ? 'border-black1 text-black1'
+            : 'border-black4 text-black4 placeholder-gray-400'
+        "
+        @input="updateEmail"
+        @focus="handleFocus('email')"
+        @blur="validateEmail"
+      >
+        <span
+          v-if="!email && !isFocused.email"
+          class="placeholder"
+          :style="{ color: isDarkMode ? 'black1' : 'black4' }"
+        >
+          이메일을 입력하세요.
+        </span>
+      </p>
+      <p class="text-primaryRed text-sm h-5">{{ emailError }}</p>
+    </div>
+
+    <div class="w-[428px]">
+      <label class="block text-sm font-medium mb-1 text-black7 dark:text-black3">비밀번호</label>
+      <p
+        ref="passwordRef"
+        contenteditable="true"
+        class="w-full h-[48px] p-3 border rounded text-base bg-transparent focus:border-primaryRed outline-none"
+        :class="
+          isDarkMode
+            ? 'border-black1 text-black1'
+            : 'border-black4 text-black4 placeholder-gray-400'
+        "
+        @input="updatePassword"
+        @focus="handleFocus('password')"
+        @blur="validatePassword"
+      >
+        <span
+          v-if="!password && !isFocused.password"
+          class="placeholder"
+          :style="{ color: isDarkMode ? 'black1' : 'black7' }"
+        >
+          비밀번호를 입력하세요.
+        </span>
+      </p>
+      <p class="text-primaryRed text-sm h-5">{{ passwordError }}</p>
+    </div>
+
+    <div class="flex justify-between items-center text-sm mb-1 w-[428px] -mt-[16px]">
+      <div class="flex items-center">
+        <label class="flex items-center cursor-pointer">
+          <input type="checkbox" class="mr-2" v-model="rememberMe" />
+          <p
+            class="cursor-pointer"
+            :class="isDarkMode ? 'text-black3 mt-[15px]' : 'text-black7 mt-[15px]'"
+          >
+            아이디 저장
+          </p>
+        </label>
+      </div>
+      <div>
+        <a href="#" :class="isDarkMode ? 'text-black4' : 'text-black5'" class="mr-2">아이디 찾기</a>
+        <a href="#" :class="isDarkMode ? 'text-black4' : 'text-black5'">비밀번호 찾기</a>
+      </div>
+    </div>
+
+    <LoginButtons class="mt-[15px]" />
+
+    <p
+      class="w-[428px] h-[47px] border rounded text-lg font-bold mt-[15px] transition-all focus:ring-2 focus:ring-primaryRed flex items-center justify-center cursor-pointer"
+      :class="
+        isDarkMode
+          ? 'bg-black1 text-black7 border-black1 hover:bg-primaryRed hover:text-white'
+          : 'bg-black7 text-black1 border-black7 hover:bg-primaryRed hover:text-white'
+      "
+      @click="handleSubmit"
+    >
+      {{ isLoading ? '로그인 중...' : '로그인' }}
+    </p>
+
+    <p v-if="apiError" class="text-primaryRed text-sm text-center mt-2">
+      {{ apiError }}
+    </p>
+
+    <p class="mt-[15px] text-sm" :class="isDarkMode ? 'text-black4' : 'text-black5'">
+      Wherever you want, <span class="text-primaryRed font-bold">RideOn</span>
+      <a href="/" class="underline ml-1" :class="isDarkMode ? 'text-blue-400' : 'text-blue-600'">
+        홈으로 돌아가기
+      </a>
+    </p>
+  </form>
+</template>

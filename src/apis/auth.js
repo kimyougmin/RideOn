@@ -27,10 +27,14 @@ export const postSignupApi = async ({ email, password, nickname, phone, birthDat
 
 export const postSigninApi = async ({ email, password }) => {
   try {
+    console.log(" 로그인 API 요청:", { email, password })
+
     const response = await devAPI.post('/login', { email, password })
+
+    console.log(" 로그인 API 응답:", response.data) 
     return response.data
   } catch (error) {
-    console.error('로그인 오류:', error.response?.data || error.message)
+    console.error(" 로그인 오류:", error.response?.data || error.message)
     throw error
   }
 }

@@ -4,14 +4,15 @@ import { ref } from 'vue'
 const currentYear = new Date().getFullYear()
 
 export default function useDateOptions() {
-  const birthYear = ref('')
+  const birthYear = ref(`${currentYear}`) 
   const birthMonth = ref('')
   const birthDay = ref('')
+
   // 연도 리스트 (1960 ~ 현재)
   const yearList = ref(
     Array.from({ length: currentYear - 1959 }, (_, i) => ({
-      text: `${1960 + i}`,
-      value: `${1960 + i}`
+      text: `${currentYear - i}`, 
+      value: `${currentYear - i}`
     }))
   )
 

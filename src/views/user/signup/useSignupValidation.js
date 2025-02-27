@@ -27,12 +27,15 @@ export default function useSignupValidation() {
   // 비밀번호 유효성 검사
   const validatePassword = () => {
     const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*()_+={}|[\]\\:";'<>?,./]).{8,16}$/
-    passwordError.value = passwordRegex.test(password.value) ? '' : '영문, 숫자, 특수문자 포함 8~16자'
+    passwordError.value = passwordRegex.test(password.value)
+      ? ''
+      : '영문, 숫자, 특수문자 포함 8~16자'
   }
 
   // 비밀번호 확인 유효성 검사
   const validateConfirmPassword = () => {
-    confirmPasswordError.value = password.value === confirmPassword.value ? '' : '비밀번호가 일치하지 않습니다.'
+    confirmPasswordError.value =
+      password.value === confirmPassword.value ? '' : '비밀번호가 일치하지 않습니다.'
   }
 
   // 이름 유효성 검사
@@ -60,17 +63,16 @@ export default function useSignupValidation() {
   const validatePhone = () => {
     const phoneRegex = /^010-\d{4}-\d{4}$/
     phone.value = formatPhoneNumber(phone.value)
-    phoneError.value = phoneRegex.test(phone.value) ? '' : '휴대폰 번호 형식이 올바르지 않습니다. (예: 010-1234-5678)'
+    phoneError.value = phoneRegex.test(phone.value)
+      ? ''
+      : '휴대폰 번호 형식이 올바르지 않습니다. (예: 010-1234-5678)'
   }
-  const updateBirth = (type, value) => {
+  const updateBirth = (field, value) => {
+    console.log(`변경 감지됨: ${field} → ${value}`)
 
-    if (type === 'year') {
-      birthYear.value = value ? `${value}` : null
-    } else if (type === 'month') {
-      birthMonth.value = value ? `${value}` : null
-    } else if (type === 'day') {
-      birthDay.value = value ? `${value}` : null
-    }
+    if (field === 'year') birthYear.value = value
+    if (field === 'month') birthMonth.value = value
+    if (field === 'day') birthDay.value = value
 
     validateBirth()
   }
@@ -79,7 +81,7 @@ export default function useSignupValidation() {
     console.log('생년월일 변경 감지:', {
       birthYear: birthYear.value,
       birthMonth: birthMonth.value,
-      birthDay: birthDay.value
+      birthDay: birthDay.value,
     })
 
     if (!birthYear.value || !birthMonth.value || !birthDay.value) {
@@ -89,7 +91,6 @@ export default function useSignupValidation() {
     }
   }
 
-  // 값 변경될 때 자동으로 유효성 검사 실행
   watch([birthYear, birthMonth, birthDay], validateBirth)
 
   return {
@@ -114,6 +115,6 @@ export default function useSignupValidation() {
     validatePhone,
     validateBirth,
     formatPhoneNumber,
-    updateBirth
+    updateBirth,
   }
 }
