@@ -20,7 +20,70 @@ export default {
         black8: "#202020",
         black9: "#1A1A1A",
         black10: "#000000"
-      }
+      },
+      fontFamily: {
+        sans: [
+          'Pretendard',
+          'ui-sans-serif',
+          'system-ui'
+        ],
+        impact: [
+          'Paperlogy-7Bold'
+        ],
+      },
+      fontSize: {
+        highlight: [
+          '40px',
+          {
+            linHeight: 'auto',
+            fontWeight: 700
+          }
+        ],
+        banner: [
+          '32px',
+          {
+            linHeight: 'auto',
+            fontWeight: 400
+          }
+        ],
+        title: [
+          '32px',
+          {
+            linHeight: 'auto',
+            fontWeight: 600
+          }
+        ],
+        'sub-title': [
+          '20px',
+          {
+            linHeight: 'auto',
+            fontWeight: 500
+          }
+        ],
+        body1: [
+          '15px',
+          {
+            linHeight: 'auto',
+            fontWeight: 400
+          }
+        ],
+        body2: [
+          '13px',
+          {
+            linHeight: 'auto',
+            fontWeight: 400
+          }
+        ]
+      },
+      borderRadius: {
+        none: '0',
+        sm: 'calc(var(--radius) - 4px)',
+        DEFAULT: '8px',
+        lg: 'var(--radius)',
+        xl: '16px',
+        full: '9999px',
+        md: 'calc(var(--radius) - 2px)'
+      },
     },
   },
   plugins: [],
