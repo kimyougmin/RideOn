@@ -35,9 +35,10 @@ const goToLogin = () => {
   <div class="flex flex-col min-h-screen dark:bg-black9 dark:text-white">
     <BasicHeader />
 
-    <!-- 로고 -->
-    <div class="flex justify-center items-center mt-[89px]">
-      <svg
+    <main class="w-[1440px] px-[93px] mx-auto flex flex-col items-center pt-10 gap-8 mb-20">
+      <!-- 로고 -->
+      <div class="flex justify-center items-center mt-[50px]">
+        <svg
           width="126"
           height="25"
           viewBox="0 0 126 25"
@@ -49,41 +50,44 @@ const goToLogin = () => {
             fill="#DC3644"
           />
         </svg>
-    </div>
-
-    <div class="flex flex-col justify-center items-center w-full mt-[24px] mb-[23px]">
-      <div class="flex w-[340px] justify-center">
-        <p
-          class="w-[170px] h-[41px] font-bold rounded-l-[8px] flex items-center justify-center cursor-pointer border"
-          :class="{
-            'bg-black text-white border-black': !isDarkMode && isLogin,  
-            'bg-white text-black border-black': !isDarkMode && !isLogin, 
-            'bg-white text-black border-white': isDarkMode && isLogin, 
-            'bg-black text-white border-white': isDarkMode && !isLogin, 
-          }"
-          @click="goToLogin"
-        >
-          로그인
-        </p>
-
-        <p
-          class="w-[170px] h-[41px] font-bold rounded-r-[8px] flex items-center justify-center cursor-pointer border"
-          :class="{
-            'bg-black text-white border-black': !isDarkMode && !isLogin,
-            'bg-white text-black border-black': !isDarkMode && isLogin, 
-            'bg-white text-black border-white': isDarkMode && !isLogin, 
-            'bg-black text-white border-white': isDarkMode && isLogin,
-          }"
-        >
-          회원가입
-        </p>
       </div>
-    </div>
 
-    <div class="flex justify-center">
-      <SignupForm class="w-[428px]" />
-    </div>
+      <!-- 로그인 / 회원가입 선택 버튼 -->
+      <div class="flex flex-col justify-center items-center w-full mt-[10px] mb-[10px]">
+        <div class="flex w-[340px] justify-center">
+          <!-- 로그인 버튼 -->
+          <p
+            class="w-[170px] h-[41px] font-bold rounded-l-[8px] flex items-center justify-center cursor-pointer border transition-all"
+            :class="
+              isLogin
+                ? 'bg-black text-black1 border-black9 dark:bg-black1 dark:text-black7 dark:border-black1'
+                : 'bg-white text-black9 border-black9 dark:bg-black9 dark:text-black1 dark:border-black1'
+            "
+            @click="goToLogin"
+          >
+            로그인
+          </p>
 
-    <BasicFooter class="mt-[100px]"/>
+          <!-- 회원가입 버튼 -->
+          <p
+            class="w-[170px] h-[41px] font-bold rounded-r-[8px] flex items-center justify-center cursor-pointer border transition-all"
+            :class="
+              !isLogin
+                ? 'bg-black9 text-black1 border-black9 dark:bg-black1 dark:text-black7 dark:border-black1'
+                : 'bg-white text-black9 border-black9 dark:bg-black9 dark:text-black1 dark:border-black1'
+            "
+            @click="isLogin = false"
+          >
+            회원가입
+          </p>
+        </div>
+      </div>
+
+      <div class="flex justify-center">
+        <SignupForm class="w-[428px]" />
+      </div>
+    </main>
+
+    <BasicFooter class="mt-[100px]" />
   </div>
 </template>

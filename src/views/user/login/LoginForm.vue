@@ -136,12 +136,10 @@ export default {
       <p
         ref="emailRef"
         contenteditable="true"
-        class="w-full h-[48px] p-3 border rounded text-base bg-transparent focus:border-primaryRed outline-none"
-        :class="
-          isDarkMode
-            ? 'border-black1 text-black1'
-            : 'border-black4 text-black4 placeholder-gray-400'
-        "
+        class="w-full h-[48px] p-3 border rounded text-base bg-transparent focus:border-primaryRed outline-none
+        dark:border-black3 dark:text-black3 dark:placeholder-gray-400
+        border-black4 placeholder:text-black4"
+        
         @input="updateEmail"
         @focus="handleFocus('email')"
         @blur="validateEmail"
@@ -162,12 +160,10 @@ export default {
       <p
         ref="passwordRef"
         contenteditable="true"
-        class="w-full h-[48px] p-3 border rounded text-base bg-transparent focus:border-primaryRed outline-none"
-        :class="
-          isDarkMode
-            ? 'border-black1 text-black1'
-            : 'border-black4 text-black4 placeholder-gray-400'
-        "
+        class="w-full h-[48px] p-3 border rounded text-base bg-transparent focus:border-primaryRed outline-non
+        dark:border-black3 dark:text-black3 dark:placeholder-gray-400
+        border-black4 placeholder:text-black4"
+        
         @input="updatePassword"
         @focus="handleFocus('password')"
         @blur="validatePassword"
@@ -188,28 +184,24 @@ export default {
         <label class="flex items-center cursor-pointer">
           <input type="checkbox" class="mr-2" v-model="rememberMe" />
           <p
-            class="cursor-pointer"
-            :class="isDarkMode ? 'text-black3 mt-[15px]' : 'text-black7 mt-[15px]'"
+            class="cursor-pointer dark:text-black3 mt-[15px]"
           >
             아이디 저장
           </p>
         </label>
       </div>
       <div>
-        <a href="#" :class="isDarkMode ? 'text-black4' : 'text-black5'" class="mr-2">아이디 찾기</a>
-        <a href="#" :class="isDarkMode ? 'text-black4' : 'text-black5'">비밀번호 찾기</a>
+        <a href="#" class="mr-2 dark:text-black3">아이디 찾기</a>
+        <a href="#" class="dark:text-black3">비밀번호 찾기</a>
       </div>
     </div>
 
     <LoginButtons class="mt-[15px]" />
 
     <p
-      class="w-[428px] h-[47px] border rounded text-lg font-bold mt-[15px] transition-all focus:ring-2 focus:ring-primaryRed flex items-center justify-center cursor-pointer"
-      :class="
-        isDarkMode
-          ? 'bg-black1 text-black7 border-black1 hover:bg-primaryRed hover:text-white'
-          : 'bg-black7 text-black1 border-black7 hover:bg-primaryRed hover:text-white'
-      "
+      class="w-[428px] h-[47px] border rounded text-lg font-bold mt-[15px] transition-all focus:ring-2 focus:ring-primaryRed flex items-center justify-center cursor-pointer
+      bg-black7 text-black1 border-black7 hover:bg-primaryRed hover:text-white
+      dark:bg-black3 dark:text-black7 dark:border-black3 dark:hover:bg-primaryRed"
       @click="handleSubmit"
     >
       {{ isLoading ? '로그인 중...' : '로그인' }}
@@ -219,9 +211,9 @@ export default {
       {{ apiError }}
     </p>
 
-    <p class="mt-[15px] text-sm" :class="isDarkMode ? 'text-black4' : 'text-black5'">
+    <p class="mt-[15px] text-sm dark:text-black3">
       Wherever you want, <span class="text-primaryRed font-bold">RideOn</span>
-      <a href="/" class="underline ml-1" :class="isDarkMode ? 'text-blue-400' : 'text-blue-600'">
+      <a href="/" class="underline ml-1 dark:text-blue-400 text-blue-600">
         홈으로 돌아가기
       </a>
     </p>

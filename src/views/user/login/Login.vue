@@ -55,9 +55,9 @@ export default {
   <div class="flex flex-col min-h-screen dark:bg-black9 dark:text-white">
     <BasicHeader :isDarkMode="isDarkMode" @toggle-dark-mode="darkMode" />
 
-    <!-- RideOn 로고 -->
-    <div class="flex flex-col justify-center items-center flex-grow">
-      <div class="mt-[89px]">
+    <main class="w-[1440px] px-[93px] mx-auto pt-10 flex flex-col items-center gap-8 mb-20">
+      <!-- RideOn 로고 -->
+      <div class="mt-[50px]">
         <svg
           width="126"
           height="25"
@@ -72,42 +72,28 @@ export default {
         </svg>
       </div>
 
-      <!-- 로그인 / 회원가입 현재 위치 버튼 -->
-      <div class="flex mt-[24px] mb-[23px]">
-  <p
-    class="w-[170px] h-[41px] font-bold rounded-l-[8px] transition-all flex items-center justify-center cursor-pointer border"
-    :class="{
-      'bg-black text-white border-black': !isDarkMode && isLogin,  
-      'bg-white text-black border-black': !isDarkMode && !isLogin, 
-      'bg-white text-black border-white': isDarkMode && isLogin, 
-      'bg-black text-white border-white': isDarkMode && !isLogin, 
-    }"
-    @click="isLogin = true"
-  >
-    로그인
-  </p>
+      <!-- 로그인 / 회원가입 선택 버튼 -->
+      <div class="flex mt-[10px] mb-[10px]">
+        <!-- 로그인 버튼 -->
+        <p
+          class="w-[170px] h-[41px] font-bold rounded-l-[8px] flex items-center justify-center cursor-pointer border transition-all bg-black9 text-black1 border-black9 dark:bg-black1 dark:text-black7 dark:border-black1"
+          @click="isLogin = true"
+        >
+          로그인
+        </p>
 
-  <p
-    class="w-[170px] h-[41px] font-bold rounded-r-[8px] transition-all flex items-center justify-center cursor-pointer border"
-    :class="{
-      'bg-black text-white border-black': !isDarkMode && !isLogin,
-      'bg-white text-black border-black': !isDarkMode && isLogin, 
-      'bg-white text-black border-white': isDarkMode && !isLogin, 
-      'bg-black text-white border-white': isDarkMode && isLogin,
-    }"
-    @click="goToSignup"
-  >
-    회원가입
-  </p>
-</div>
-
-
-
+        <!-- 회원가입 버튼 -->
+        <p
+          class="w-[170px] h-[41px] font-bold rounded-r-[8px] flex items-center justify-center cursor-pointer border transition-all bg-black1 text-black9 border-black9 dark:bg-black9 dark:text-black1 dark:border-black1"
+          @click="goToSignup"
+        >
+          회원가입
+        </p>
+      </div>
 
       <LoginForm v-if="isLogin" />
-    </div>
+    </main>
 
     <BasicFooter class="mt-[100px]" />
   </div>
 </template>
-
