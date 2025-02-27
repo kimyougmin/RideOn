@@ -1,7 +1,7 @@
 <script setup></script>
 
 <template>
-  <footer class="bg-black7 mt-28">
+  <footer class="bg-black7">
     <div class="container max-w-[1440px] mx-auto px-[93px] pt-12 pb-28 flex justify-between">
       <div>
         <div class="w-64 mb-6">
