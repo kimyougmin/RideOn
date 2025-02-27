@@ -33,7 +33,7 @@ const resetFilters = () => {
 const dummyPosts = [
   {
     id: 1,
-    image: 'https://placehold.co/300x200?text=RideOn',
+    image: 'bicyclePageImage/trekBike.png',
     title: '자전거 입문자 장비 추천해주세요',
     content:
       '로드바이크를 시작하려고 하는데 초보자가 구매하기 좋은 자전거와 필수 장비 추천 부탁드립니다. 예산은 150만원 정도 생각하고 있어요.',
@@ -48,7 +48,7 @@ const dummyPosts = [
   },
   {
     id: 2,
-    image: 'https://placehold.co/300x200?text=RideOn',
+    image: 'bicyclePageImage/trekBike2.png',
     title: '한강 자전거길 후기',
     content:
       '어제 광나루에서 양화까지 한강 자전거길 다녀왔습니다. 벚꽃이 막 피기 시작해서 정말 예쁘네요. 주말에는 사람이 많으니 평일에 가시는 것을 추천드립니다.',
