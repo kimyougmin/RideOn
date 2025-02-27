@@ -9,12 +9,12 @@ const FREEBOARD_ROUTES = [
     component: FreeBoard,
   },
   {
-    path: '/freeBoardDetail',
+    path: '/freeBoardDetail/:id',
     name: 'FreeBoardDetail',
     component: FreeBoardDetail,
   },
   {
-    path: '/freeBoardEdit',
+    path: '/freeBoardEdit/:id',
     name: 'FreeBoardEdit',
     component: FreeBoardEdit,
   },
