@@ -10,7 +10,7 @@ defineProps({
 </script>
 <template>
   <article
-    class="min-h-64 col-span-3 flex flex-col shadow-md rounded-xl overflow-hidden dark:bg-black7 dark:text-black1 relative"
+    class="min-h-64 col-span-3 flex flex-col bg-black1 drop-shadow-custom2 rounded-xl overflow-hidden dark:bg-black7 dark:text-black1 relative"
   >
     <div
       class="absolute top-4 left-4 px-3 py-2 bg-black2/70 backdrop-blur-sm rounded-lg flex items-center gap-2"
