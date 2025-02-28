@@ -17,15 +17,15 @@
 
     <!-- 네비게이션 메뉴 -->
     <nav class="mt-6 mr-10">
-      <ul class="flex flex-col gap-4 ">
+      <ul class="flex flex-col gap-4">
         <li v-for="menu in menus" :key="menu.id">
           <button
-            class="w-full text-center px-3 py-2 text-base rounded-lg transition-all "
+            class="w-full text-center px-3 py-2 text-base rounded-lg transition-all"
             :class="{
               'bg-black text-white dark:bg-white dark:text-black': activeMenu === menu.id,
               'hover:bg-black10 dark:hover:bg-black6 dark:text-white': activeMenu !== menu.id
             }"
-            @click="setActiveMenu(menu.id)"
+            @click="$emit('updateMenu', menu.id)"
           >
             {{ menu.text }}
           </button>
@@ -36,14 +36,19 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, defineProps } from 'vue';
 import defaultProfile from './images/userImg.svg';
+
+// 부모 컴포넌트에서 `activeMenu`를 전달받음
+const props = defineProps({
+  activeMenu: String,
+});
+
 // 유저 정보 (이후 API 연동 예정)
 const user = ref({
   profileImage: '', // 프로필 이미지 URL (기본값: 빈 값)
   nickname: 'Chill guy', // 닉네임
 });
-
 
 // 사이드바 메뉴 리스트
 const menus = ref([
@@ -52,12 +57,4 @@ const menus = ref([
   { id: 'cart', text: '장바구니' },
   { id: 'history', text: '활동내역' }
 ]);
-
-// 현재 선택된 메뉴
-const activeMenu = ref('profile');
-
-// 메뉴 선택 함수
-const setActiveMenu = (menuId) => {
-  activeMenu.value = menuId;
-};
 </script>
