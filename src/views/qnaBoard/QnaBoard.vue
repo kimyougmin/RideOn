@@ -8,6 +8,7 @@ import QnaFilterMenu from './components/QnaFilterMenu.vue'
 import TopWriters from './components/TopWriters.vue'
 import KeywordSearch from '@/components/search/KeywordSearch.vue'
 import TagSearch from '@/components/search/TagSearch.vue'
+import PopularTags from './components/PopularTags.vue'
 
 const selectedSort = ref('latest')
 const selectedFilter = ref('all')
@@ -187,7 +188,9 @@ const DUMMY_WRITERS = [
       </article>
 
       <!-- 질문 게시판 - 우측 영역 -->
-      <article class="col-span-2"></article>
+      <article class="col-span-2">
+        <PopularTags />
+      </article>
     </section>
     <BasicFooter />
   </div>
