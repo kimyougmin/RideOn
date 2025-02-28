@@ -3,31 +3,17 @@ import BasicFooter from '@/components/BasicFooter.vue'
 import BasicHeader from '@/components/BasicHeader.vue'
 import FreeBoardListItem from './components/FreeBoardListItem.vue'
 import { ref } from 'vue'
+import KeywordSearch from '@/components/search/KeywordSearch.vue'
+import TagSearch from '@/components/search/TagSearch.vue'
 
-const tags = ref([])
-const tagInput = ref('')
 const selectedSort = ref('latest')
+const searchKeyword = ref('')
+const searchTags = ref([])
 
-const addTag = (e) => {
-  if (e.key === 'Enter' && tagInput.value.trim()) {
-    tags.value.push(tagInput.value.trim())
-    tagInput.value = ''
-  }
-}
-
-const removeTag = (index) => {
-  tags.value.splice(index, 1)
-}
-
-const handleKeydown = (e) => {
-  if (e.key === 'Backspace' && tagInput.value === '' && tags.value.length > 0) {
-    tags.value.pop()
-  }
-}
-
-const resetFilters = () => {
-  tags.value = []
-  tagInput.value = ''
+const handleSearch = () => {
+  // 검색 로직 구현
+  console.log('검색어:', searchKeyword.value)
+  console.log('태그:', searchTags.value)
 }
 
 const dummyPosts = [
@@ -117,156 +103,8 @@ const dummyPosts = [
 
       <!-- 검색 영역 -->
       <section class="flex flex-col gap-4">
-        <article class="flex gap-4 items-stretch dark:bg-black8">
-          <div class="flex items-center gap-2 border border-black4 px-4 py-3 rounded">
-            <label for="keyword_search"
-              ><svg
-                width="22"
-                height="22"
-                viewBox="0 0 22 22"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M14 14L19 19"
-                  stroke="black-10"
-                  class="stroke-black10 dark:stroke-black1"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-                <path
-                  d="M3 9.5C3 13.0899 5.91015 16 9.5 16C11.2981 16 12.9256 15.27 14.1023 14.0901C15.275 12.9143 16 11.2918 16 9.5C16 5.91015 13.0899 3 9.5 3C5.91015 3 3 5.91015 3 9.5Z"
-                  stroke="black-10"
-                  class="stroke-black10 dark:stroke-black1"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </label>
-            <input
-              type="text"
-              id="keyword_search"
-              class="outline-none bg-transparent dark:caret-black1 dark:text-black1"
-              placeholder="제목, 내용, 작성자명으로 검색"
-            />
-          </div>
-          <button
-            class="w-32 font-bold bg-black8 py-4 rounded text-black1 dark:bg-black1 dark:text-black9"
-          >
-            검색
-          </button>
-        </article>
-        <article class="flex gap-4 items-stretch dark:bg-black8">
-          <div class="flex items-center gap-2 border border-black4 px-4 py-3 rounded">
-            <label for="tag_search">
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 20 20"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M8.33333 3.5L5 18.5"
-                  stroke="black-10"
-                  class="stroke-black10 dark:stroke-black1"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                />
-                <path
-                  d="M17.083 14.334H2.08301"
-                  stroke="black-10"
-                  class="stroke-black10 dark:stroke-black1"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                />
-                <path
-                  d="M18.333 6.83398H3.33301"
-                  stroke="black-10"
-                  class="stroke-black10 dark:stroke-black1"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                />
-                <path
-                  d="M15.0003 3.5L11.667 18.5"
-                  stroke="black-10"
-                  class="stroke-black10 dark:stroke-black1"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                />
-              </svg>
-            </label>
-            <div class="flex flex-wrap gap-2 items-center">
-              <span
-                v-for="(tag, index) in tags"
-                :key="index"
-                class="bg-black2 text-black10 px-2 py-1 rounded dark:bg-black7 dark:text-black1"
-              >
-                {{ tag }}
-                <button @click="removeTag(index)" class="text-sm">&times;</button>
-              </span>
-              <input
-                v-model="tagInput"
-                type="text"
-                id="tag_search"
-                @keyup.enter="addTag"
-                @keydown="handleKeydown"
-                class="py-1 outline-none bg-transparent dark:caret-black1 dark:text-black1 flex-1"
-                placeholder="태그로 검색해보세요!"
-              />
-            </div>
-          </div>
-          <button
-            class="w-32 bg-black2 py-4 rounded text-black9 dark:bg-black7 dark:text-black1"
-            @click="resetFilters"
-          >
-            <div class="flex items-center justify-center gap-2">
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 20 20"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M17.9321 6.66797C16.6461 3.72479 13.7094 1.66797 10.2921 1.66797C5.97106 1.66797 2.4181 4.95687 2 9.16797"
-                  stroke="black-10"
-                  class="stroke-black10 dark:stroke-black1"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-                <path
-                  d="M14.459 6.66667H18.1256C18.4018 6.66667 18.6257 6.44281 18.6257 6.16667V2.5"
-                  stroke="black-10"
-                  class="stroke-black10 dark:stroke-black1"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-                <path
-                  d="M2.69336 13.332C3.97929 16.2752 6.91609 18.332 10.3333 18.332C14.6544 18.332 18.2074 15.0431 18.6255 10.832"
-                  stroke="black-10"
-                  class="stroke-black10 dark:stroke-black1"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-                <path
-                  d="M6.16667 13.332H2.5C2.22386 13.332 2 13.5559 2 13.832V17.4987"
-                  stroke="black-10"
-                  class="stroke-black10 dark:stroke-black1"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-              <span class="font-bold">초기화</span>
-            </div>
-          </button>
-        </article>
+        <KeywordSearch v-model="searchKeyword" @search="handleSearch" />
+        <TagSearch v-model="searchTags" @search="handleSearch" />
       </section>
 
       <!-- 정렬 옵션 & 글쓰기 버튼 -->
