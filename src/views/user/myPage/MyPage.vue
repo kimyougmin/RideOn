@@ -4,14 +4,14 @@
 
 
     <main class="w-[1440px] px-[65px] mx-auto pt-10 flex gap-8 mb-20">
-      <MypageSidebar :activeMenu="activeMenu" @updateMenu="updateActiveMenu" />
+      <MypageSidebar :activeMenu="activeMenu" @updateMenu="updateActiveMenu" class="w-[260px]"/>
 
       <!-- 선택된 메뉴에 따라 내용 변경 -->
       <section class="flex-grow   p-6 rounded-lg ">
         <PersonalInfo v-if="activeMenu === 'profile'" />
          <Wishlist v-if="activeMenu === 'wishlist'" />
         <!-- <Cart v-if="activeMenu === 'cart'" /> -->
-        <!-- <History v-if="activeMenu === 'history'" /> -->
+        <History v-if="activeMenu === 'history'" />
       </section>
     </main>
 
@@ -24,7 +24,7 @@ import { ref } from 'vue';
 import PersonalInfo from './PersonalInfo.vue';
 import Wishlist from './Wishlist.vue';
 // import Cart from './Cart.vue';
-// import History from './History.vue';
+import History from './History.vue';
 import MypageSidebar from './MypageSidebar.vue';
 import BasicHeader from '@/components/BasicHeader.vue';
 import BasicFooter from '@/components/BasicFooter.vue';

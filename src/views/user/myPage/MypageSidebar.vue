@@ -39,6 +39,7 @@
 import { ref, defineProps } from 'vue';
 import defaultProfile from './images/userImg.svg';
 
+
 // 부모 컴포넌트에서 `activeMenu`를 전달받음
 const props = defineProps({
   activeMenu: String,
