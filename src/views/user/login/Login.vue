@@ -52,7 +52,7 @@ export default {
 </script>
 
 <template>
-  <div class="flex flex-col min-h-screen dark:bg-black9 dark:text-white">
+  <div class="w-full block h-full dark:bg-black9">
     <BasicHeader :isDarkMode="isDarkMode" @toggle-dark-mode="darkMode" />
 
     <main class="w-[1440px] px-[93px] mx-auto pt-10 flex flex-col items-center gap-8 mb-20">

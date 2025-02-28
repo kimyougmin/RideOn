@@ -1,16 +1,12 @@
 <template>
-  <div class="flex flex-col min-h-screen dark:bg-black9 dark:text-white">
+  <div class="min-h-screen w-full dark:bg-black9 dark:text-white">
     <BasicHeader :isDarkMode="isDarkMode" @toggle-dark-mode="toggleDarkMode" />
 
-
-    <main class="w-[1440px] px-[65px] mx-auto pt-10 flex gap-8 mb-20">
+    <main class="w-[1440px] px-[93px] mx-auto pt-10 flex gap-8 mb-20">
       <MypageSidebar :activeMenu="activeMenu" @updateMenu="updateActiveMenu" class="w-[260px]"/>
-
-      <!-- 선택된 메뉴에 따라 내용 변경 -->
-      <section class="flex-grow   p-6 rounded-lg ">
+      <section class="flex-grow p-6 rounded-lg">
         <PersonalInfo v-if="activeMenu === 'profile'" />
-         <Wishlist v-if="activeMenu === 'wishlist'" />
-        <!-- <Cart v-if="activeMenu === 'cart'" /> -->
+        <Wishlist v-if="activeMenu === 'wishlist'" />
         <History v-if="activeMenu === 'history'" />
       </section>
     </main>
