@@ -32,7 +32,7 @@ watchEffect(() => {
   >
     <div class="flex justify-between items-center w-full">
       <!-- RideOn  -->
-      <div>
+      <router-link to="/">
         <svg
           width="126"
           height="25"
@@ -45,7 +45,7 @@ watchEffect(() => {
             fill="#DC3644"
           />
         </svg>
-      </div>
+      </router-link>
       <div v-if="!isDarkMode" class="flex max-w-[119px] justify-between">
         <!-- searchIcon  -->
         <svg
@@ -176,19 +176,19 @@ watchEffect(() => {
       </div>
     </div>
     <div class="flex gap-10">
-      <router-link to="bicycle">
+      <router-link to="/bicycle">
         <p class="font-bold dark:text-black1">자전거</p>
       </router-link>
-      <router-link to="riderParts">
+      <router-link to="/riderParts">
         <p class="font-bold dark:text-black1">라이더 용품</p>
       </router-link>
-      <router-link to="roadMap">
+      <router-link to="/roadMap">
         <p class="font-bold dark:text-black1">자전거 도로</p>
       </router-link>
-      <router-link to="freeBoard">
+      <router-link to="/freeBoard">
         <p class="font-bold dark:text-black1">자유게시판</p>
       </router-link>
-      <router-link to="qnaBoard">
+      <router-link to="/qnaBoard">
         <p class="font-bold dark:text-black1">Q & A</p>
       </router-link>
     </div>
