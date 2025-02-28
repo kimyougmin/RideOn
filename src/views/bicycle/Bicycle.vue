@@ -33,25 +33,6 @@ onMounted(() => {
 
 
 </script>
-<!--<script>-->
-<!--import { Swiper, SwiperSlide } from 'swiper/vue';-->
-<!--import 'swiper/css';-->
-<!--import 'swiper/css/pagination';-->
-<!--import 'swiper/css/navigation';-->
-<!--import  './swiperCss.css'-->
-<!--import { Pagination, Navigation } from 'swiper/modules';-->
-<!--export default {-->
-<!--  components: {-->
-<!--    Swiper,-->
-<!--    SwiperSlide,-->
-<!--  },-->
-<!--  setup() {-->
-<!--    return {-->
-<!--      modules: [Pagination, Navigation],-->
-<!--    };-->
-<!--  },-->
-<!--};-->
-<!--</script>-->
 
 <template>
   <div class="w-full block h-full dark:bg-black9">
@@ -62,9 +43,11 @@ onMounted(() => {
         <div class="absolute">
           <p class="text-black1 text-[32px] font-sans">Embrace the journey, unleash your spirit.</p>
           <p class="text-black1 text-[60px] font-impact">Wherever you want, RideOn</p>
-          <div class="w-[160px] h-[48px] border-2 border-black1 rounded-3xl text-black1">
-            <p class="m-auto w-[84px] mt-2 h-[24px] text-black1 text-[20px] text-sub-title">See More</p>
-          </div>
+          <router-link to="bicycleSearch">
+            <div class="w-[160px] h-[48px] border-2 border-black1 rounded-3xl text-black1">
+              <p class="m-auto w-[84px] mt-2 h-[24px] text-black1 text-[20px] text-sub-title">See More</p>
+            </div>
+          </router-link>
         </div>
       </div>
       <div class="mt-[130px] w-[1440px] mx-auto">
@@ -74,12 +57,14 @@ onMounted(() => {
             <p class="font-impact text-primaryRed">Product</p>
           </div>
           <div class="w-full border border-black4 h-0 mt-[22px] mx-[20px] "></div>
-          <div class="flex bg-black9 dark:bg-black1 w-[164px] h-[46px] rounded-3xl justify-center items-center">
-            <p class="text-black1 font-impact dark:text-black9 mb-0">구매하러 가기</p>
-            <svg width="22" height="21" viewBox="0 0 22 21" xmlns="http://www.w3.org/2000/svg">
-              <path d="M15.5938 7.375L18.875 10.5M18.875 10.5L15.5938 13.625M18.875 10.5H3.125" class="stroke-black1 dark:stroke-black9" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </div>
+          <router-link to="bicycleSearch">
+            <div class="flex bg-black9 dark:bg-black1 w-[164px] h-[46px] rounded-3xl justify-center items-center">
+              <p class="text-black1 font-impact dark:text-black9 mb-0">구매하러 가기</p>
+              <svg width="22" height="21" viewBox="0 0 22 21" xmlns="http://www.w3.org/2000/svg">
+                <path d="M15.5938 7.375L18.875 10.5M18.875 10.5L15.5938 13.625M18.875 10.5H3.125" class="stroke-black1 dark:stroke-black9" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </router-link>
         </div>
         <swiper
           v-if="groupList.length > 0"
@@ -109,9 +94,11 @@ onMounted(() => {
             <p class="mb-1 font-impact text-2xl dark:text-black1">역대급으로 빠르고,</p>
             <p class="font-impact text-2xl dark:text-black1">역대급으로 가벼운</p>
             <p class="font-sans dark:text-black1">가장 가볍고 빠른 슈퍼바이크의 놀라운 조합으로 완전히 새롭게 탄생한 마돈 8세대를 타고 질주해 보세요.</p>
-            <div class=" border-2 rounded-full w-[160px] border-black9 dark:border-black1 mb-10">
-              <p class="text-center font-impact my-2 dark:text-black1">더 알아보기</p>
-            </div>
+            <router-link to="bicycleSearch">
+              <div class=" border-2 rounded-full w-[160px] border-black9 dark:border-black1 mb-10">
+                <p class="text-center font-impact my-2 dark:text-black1">더 알아보기</p>
+              </div>
+            </router-link>
           </div>
           <img src="../../../public/bicyclePageImage/trekBike.png"/>
         </div>

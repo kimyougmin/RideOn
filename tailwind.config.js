@@ -79,6 +79,9 @@ export default {
         custom: '1px 1px 10px rgba(180, 180, 180, 0.5)',
         custom2: '1px 1px 5px rgba(180, 180, 180, 0.2)',
       },
+      dropShadow: {
+        custom: '1px 1px 10px rgba(180, 180, 180, 0.5)'
+      }
     },
   },
   plugins: [],

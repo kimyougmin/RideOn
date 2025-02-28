@@ -18,7 +18,6 @@ import RiderPartDetail from '@/views/riderParts/roaderDetail/RiderPartDetail.vue
 import Login from '@/views/user/login/Login.vue'
 import MyPage from '@/views/user/myPage/MyPage.vue'
 import Signup from '@/views/user/signup/Signup.vue'
-import App from '@/App.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
