@@ -116,6 +116,7 @@ onMounted(() => {
               <div>
                 <div class="flex justify-between">
                   <p class="mb-0 font-sans dark:text-black1">{{ item.brand }}</p>
+                  <!-- 찜 -->
                   <svg width="18" height="17" viewBox="0 0 18 17" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M17 5.09091C17 2.83156 15.1345 1 12.8333 1C11.1128 1 9.63581 2.02389 9 3.48493C8.3642 2.02389 6.88722 1 5.16667 1C2.86548 1 1 2.83156 1 5.09091C1 11.6551 9 16 9 16C9 16 17 11.6551 17 5.09091Z" class="dark:stroke-black1" stroke="#2A2A2A" stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
@@ -131,6 +132,7 @@ onMounted(() => {
                 />
                 <p class="mb-1 mt-8 font-impact dark:text-black1">{{ item.price }}원</p>
                 <div class="rounded-full bg-black3 flex align-center text-center py-1 dark:bg-black2">
+                  <!--   장바구니    -->
                   <svg class="ml-auto" width="17" height="17" viewBox="0 0 15 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M10.3128 13.625H11.6683C12.4343 13.625 13.0202 12.9421 12.9037 12.1849L12.0383 6.55993C11.9445 5.95014 11.4198 5.5 10.8029 5.5H4.19769C3.58072 5.5 3.05604 5.95014 2.96222 6.55993L2.09684 12.1849C1.98034 12.9421 2.56619 13.625 3.3323 13.625H4.68779" stroke="black" stroke-linecap="round" stroke-linejoin="round"/>
                     <path d="M7.5 8V12.375M7.5 12.375L9.375 10.5M7.5 12.375L5.625 10.5" stroke="black" stroke-linecap="round" stroke-linejoin="round"/>
