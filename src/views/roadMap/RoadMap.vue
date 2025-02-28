@@ -14,10 +14,11 @@ onMounted(() => {
 </script>
 
 <template>
+
   <div class="w-screen h-screen relative">
-    <MapHeader class="fixed top-0 left-0 w-full z-10"/>
-    <div ref="mapContainer" class="absolute w-full h-[93%] z-0"></div>
+    <div ref="mapContainer" class="absolute w-full h-full z-0"></div>
     <RideModal/>
+    <MapHeader/>
   </div>
 </template>
 

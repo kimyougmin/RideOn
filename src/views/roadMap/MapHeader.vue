@@ -30,9 +30,10 @@ watchEffect(() => {
 
 <template>
   <div>
-    <TodayWeather/>
+  
     </div>
-<div class="w-full bg-black1 dark:bg-black9 block">
+<div class="relative w-full bg-black1 dark:bg-black9">
+  <TodayWeather/>
   <div class="flex justify-between px-12 p-5">
     <!-- RideOn  -->
     <div>
