@@ -294,7 +294,9 @@ const dummyPosts = [
             조회순
           </button>
         </div>
-        <button class="bg-black6 px-6 py-2 rounded text-black1">글쓰기</button>
+        <router-link to="/freeBoard/write" class="bg-black6 px-6 py-2 rounded text-black1"
+          >글쓰기</router-link
+        >
       </section>
 
       <!-- 게시글 목록 영역 -->
