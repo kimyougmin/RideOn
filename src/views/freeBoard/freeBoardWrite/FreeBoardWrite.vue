@@ -68,7 +68,7 @@ const handleThumbnailUpload = (e) => {
               <input
                 type="text"
                 id="title"
-                class="w-full border border-black4 rounded-lg py-3 px-4 dark:bg-black8"
+                class="w-full border border-black4 rounded-lg py-3 px-4 dark:bg-black8 dark:caret-black1"
                 placeholder="제목을 입력해주세요."
               />
             </div>
@@ -80,7 +80,7 @@ const handleThumbnailUpload = (e) => {
               >
               <textarea
                 id="content"
-                class="w-full border border-black4 rounded-lg py-3 px-4 dark:bg-black8"
+                class="w-full border border-black4 rounded-lg py-3 px-4 dark:bg-black8 dark:caret-black1"
                 rows="20"
                 placeholder="내용을 입력해주세요."
               ></textarea>
@@ -171,7 +171,7 @@ const handleThumbnailUpload = (e) => {
 
             <!-- 썸네일 업로드 -->
             <div class="flex flex-col gap-3">
-              <label for="thumbnail" class="text-body1 font-light dark:text-black1">썸네일</label>
+              <label class="text-body1 font-light dark:text-black1">썸네일</label>
               <div
                 class="relative w-full h-48 bg-black3 rounded-lg dark:bg-black7 flex items-center justify-center cursor-pointer overflow-hidden"
               >
