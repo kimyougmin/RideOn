@@ -11,4 +11,7 @@ import { RouterView } from 'vue-router'
 </template>
 
 <style>
+.v-application {
+  font-family: 'Pretendard', sans-serif !important;
+}
 </style>

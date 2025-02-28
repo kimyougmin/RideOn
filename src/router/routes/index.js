@@ -1,0 +1,6 @@
+export { default as USER_ROUTES } from './USER_ROUTES'
+export { default as BICYCLE_ROUTES } from './BICYCLE_ROUTES'
+export { default as FREEBOARD_ROUTES } from './FREEBOARD_ROUTES'
+export { default as NEWS_ROUTES } from './NEWS_ROUTES'
+export { default as QNABOARD_ROUTES } from './QNABOARD_ROUTES'
+export { default as RIDERPARTS_ROUTES } from './RIDERPARTS_ROUTES'
