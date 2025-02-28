@@ -1,109 +1,3 @@
-<template>
-  <section class="p-6 flex-grow">
-    <!-- 활동 내역 제목 -->
-    <p class="text-2xl font-bold text-black9 dark:text-white mb-2">활동내역</p>
-    <p class="text-sm text-black6 dark:text-black3 w-full max-w-[800px] leading-relaxed break-keep mb-8">
-      내가 작성한 게시글과 질문들을 한눈에 확인할 수 있습니다. 작성한 글을 수정하거나 삭제할 수 있으며,
-      필요한 정보를 빠르게 찾아볼 수 있습니다. 내가 남긴 기록을 관리하며 커뮤니티에서 활발하게 소통해보세요!
-    </p>
-
-    <!-- 작성한 게시글 -->
-    <div class="mb-12">
-      <p class="text-lg font-bold text-black9 dark:text-white flex items-center gap-2 mb-4">
-        작성한 게시글 ✍️
-        <span class="text-lg">({{ displayedPosts.length }})</span>
-      </p>
-
-      <div
-        v-for="post in displayedPosts"
-        :key="post.id"
-        class="w-[800px] h-[165px] border p-5 rounded-lg shadow-sm bg-white dark:bg-black8 mt-4 relative"
-      >
-        <!-- 삭제 아이콘 -->
-        <button @click="deletePost(post.id)" class="absolute top-5 right-5">
-          <TrashIcon class="w-5 h-5 cursor-pointer dark:text-black1" />
-        </button>
-
-        <!-- 카테고리, 제목, 하트와 숫자 (baseline 정렬) -->
-        <div class="flex items-baseline">
-          <!-- 채널 (카테고리) -->
-          <span
-            :class="post.category === '질문' ? 'text-[#1A9EFE]' : 'text-[#F85900]'"
-            class="text-lg font-bold mr-2"
-          >
-            {{ post.category }}
-          </span>
-          <!-- 제목 -->
-          <p class="text-lg font-bold text-black9 dark:text-white mr-2">
-            {{ post.title }}
-          </p>
-          <!-- 좋아요 (하트와 숫자) -->
-          <span class="flex items-center">
-            <HeartIcon class="w-4 h-4 cursor-pointer mr-1 dark:text-black1" />
-            <span class="text-sm text-black7 dark:text-white">{{ post.likes || 0 }}</span>
-          </span>
-        </div>
-
-        <p class="text-sm text-black7 dark:text-black3 mb-4 break-all">
-          {{ truncateText(post.content, 250) }}
-        </p>
-      </div>
-
-      <div v-if="hasMorePosts" class="flex justify-center mt-4">
-        <button
-          @click="loadMorePosts"
-          class="w-[300px] h-[56px] mt-[40px] border rounded-lg font-semibold bg-black10 text-black1 dark:bg-black1 dark:text-black7 dark:border-black4 hover:bg-primaryRed hover:text-white"
-        >
-          더보기
-        </button>
-      </div>
-    </div>
-
-    <div class="mt-6">
-      <p class="text-lg font-bold text-black9 dark:text-white flex items-center gap-2 mb-4">
-        작성한 질문 ❓
-        <span class="text-lg">({{ displayedQuestions.length }})</span>
-      </p>
-
-      <div
-        v-for="question in displayedQuestions"
-        :key="question.id"
-        class="w-[800px] h-[165px] border p-5 rounded-lg shadow-sm bg-white dark:bg-black8 mt-4 relative"
-      >
-        <button @click="deleteQuestion(question.id)" class="absolute top-5 right-5">
-          <TrashIcon class="w-5 h-5 cursor-pointer dark:text-black1" />
-        </button>
-
-        <div class="flex items-baseline mb-2">
-          <span class="text-lg font-bold mr-2 text-[#1A9EFE]">
-            {{ question.category }}
-          </span>
-          <p class="text-lg font-bold text-black9 dark:text-white mr-2">
-            {{ question.title }}
-          </p>
-          <span class="flex items-center">
-            <HeartIcon class="w-4 h-4 cursor-pointer mr-1 dark:text-black1" />
-            <span class="text-sm text-black7 dark:text-black1">{{ question.likes || 0 }}</span>
-          </span>
-        </div>
-
-        <p class="text-sm text-black7 dark:text-black3 mb-4 break-all">
-          {{ truncateText(question.content, 250) }}
-        </p>
-      </div>
-
-      <div v-if="hasMoreQuestions" class="flex justify-center mt-4">
-        <button
-          @click="loadMoreQuestions"
-          class="w-[300px] h-[56px] mt-[40px] border rounded-lg font-semibold bg-black10 text-black1 dark:bg-black1 dark:text-black7 dark:border-black4 hover:bg-primaryRed hover:text-white"
-        >
-          더보기
-        </button>
-      </div>
-    </div>
-  </section>
-</template>
-
 <script setup>
 import { ref, computed } from 'vue'
 import TrashIcon from './components/TrashIcon.vue'
@@ -216,3 +110,108 @@ const deleteQuestion = (id) => {
   questions.value = questions.value.filter((question) => question.id !== id)
 }
 </script>
+<template>
+  <section class="p-6 flex-grow">
+    <!-- 활동 내역 제목 -->
+    <p class="text-2xl font-bold text-black9 dark:text-black1 mb-2">활동내역</p>
+    <p class="text-sm text-black6 dark:text-black3 w-full max-w-[800px] leading-relaxed break-keep mb-8">
+      내가 작성한 게시글과 질문들을 한눈에 확인할 수 있습니다. 작성한 글을 수정하거나 삭제할 수 있으며,
+      필요한 정보를 빠르게 찾아볼 수 있습니다. 내가 남긴 기록을 관리하며 커뮤니티에서 활발하게 소통해보세요!
+    </p>
+
+    <!-- 작성한 게시글 -->
+    <div class="mb-12">
+      <p class="text-lg font-bold text-black9 dark:text-black1 flex items-center gap-2 mb-4">
+        작성한 게시글 ✍️
+        <span class="text-lg">({{ displayedPosts.length }})</span>
+      </p>
+
+      <div
+        v-for="post in displayedPosts"
+        :key="post.id"
+        class="w-[800px] h-[165px] border p-5 rounded-lg shadow-sm bg-black1 dark:bg-black8 mt-4 relative"
+      >
+        <!-- 삭제 아이콘 -->
+        <button @click="deletePost(post.id)" class="absolute top-5 right-5">
+          <TrashIcon class="w-5 h-5 cursor-pointer dark:text-black1" />
+        </button>
+
+        <!-- 카테고리, 제목, 하트와 숫자 (baseline 정렬) -->
+        <div class="flex items-baseline">
+          <!-- 채널 (카테고리) -->
+          <span
+            :class="post.category === '질문' ? 'text-[#1A9EFE]' : 'text-[#F85900]'"
+            class="text-lg font-bold mr-2"
+          >
+            {{ post.category }}
+          </span>
+          <!-- 제목 -->
+          <p class="text-lg font-bold text-black9 dark:text-black1 mr-2">
+            {{ post.title }}
+          </p>
+          <!-- 좋아요 (하트와 숫자) -->
+          <span class="flex items-center">
+            <HeartIcon class="w-4 h-4 cursor-pointer mr-1 dark:text-black1" />
+            <span class="text-sm text-black7 dark:text-black1">{{ post.likes || 0 }}</span>
+          </span>
+        </div>
+
+        <p class="text-sm text-black7 dark:text-black3 mb-4 break-all">
+          {{ truncateText(post.content, 250) }}
+        </p>
+      </div>
+
+      <div v-if="hasMorePosts" class="flex justify-center mt-4">
+        <button
+          @click="loadMorePosts"
+          class="w-[300px] h-[56px] mt-[40px] border rounded-lg font-semibold bg-black10 text-black1 dark:bg-black1 dark:text-black7 dark:border-black4 hover:bg-primaryRed hover:text-black1"
+        >
+          더보기
+        </button>
+      </div>
+    </div>
+
+    <div class="mt-6">
+      <p class="text-lg font-bold text-black9 dark:text-black1 flex items-center gap-2 mb-4">
+        작성한 질문 ❓
+        <span class="text-lg">({{ displayedQuestions.length }})</span>
+      </p>
+
+      <div
+        v-for="question in displayedQuestions"
+        :key="question.id"
+        class="w-[800px] h-[165px] border p-5 rounded-lg shadow-sm bg-black1 dark:bg-black8 mt-4 relative"
+      >
+        <button @click="deleteQuestion(question.id)" class="absolute top-5 right-5">
+          <TrashIcon class="w-5 h-5 cursor-pointer dark:text-black1" />
+        </button>
+
+        <div class="flex items-baseline mb-2">
+          <span class="text-lg font-bold mr-2 text-[#1A9EFE]">
+            {{ question.category }}
+          </span>
+          <p class="text-lg font-bold text-black9 dark:text-black1 mr-2">
+            {{ question.title }}
+          </p>
+          <span class="flex items-center">
+            <HeartIcon class="w-4 h-4 cursor-pointer mr-1 dark:text-black1" />
+            <span class="text-sm text-black7 dark:text-black1">{{ question.likes || 0 }}</span>
+          </span>
+        </div>
+
+        <p class="text-sm text-black7 dark:text-black3 mb-4 break-all">
+          {{ truncateText(question.content, 250) }}
+        </p>
+      </div>
+
+      <div v-if="hasMoreQuestions" class="flex justify-center mt-4">
+        <button
+          @click="loadMoreQuestions"
+          class="w-[300px] h-[56px] mt-[40px] border rounded-lg font-semibold bg-black10 text-black1 dark:bg-black1 dark:text-black7 dark:border-black4 hover:bg-primaryRed hover:text-black1"
+        >
+          더보기
+        </button>
+      </div>
+    </div>
+  </section>
+</template>

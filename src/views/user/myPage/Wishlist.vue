@@ -1,85 +1,3 @@
-<template>
-  <section class="w-full">
-    <!-- 제목 -->
-    <h2 class="text-2xl font-bold text-black9 dark:text-white mb-4 flex items-center gap-2">
-      찜 목록 📍 <span class="text-lg">({{ filteredWishlist.length }})</span>
-    </h2>
-
-    <!-- 필터 버튼 -->
-    <div class="flex gap-2 mb-6">
-      <button
-        v-for="filter in filters"
-        :key="filter.id"
-        @click="setActiveFilter(filter.id)"
-        class="px-4 py-2 border rounded-full text-sm font-medium transition-all"
-        :class="{
-          'bg-black text-white dark:bg-white dark:text-black': activeFilter === filter.id,
-          'hover:bg-black10 dark:hover:bg-black6 dark:text-white': activeFilter !== filter.id,
-        }"
-      >
-        {{ filter.text }}
-      </button>
-    </div>
-
-    <!-- 찜 목록 -->
-    <div class="grid grid-cols-3 gap-x-[14px] gap-y-[35px]">
-      <div
-        v-for="item in displayedWishlist"
-        :key="item.id"
-        class="w-[300px] rounded-lg border border-black3 dark:border-black5"
-      >
-        <!-- 이미지 박스 -->
-        <div
-          class="w-full h-[191px] border-b dark:b flex items-center justify-center bg-white dark:bg-black1 rounded-t-lg"
-        >
-          <img
-            :src="item.image || defaultImage"
-            alt="상품 이미지"
-            class="w-[180px] h-auto object-contain"
-          />
-        </div>
-
-        <!-- 텍스트 박스 -->
-        <div
-          class="w-full h-[97px] px-2 py-2 bg-white dark:bg-black9 rounded-b-lg flex flex-col justify-between relative"
-        >
-          <!-- 브랜드 및 상품명 -->
-          <div>
-            <p class="text-md text-black5 dark:text-black3 leading-none">{{ item.brand }}</p>
-            <p class="font-bold text-black9 dark:text-white text-lg leading-tight">
-              {{ item.name }}
-            </p>
-          </div>
-
-          <div class="flex items-center justify-between mt-[-5px] relative">
-            <p class="text-lg font-bold text-black7 dark:text-white leading-tight">
-              {{ item.price.toLocaleString() }}원
-            </p>
-
-            <!-- 하트 아이콘  -->
-            <img
-              src="./images/heart.svg"
-              alt="찜 삭제"
-              class="w-[16px] h-[15px] cursor-pointer transition-transform hover:scale-110 absolute right-[5px] bottom-[23px]"
-              @click="removeFromWishlist(item.id)"
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 더보기 버튼 -->
-    <div v-if="hasMoreItems" class="flex justify-center mt-[80px] mb-[21px]">
-      <button
-        @click="loadMore"
-        class="w-[300px] h-[56px] border rounded-lg font-semibold transition-all bg-black10 text-white dark:bg-black1 dark:text-black7 dark:border-black4 hover:bg-primaryRed hover:text-white"
-      >
-        더 보기
-      </button>
-    </div>
-  </section>
-</template>
-
 <script setup>
 import { ref, computed } from 'vue'
 
@@ -233,3 +151,85 @@ const removeFromWishlist = (id) => {
   wishlist.value = wishlist.value.filter((item) => item.id !== id)
 }
 </script>
+
+<template>
+  <section class="w-full ml-[10px]">
+    <!-- 제목 -->
+    <h2 class="text-2xl font-bold text-black9 dark:text-black1 mb-4 flex items-center gap-2">
+      찜 목록 📍 <span class="text-lg">({{ filteredWishlist.length }})</span>
+    </h2>
+
+    <!-- 필터 버튼 -->
+    <div class="flex gap-2 mb-6">
+      <button
+        v-for="filter in filters"
+        :key="filter.id"
+        @click="setActiveFilter(filter.id)"
+        class="px-4 py-2 border rounded-full text-sm font-medium transition-all"
+        :class="{
+          'bg-black9 text-black1 dark:bg-black1 dark:text-black9': activeFilter === filter.id,
+          'hover:bg-black10 dark:hover:bg-black6 dark:text-black1': activeFilter !== filter.id,
+        }"
+      >
+        {{ filter.text }}
+      </button>
+    </div>
+
+    <!-- 찜 목록 -->
+    <div class="grid grid-cols-3 gap-x-[14px] gap-y-[35px]">
+      <div
+        v-for="item in displayedWishlist"
+        :key="item.id"
+        class="w-[300px] rounded-lg border border-black3 dark:border-black5"
+      >
+        <!-- 이미지 박스 -->
+        <div
+          class="w-full h-[191px] border-b dark:b flex items-center justify-center bg-black1 dark:bg-black1 rounded-t-lg"
+        >
+          <img
+            :src="item.image || defaultImage"
+            alt="상품 이미지"
+            class="w-[180px] h-auto object-contain"
+          />
+        </div>
+
+        <!-- 텍스트 박스 -->
+        <div
+          class="w-full h-[97px] px-2 py-2 bg-black1 dark:bg-black9 rounded-b-lg flex flex-col justify-between relative"
+        >
+          <!-- 브랜드 및 상품명 -->
+          <div>
+            <p class="text-md text-black5 dark:text-black3 leading-none">{{ item.brand }}</p>
+            <p class="font-bold text-black9 dark:text-black1 text-lg leading-tight">
+              {{ item.name }}
+            </p>
+          </div>
+
+          <div class="flex items-center justify-between mt-[-5px] relative">
+            <p class="text-lg font-bold text-black7 dark:text-black1 leading-tight">
+              {{ item.price.toLocaleString() }}원
+            </p>
+
+            <!-- 하트 아이콘  -->
+            <img
+              src="./images/heart.svg"
+              alt="찜 삭제"
+              class="w-[16px] h-[15px] cursor-pointer transition-transform hover:scale-110 absolute right-[5px] bottom-[23px]"
+              @click="removeFromWishlist(item.id)"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 더보기 버튼 -->
+    <div v-if="hasMoreItems" class="flex justify-center mt-[80px] mb-[21px]">
+      <button
+        @click="loadMore"
+        class="w-[300px] h-[56px] border rounded-lg font-semibold transition-all bg-black10 text-black1 dark:bg-black1 dark:text-black7 dark:border-black4 hover:bg-primaryRed hover:text-black1"
+      >
+        더 보기
+      </button>
+    </div>
+  </section>
+</template>

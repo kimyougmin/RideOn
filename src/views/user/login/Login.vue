@@ -72,9 +72,7 @@ export default {
         </svg>
       </div>
 
-      <!-- 로그인 / 회원가입 선택 버튼 -->
       <div class="flex mt-[10px] mb-[10px]">
-        <!-- 로그인 버튼 -->
         <p
           class="w-[170px] h-[41px] font-bold rounded-l-[8px] flex items-center justify-center cursor-pointer border transition-all bg-black9 text-black1 border-black9 dark:bg-black1 dark:text-black7 dark:border-black1"
           @click="isLogin = true"
