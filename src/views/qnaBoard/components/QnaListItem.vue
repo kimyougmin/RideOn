@@ -10,7 +10,10 @@ defineProps({
 </script>
 
 <template>
-  <li class="w-full flex flex-col gap-6 items-start py-8 border-t border-black3 dark:border-black6">
+  <router-link
+    :to="`/qnaBoard/detail/${qna.id}`"
+    class="w-full flex flex-col gap-6 items-start py-8 border-t border-black3 dark:border-black6"
+  >
     <!-- 질문 정보 상단 -->
     <div class="flex flex-col gap-4">
       <div class="flex gap-4 items-center">
@@ -144,5 +147,5 @@ defineProps({
         >
       </div>
     </div>
-  </li>
+  </router-link>
 </template>
