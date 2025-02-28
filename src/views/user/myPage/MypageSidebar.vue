@@ -55,6 +55,6 @@ const menus = ref([
   { id: 'profile', text: '개인 정보' },
   { id: 'wishlist', text: '찜 목록' },
   { id: 'cart', text: '장바구니' },
-  { id: 'history', text: '활동내역' }
+  { id: 'history', text: '활동내역' },
 ]);
 </script>
