@@ -139,7 +139,7 @@ const { birthYear, birthMonth, birthDay, yearList, monthList, dayList } = useDat
   item-value="value"
   :return-object="false"
   variant="outlined"
-  class="w-1/3"
+  class="w-1/3 dark:text-black1"
   @update:modelValue="updateBirth('year', $event)"
 />
 <v-combobox 
@@ -150,7 +150,7 @@ const { birthYear, birthMonth, birthDay, yearList, monthList, dayList } = useDat
   item-value="value"
   :return-object="false"
   variant="outlined"
-  class="w-1/3"
+  class="w-1/3 dark:text-black1"
   @update:modelValue="updateBirth('month', $event)"
 />
 <v-combobox 
@@ -161,7 +161,7 @@ const { birthYear, birthMonth, birthDay, yearList, monthList, dayList } = useDat
   item-value="value"
  :return-object="false"
   variant="outlined"
-  class="w-1/3"
+  class="w-1/3 dark:text-black1"
   @update:modelValue="updateBirth('day', $event)"
 />
 
@@ -188,9 +188,13 @@ const { birthYear, birthMonth, birthDay, yearList, monthList, dayList } = useDat
     <button 
       type="submit"
       class="w-[428px] h-[47px] border rounded text-lg font-bold mt-[26px] transition-all focus:ring-2 focus:ring-primaryRed flex items-center justify-center cursor-pointer dark:bg-black1 dark:text-black7"
-      :class="isDarkMode ? 'bg-white text-black10 border-white hover:bg-primaryRed hover:text-white' : 'bg-black10 text-white border-black hover:bg-primaryRed hover:text-white'"
+      :class="isDarkMode ? 'bg-black1 text-black10 border-black1 hover:bg-primaryRed hover:text-black1' : 'bg-black10 text-black1 border-black9 hover:bg-primaryRed hover:text-black1'"
     >
       회원가입
     </button>
+    <p class="mt-[25px] text-sm dark:text-black3 text-center">
+        Wherever you want, <span class="text-primaryRed font-bold">RideOn</span>
+        <a href="/" class="underline ml-1 dark:text-blue-400 text-blue-600">홈으로 돌아가기</a>
+      </p>
   </form>
 </template>
