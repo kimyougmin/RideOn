@@ -24,27 +24,29 @@ const toggleModal = () => {
     <p class="text-2xl font-semibold dark:text-black1 hover:scale-110 transition-transform duration-200">
       12℃
     </p>
-    <p class="text-lg font-normal dark:text-black1 pl-3">
+    <p class="text-lg font-medium dark:text-black1 pl-3">
       오늘은 라이딩하기 좋은 날씨예요.
     </p>
 
     <button @click="toggleModal" class="text-4xl mb-4 hover:scale-110 transition-transform duration-200">
   <span v-if="weatherModal">
     <svg width="30" height="30" xmlns="http://www.w3.org/2000/svg">
-      <path d="M5,20 L15,10 L25,20" class="stroke-black dark:stroke-white" stroke-width="2" fill="none"/>
+      <path d="M5,20 L15,10 L25,20" class="stroke-black10 dark:stroke-white" stroke-width="2" fill="none"/>
     </svg>
   </span>
   <span v-else>
     <svg width="30" height="30" xmlns="http://www.w3.org/2000/svg">
-      <path d="M5,10 L15,20 L25,10" class="stroke-black dark:stroke-white" stroke-width="2" fill="none"/>
+      <path d="M5,10 L15,20 L25,10" class="stroke-black10 dark:stroke-white" stroke-width="2" fill="none"/>
     </svg>
   </span>
 </button>
-    <div v-if="weatherModal" class="absolute flex bg-black1 dark:bg-black9 z-10 rounded-3xl w-96 h-48 top-16 shadow-lg p-4">
+
+<!-- 모달 -->
+    <div v-if="weatherModal" class="absolute flex bg-black1 dark:bg-black9 z-10 rounded-3xl w-[360px] h-40 top-20 shadow-lg p-4">
     <div class="flex flex-col w-1/2 gap-2">
-      <div class="flex w-full h-1/2 gap-2">
-        <div class="flex items-center justify-center w-1/2 ml-5">
-          <svg width="80" height="79" viewBox="0 0 79 79" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+      <div class="flex w-full h-1/2 gap-2 pt-4">
+        <div class="flex items-center justify-center w-1/2 ml-3">
+          <svg width="65" height="65" viewBox="0 0 79 79" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <circle cx="39.5" cy="39.5" r="39.5" fill="url(#pattern0_323_2303)"/>
 <defs>
 <pattern id="pattern0_323_2303" patternContentUnits="objectBoundingBox" width="1" height="1">
@@ -54,21 +56,37 @@ const toggleModal = () => {
 </defs>
 </svg>
         </div>
-        <div class="flex flex-col items-center justify-center w-1/2 rounded-md">
-  <span class="text-3xl font-bold pb-2 pt-3">12</span>
-  <span class="font-normal">맑음</span>
+        <div class="flex flex-col items-center justify-center w-1/2 rounded-md pr-5 dark:text-black1">
+  <span class="text-4xl font-bold pb-1 pt-3">12</span>
+  <span class="font-normal text-lg">맑음</span>
 </div>
       </div>
-      <!-- 왼쪽 아래 (50%) -->
-      <div class="flex items-center justify-center h-1/2 bg-blue-500 rounded-md">
-        왼쪽 아래
-      </div>
+      <div class="flex h-1/2 rounded-md pt-6">
+  <div class="flex items-center justify-end w-1/2 rounded-md">
+    <p class="pr-2 text-[#1A9EFE] text-3xl font-bold">-2</p>
+    <p class="text-4xl font-medium dark:text-black1">/</p>
+  </div>
+  <div class="flex items-center justify-start w-1/2 rounded-md">
+    <p class="pl-2 text-[#DC3644] text-3xl font-bold">10</p>
+  </div>
+</div>
     </div>
 
-    <!-- 오른쪽 (50%) -->
-    <div class="flex items-center justify-center w-1/2 bg-red-300 rounded-md ml-2">
-      오른쪽
-    </div>
+<div class="flex flex-col items-start justify-center w-1/2 pt-4 pl-2 text-lg dark:text-black1">
+  <div class="flex w-full gap-x-4">
+    <p class="font-bold w-16">습도 </p>
+    <p>80%</p>
+  </div>
+  <div class="flex w-full gap-x-4">
+    <p class="font-bold w-16">강수확률 </p>
+    <p>30%</p>
+  </div>
+  <div class="flex w-full gap-x-4">
+    <p class="font-bold w-16">강수량 </p>
+    <p>강수없음</p>
+  </div>
+</div>
+
   </div>
   </div>
 </template>
