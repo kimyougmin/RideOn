@@ -28,7 +28,7 @@ defineProps({
               • {{ getRelativeTime(comment.createdAt) }}</span
             >
           </div>
-          <div class="max-w-10 text-primaryRed flex items-center gap-2 justify-end cursor-pointer">
+          <div class="max-w-20 text-primaryRed flex items-center gap-2 justify-end cursor-pointer">
             <svg
               width="15"
               height="14"

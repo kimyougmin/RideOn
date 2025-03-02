@@ -32,7 +32,7 @@ const goToLogin = () => {
 </script>
 
 <template>
-  <div class="flex flex-col min-h-screen dark:bg-black9 dark:text-white">
+  <div class="w-full block h-full dark:bg-black9">
     <BasicHeader />
 
     <main class="w-[1440px] px-[93px] mx-auto flex flex-col items-center pt-10 gap-8 mb-20">
@@ -60,8 +60,8 @@ const goToLogin = () => {
             class="w-[170px] h-[41px] font-bold rounded-l-[8px] flex items-center justify-center cursor-pointer border transition-all"
             :class="
               isLogin
-                ? 'bg-black text-black1 border-black9 dark:bg-black1 dark:text-black7 dark:border-black1'
-                : 'bg-white text-black9 border-black9 dark:bg-black9 dark:text-black1 dark:border-black1'
+                ? 'bg-black9 text-black1 border-black9 dark:bg-black1 dark:text-black7 dark:border-black1'
+                : 'bg-black1 text-black9 border-black9 dark:bg-black9 dark:text-black1 dark:border-black1'
             "
             @click="goToLogin"
           >
@@ -74,7 +74,7 @@ const goToLogin = () => {
             :class="
               !isLogin
                 ? 'bg-black9 text-black1 border-black9 dark:bg-black1 dark:text-black7 dark:border-black1'
-                : 'bg-white text-black9 border-black9 dark:bg-black9 dark:text-black1 dark:border-black1'
+                : 'bg-black1 text-black9 border-black9 dark:bg-black9 dark:text-black1 dark:border-black1'
             "
             @click="isLogin = false"
           >
