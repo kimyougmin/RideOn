@@ -41,5 +41,5 @@ export const postSigninApi = async ({ email, password }) => {
 
 
 export const getUserApi = (id) => {
-  return axios.get(`http://13.209.75.182:5004/users/${id}`)
+  return devAPI.get(`/users/${id}`)
 }

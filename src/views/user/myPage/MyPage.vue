@@ -22,6 +22,9 @@ const toggleDarkMode = () => {
   isDarkMode.value = !isDarkMode.value;
 };
 
+
+
+
 </script>
 <template>
   <div class="min-h-screen w-full dark:bg-black9 dark:text-black1">
