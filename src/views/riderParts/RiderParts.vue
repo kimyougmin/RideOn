@@ -1,7 +1,7 @@
 <script setup>
 import BasicHeader from '@/components/BasicHeader.vue';
 import BasicFooter from '@/components/BasicFooter.vue';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { Swiper, SwiperSlide } from 'swiper/vue';
 import { Pagination, Navigation } from 'swiper/modules';
 import { getNaverItems } from '../../apis/naverSearchApi';
@@ -10,19 +10,34 @@ import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import  './swiperCss.css';
 
-const query = ref('자전거 용품');
+const query = ref('자전거용품');
 const items = ref([]);
 
 const fetchNaverDatas = async () => {
   console.log(query.value);
   if(!query.value) return;
-
   try {
     items.value = await getNaverItems(query.value);
   } catch (error) {
     console.error('검색 오류 : ', error);
   }
 }
+
+const cleanedItems = computed(() => {
+  return items.value.map(item => {
+    if (typeof item.title !== 'string') return { ...item, cleanTitle: '제목 없음' };
+
+    const parts = item.title.split('<b>');
+    let cleanTitle = parts[0].trim();
+    if (!cleanTitle && parts.length > 1) {
+      cleanTitle = parts[1].split('</b>')[1]?.trim() || parts[1].replace('</b>', '').trim();
+    }
+
+    return { ...item, cleanTitle };
+  });
+});
+
+
 
 onMounted(() => {
   fetchNaverDatas();
@@ -200,12 +215,12 @@ onMounted(() => {
           :modules="modules"
           class="mySwiper px-11 dark:bg-black9 pb-1"
         >
-          <swiper-slide v-for="(item, index) in items" :key="index">
+          <swiper-slide v-for="(item, index) in cleanedItems" :key="index">
             <div class="p-4">
-              <img :src="item.image" alt="Bike Image" class="w-full h-auto border">
-              <p class="text-sm font-sans mb-1 mt-1 text-left dark:text-black3">{{ item.maker }}</p>
-              <p class="font-impact text-left mb-2 dark:text-black1">{{ item.title }}</p>
-              <p class="font-impact text-left dark:text-black1">{{ item.lprice }}원</p>
+              <img :src="item.image" alt="Bike Image" class="w-[302px] h-[302px] object-cover border mx-auto">
+              <p class="text-sm font-sans mb-1 mt-1 text-left">{{ item.mallName }}</p>
+              <p class="font-impact text-left mb-2 ellipsis-multiline">{{ item.cleanTitle }}</p>
+              <p class="font-impact text-left">{{ item.lprice }}원</p>
             </div>
           </swiper-slide>
         </swiper>
@@ -216,5 +231,23 @@ onMounted(() => {
 </template>
 
 <style scoped>
+.ellipsis-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+  width: 100%;
+}
 
+.ellipsis-multiline {
+  display: -webkit-box;
+  -webkit-line-clamp: 1; /* 최대 2줄까지만 표시 */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.product-title {
+  font-size: 16px;
+  font-weight: bold;
+}
 </style>
