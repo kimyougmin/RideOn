@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col gap-4 font-light">
     <span
-      class="text-sub-title cursor-pointer"
+      class="text-sub-title dark:text-black1 cursor-pointer"
       :class="{ 'font-bold text-primaryRed dark:text-primaryRed': selectedFilter === 'all' }"
       @click="emit('update:modelValue', 'all')"
     >

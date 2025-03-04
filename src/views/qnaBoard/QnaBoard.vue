@@ -9,6 +9,7 @@ import TopWriters from './components/TopWriters.vue'
 import KeywordSearch from '@/components/search/KeywordSearch.vue'
 import TagSearch from '@/components/search/TagSearch.vue'
 import PopularTags from './components/PopularTags.vue'
+import SortButtons from '@/components/search/SortButtons.vue'
 
 const selectedSort = ref('latest')
 const selectedFilter = ref('all')
@@ -153,29 +154,7 @@ const DUMMY_WRITERS = [
 
         <!-- 정렬 옵션 & 글쓰기 버튼 -->
         <section class="flex items-center justify-between">
-          <div class="flex gap-4 text-sub-body1">
-            <button
-              class="text-black10 dark:text-black1"
-              :class="{ 'font-bold': selectedSort === 'latest' }"
-              @click="selectedSort = 'latest'"
-            >
-              최신순
-            </button>
-            <button
-              class="text-black10 dark:text-black1"
-              :class="{ 'font-bold': selectedSort === 'popular' }"
-              @click="selectedSort = 'popular'"
-            >
-              인기순
-            </button>
-            <button
-              class="text-black10 dark:text-black1"
-              :class="{ 'font-bold': selectedSort === 'views' }"
-              @click="selectedSort = 'views'"
-            >
-              조회순
-            </button>
-          </div>
+          <SortButtons v-model="selectedSort" />
           <router-link to="/qnaBoard/write" class="bg-black6 px-6 py-2 rounded text-black1"
             >글쓰기</router-link
           >

@@ -45,7 +45,7 @@ onMounted(() => {
           <p class="text-black1 text-[60px] font-impact">Wherever you want, RideOn</p>
           <router-link to="bicycleSearch">
             <div class="w-[160px] h-[48px] border-2 border-black1 rounded-3xl text-black1">
-              <p class="m-auto w-[84px] mt-2 h-[24px] text-black1 text-[20px] text-sub-title">See More</p>
+              <p class="m-auto text-center mt-2 h-[24px] text-black1 text-[20px] text-sub-title">See More</p>
             </div>
           </router-link>
         </div>

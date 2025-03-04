@@ -38,3 +38,8 @@ export const postSigninApi = async ({ email, password }) => {
     throw error
   }
 }
+
+
+export const getUserApi = (id) => {
+  return devAPI.get(`/users/${id}`)
+}
