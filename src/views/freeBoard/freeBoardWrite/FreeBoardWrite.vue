@@ -2,10 +2,19 @@
 import BasicHeader from '@/components/BasicHeader.vue'
 import BasicFooter from '@/components/BasicFooter.vue'
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { createFreeboardPost } from '@/apis/freeboardApi'
+import { RIDEON_FREEBOARD_CHANNEL_ID } from '@/constants/channelId'
 
+const router = useRouter()
+const title = ref('')
+const content = ref('')
+const titleError = ref('')
+const contentError = ref('')
 const tags = ref([])
 const tagInput = ref('')
 const thumbnailPreview = ref(null)
+const imageFile = ref(null)
 
 const addTag = (e) => {
   if (e.key === 'Enter' && tagInput.value.trim()) {
@@ -41,13 +50,75 @@ const resetFilters = () => {
 const handleThumbnailUpload = (e) => {
   const file = e.target.files[0]
   if (file) {
+    imageFile.value = file
     const reader = new FileReader()
     reader.onload = (e) => {
       thumbnailPreview.value = e.target.result
     }
     reader.readAsDataURL(file)
   } else {
+    imageFile.value = null
     thumbnailPreview.value = null
+  }
+}
+
+const validateFields = () => {
+  let isValid = true
+
+  if (!title.value.trim()) {
+    titleError.value = '제목을 입력해주세요.'
+    isValid = false
+  } else {
+    titleError.value = ''
+  }
+
+  if (!content.value.trim()) {
+    contentError.value = '내용을 입력해주세요.'
+    isValid = false
+  } else {
+    contentError.value = ''
+  }
+
+  return isValid
+}
+
+const handleSubmit = async () => {
+  const user = localStorage.getItem('user')
+  const userData = JSON.parse(user)
+  const token = userData.token
+
+  if (!token) {
+    alert('로그인 후 이용해주세요.')
+    router.push('/login')
+    return
+  }
+
+  if (!validateFields()) {
+    return
+  }
+
+  try {
+    const formData = new FormData()
+
+    const titleAndContent = JSON.stringify({
+      title: title.value,
+      content: content.value,
+      tags: tags.value,
+    })
+    formData.append('title', titleAndContent)
+    formData.append('channelId', RIDEON_FREEBOARD_CHANNEL_ID)
+
+    if (imageFile.value) {
+      formData.append('image', imageFile.value)
+    }
+
+    await createFreeboardPost(formData)
+
+    alert('게시글이 작성되었습니다.')
+    router.push('/freeBoard')
+  } catch (error) {
+    console.error(error)
+    alert('게시글 생성중 오류가 발생했습니다.')
   }
 }
 </script>
@@ -58,7 +129,7 @@ const handleThumbnailUpload = (e) => {
     <main class="w-[1440px] px-[93px] mx-auto pt-10 gap-4 mb-24 grid grid-cols-12">
       <section class="col-start-3 col-end-11">
         <h2 class="text-title font-bold text-black9 dark:text-black1 mb-6">게시글 작성</h2>
-        <form class="grid grid-cols-8 gap-4">
+        <form class="grid grid-cols-8 gap-4" @submit.prevent="handleSubmit">
           <article class="col-span-5 flex flex-col gap-8">
             <!-- 제목 입력 -->
             <div class="flex flex-col gap-3">
@@ -66,11 +137,14 @@ const handleThumbnailUpload = (e) => {
                 >제목 <strong class="text-primaryRed">*</strong></label
               >
               <input
+                v-model="title"
                 type="text"
                 id="title"
                 class="w-full border border-black4 rounded-lg py-3 px-4 dark:bg-black8 dark:caret-black1"
+                :class="{ 'border-primaryRed': titleError }"
                 placeholder="제목을 입력해주세요."
               />
+              <span v-if="titleError" class="text-primaryRed text-sm">{{ titleError }}</span>
             </div>
 
             <!-- 내용 입력 -->
@@ -79,11 +153,14 @@ const handleThumbnailUpload = (e) => {
                 >내용 <strong class="text-primaryRed">*</strong></label
               >
               <textarea
+                v-model="content"
                 id="content"
                 class="w-full border border-black4 rounded-lg py-3 px-4 dark:bg-black8 dark:caret-black1"
+                :class="{ 'border-primaryRed': contentError }"
                 rows="20"
                 placeholder="내용을 입력해주세요."
               ></textarea>
+              <span v-if="contentError" class="text-primaryRed text-sm">{{ contentError }}</span>
             </div>
           </article>
           <article class="col-span-3 flex flex-col gap-8 self-start">
@@ -110,7 +187,7 @@ const handleThumbnailUpload = (e) => {
                     v-model="tagInput"
                     type="text"
                     id="tags"
-                    @keyup.enter="addTag"
+                    @keydown.enter.prevent="addTag"
                     @keydown="handleKeydown"
                     class="outline-none bg-transparent dark:caret-black1 dark:text-black1 flex-1"
                     placeholder="태그를 입력해주세요."
