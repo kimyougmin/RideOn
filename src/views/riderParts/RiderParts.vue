@@ -7,8 +7,20 @@ import BasicFooter from '@/components/BasicFooter.vue';
 <template>
   <div class="w-full block h-full dark:bg-black9">
     <BasicHeader/>
+    <div class="h-full dark:bg-black9">
+      <img class="w-full" src="../../../public/bicyclePageImage/ridePageHero.png">
+      <div class="relative -top-[350px] left-[92px]">
+        <p class="text-black1 text-[32px] font-sans">Equip Yourself, Elevate Your Ride.</p>
+        <p class="text-black1 text-[60px] font-impact">Gear Up, Ride Strong</p>
+        <router-link to="RiderPartsSearch">
+          <div class="w-[160px] h-[48px] border-2 border-black1 rounded-3xl text-black1">
+              <p class="flex-grow-0 flex-shrink-0 text-xl font-semibold text-center text-black1">See More</p>
+          </div>
+        </router-link>
+      </div>
+    </div>
     <div class="flex flex-col justify-start items-center max-w-[1441px] relative gap-[130px]">
-  <div class="self-stretch flex-grow-0 flex-shrink-0 h-[750px] relative">
+        <div class="self-stretch flex-grow-0 flex-shrink-0 h-[750px] relative">
     <img
       src="../../../public/bicyclePageImage/ridePageHero.png"
       class="w-full max-w-[1441px] h-[750px] absolute left-[-1px] top-[-1px] object-cover"
