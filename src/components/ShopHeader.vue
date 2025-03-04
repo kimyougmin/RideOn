@@ -1,5 +1,8 @@
 <script setup>
 import { ref, onMounted, watchEffect } from 'vue'
+const props = defineProps(['searchValue']);
+const emits = defineEmits(['update:receiveHandler'])
+const value = ref("");
 // 현재 테마 상태
 const isDarkMode = ref(localStorage.getItem('theme') === 'dark')
 
@@ -17,6 +20,7 @@ const toggleDarkMode = () => {
 
 // 페이지가 로드될 때 설정 확인
 onMounted(() => {
+  value.value = props.searchValue;
   if (localStorage.getItem('theme') === 'dark') {
     document.documentElement.classList.add('dark')
     isDarkMode.value = true
@@ -149,7 +153,7 @@ watchEffect(() => {
           <label
             class="flex ml-6 w-[540px] justify-between h-full border !border-primaryRed rounded-lg p-2 pl-4 pr-4"
           >
-            <input class="focus:outline-none dark:text-black1" placeholder="Search" />
+            <input class="focus:outline-none dark:text-black1" placeholder="Search" v-model="value" @change="emits('update:receiveHandler', value)"/>
             <!--  검색 아이콘   -->
             <svg
               v-if="!isDarkMode"
