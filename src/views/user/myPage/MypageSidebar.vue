@@ -1,18 +1,23 @@
 <script setup>
-import { ref, defineProps } from 'vue';
-import defaultProfile from './images/userImg.svg';
+import { ref, onMounted, defineProps, defineEmits, watch, watchEffect, computed } from 'vue'
+import { useRouter } from 'vue-router'
+import { getUserApi } from '@/apis/auth'
+import { useUserStore } from '@/stores/user'
+import defaultProfile from './images/userImg.svg'
 
-
-// 부모 컴포넌트에서 `activeMenu`를 전달받음
 const props = defineProps({
   activeMenu: String,
-});
+})
 
-// 유저 정보 (이후 API 연동 예정)
+const emit = defineEmits(['updateMenu'])
+const router = useRouter()
+const userStore = useUserStore()
+
+// 초기 기본 유저 정보 (API 연동 전 기본값)
 const user = ref({
-  profileImage: '', // 프로필 이미지 URL (기본값: 빈 값)
-  nickname: 'Chill guy', // 닉네임
-});
+  image: '',
+  nickname: '사용자',
+})
 
 // 사이드바 메뉴 리스트
 const menus = ref([
@@ -20,7 +25,59 @@ const menus = ref([
   { id: 'wishlist', text: '찜 목록' },
   { id: 'cart', text: '장바구니' },
   { id: 'history', text: '활동내역' },
-]);
+  { id: 'logout', text: '로그아웃' },
+])
+
+// 서버에서 사용자 정보를 불러와 로컬 user를 업데이트하는 함수
+const loadUserInfo = async () => {
+  if (userStore.isLoggedIn && userStore.user._id) {
+    try {
+      const response = await getUserApi(userStore.user._id)
+      const data = response.data
+
+      // fullName 파싱: '|' 기준으로 분리하여 첫 번째 부분을 닉네임으로 사용
+      let nickname = '사용자'
+      if (data.fullName) {
+        const parts = data.fullName.split('|').map(p => p.trim())
+        nickname = parts[0] || '사용자'
+      }
+      
+      // 이미지: data.image 또는 data.profileImage가 있다면 사용
+      const imageUrl = data.image || data.profileImage || ''
+
+      // 로컬 user 상태 업데이트
+      user.value = {
+        image: imageUrl,
+        nickname: nickname,
+      }
+    } catch (error) {
+      console.error('사용자 정보 불러오기 실패:', error)
+    }
+  }
+}
+
+onMounted(async () => {
+  await loadUserInfo()
+})
+
+// userStore.user 전체를 watch하여 변경 시 로컬 user 업데이트
+watch(
+  () => userStore.user,
+  (newUser) => {
+    if (newUser && newUser._id) {
+      // 이미지가 없으면 profileImage도 확인
+      const updatedImage = newUser.image || newUser.profileImage || ''
+      user.value.image = updatedImage
+
+      // 이름: userStore.user.name이 있으면 사용, 없으면 fullName 파싱
+      const updatedName = newUser.name
+        ? newUser.name
+        : (newUser.fullName ? newUser.fullName.split('|')[0].trim() : '사용자')
+      user.value.nickname = updatedName
+    }
+  },
+  { deep: true, immediate: true }
+)
 </script>
 
 <template>
@@ -30,16 +87,14 @@ const menus = ref([
       <!-- 프로필 이미지 -->
       <div class="w-[88px] h-[88px] rounded-full overflow-hidden border border-black3 dark:border-black5">
         <img
-          :src="user.profileImage || defaultProfile"
+          :src="user.image || defaultProfile"
           alt="프로필 이미지"
           class="w-full h-full object-cover"
         />
       </div>
-
       <!-- 닉네임 -->
-      <p class="text-lg font-bold dark:text-black1">{{ user.nickname || '사용자' }}</p>
+      <p class="text-lg font-bold dark:text-black1">{{ user.nickname }}</p>
     </div>
-
     <!-- 네비게이션 메뉴 -->
     <nav class="mt-6 mr-10">
       <ul class="flex flex-col gap-4">
