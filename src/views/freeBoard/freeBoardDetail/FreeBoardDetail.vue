@@ -1,9 +1,12 @@
 <script setup>
+import { useRoute, useRouter } from 'vue-router'
 import BasicHeader from '@/components/BasicHeader.vue'
 import BasicFooter from '@/components/BasicFooter.vue'
 import CommentForm from '@/components/comment/CommentForm.vue'
 import CommentList from '@/components/comment/CommentList.vue'
 import getRelativeTime from '@/utils/getRelativeTime'
+import { useFreeBoardStore } from '@/stores/freeBoardStore'
+import { onMounted, ref } from 'vue'
 
 const DUMMY_POST = {
   id: 1,
@@ -61,6 +64,24 @@ const DUMMY_POST = {
     },
   ],
 }
+
+const route = useRoute()
+const router = useRouter()
+const freeBoardStore = useFreeBoardStore()
+
+const postId = route.params.id
+const post = ref(DUMMY_POST)
+
+onMounted(async () => {
+  try {
+    await freeBoardStore.fetchPostById(postId)
+    post.value = freeBoardStore.currentPost
+    console.log('post:', post.value)
+  } catch (error) {
+    console.error('게시글을 불러오는데 실패했습니다:', error)
+    router.push('/freeBoard')
+  }
+})
 </script>
 
 <template>
@@ -69,7 +90,8 @@ const DUMMY_POST = {
     <main class="w-[1440px] px-[93px] mx-auto pt-10 flex flex-col gap-8 mb-12">
       <section class="mx-auto flex gap-4">
         <article class="flex flex-col gap-2">
-          <button
+          <router-link
+            to="/freeBoard"
             class="max-h-10 px-3 py-2 border rounded flex items-center justify-center bg-black1"
           >
             <svg
@@ -87,7 +109,7 @@ const DUMMY_POST = {
                 stroke-linejoin="round"
               />
             </svg>
-          </button>
+          </router-link>
           <button
             class="max-h-10 px-3 py-2 border rounded flex items-center justify-center bg-black1"
           >
@@ -145,27 +167,22 @@ const DUMMY_POST = {
         </article>
         <article class="w-[620px] flex flex-col gap-8">
           <div class="w-full h-[400px] overflow-hidden rounded-lg">
-            <img :src="DUMMY_POST.image" alt="placeholder" />
+            <img :src="post.image" alt="placeholder" class="w-full h-full object-cover" />
           </div>
           <div class="flex flex-col gap-4">
-            <h2 class="text-title font-bold dark:text-black1">{{ DUMMY_POST.title }}</h2>
+            <h2 class="text-title font-bold dark:text-black1">{{ post.title }}</h2>
             <div class="flex items-center gap-3">
-              <span class="text-body1 text-black4">{{ DUMMY_POST.author.fullName }}</span>
+              <span class="text-body1 text-black4">{{ post.author.fullName }}</span>
               <span class="text-body1 text-black4">|</span>
-              <span class="text-body1 text-black4">{{
-                getRelativeTime(DUMMY_POST.createdAt)
-              }}</span>
+              <span class="text-body1 text-black4">{{ getRelativeTime(post.createdAt) }}</span>
             </div>
           </div>
           <hr />
-          <p
-            class="text-body1 font-light leading-8 dark:text-black1"
-            v-html="DUMMY_POST.content"
-          ></p>
+          <p class="text-body1 font-light leading-8 dark:text-black1" v-html="post.content"></p>
           <div class="flex items-center gap-3 px-4 py-3 bg-black2 rounded dark:bg-black8">
             <span class="text-body1 font-bold dark:text-black1">Tags</span>
             <span
-              v-for="tag in DUMMY_POST.tags"
+              v-for="tag in post.tags"
               :key="tag"
               class="text-body2 bg-black1 text-black10 px-4 py-1 rounded dark:bg-black7 dark:text-black1"
             >
@@ -182,7 +199,7 @@ const DUMMY_POST = {
         <div class="w-10 h-10"></div>
         <section class="max-w-[620px] flex flex-col gap-8">
           <CommentForm />
-          <CommentList :comments="DUMMY_POST.comments" />
+          <CommentList :comments="post.comments" />
         </section>
       </article>
     </section>
