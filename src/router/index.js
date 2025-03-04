@@ -6,6 +6,7 @@ import {
   NEWS_ROUTES,
   QNABOARD_ROUTES,
   RIDERPARTS_ROUTES,
+  RIDERCREWBOARD_ROUTES,
 } from './routes'
 import MainPage from '@/views/main/MainPage.vue'
 import RoadMap from '@/views/roadMap/RoadMap.vue'
@@ -35,6 +36,7 @@ const router = createRouter({
     ...QNABOARD_ROUTES,
     ...RIDERPARTS_ROUTES,
     ...USER_ROUTES,
+    ...RIDERCREWBOARD_ROUTES,
   ],
 })
 
