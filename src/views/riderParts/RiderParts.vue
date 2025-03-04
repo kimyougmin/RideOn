@@ -34,69 +34,69 @@ onMounted(() => {
   <div class="w-full block h-full dark:bg-black9">
     <BasicHeader/>
     <div class="h-full dark:bg-black9">
-      <img class="w-full" src="/riderPageImage/ridersPageHero.svg">
+      <img class="w-full object-cover" src="/riderPageImage/ridersPageHero.svg">
       <div class="relative -top-[350px] left-[92px]">
         <div class="abdolute">
           <p class="text-black1 text-[32px] font-sans">Equip Yourself, Elevate Your Ride.</p>
           <p class="text-black1 text-[60px] font-impact">Gear Up, Ride Strong</p>
           <router-link to="RiderPartsSearch">
-            <div class="w-[160px] h-[48px] border-2 border-black1 rounded-3xl text-black1">
-                <p class="m-auto w-[84px] mt-2 h-[24px] text-[20px] text-sub-title text-black1">See More</p>
+            <div class="w-[160px] h-[48px] border-2 border-black1 rounded-3xl text-black1 flex justify-center">
+                <p class="m-auto mt-2 h-[24px] text-[20px] text-sub-title text-black1">See More</p>
             </div>
           </router-link>
         </div>
       </div>
-      <div class="mt-[120px] w-[1352px] mx-auto">
-        <p class="text-primaryRed font-impact mb-1 text-2xl">
+      <div class="w-[1352px] mx-auto">
+        <p class="text-primaryRed font-impact mb-30 text-2xl">
           Gear Categories
         </p>
       </div>
       <div class="flex justify-center items-center gap-4 mb-24">
         <div class="flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 h-[242px] w-[196px] relative gap-5">
-          <div class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 h-[196px] w-[196px] relative gap-2.5 px-[26px] py-[30px] rounded-[150px] border-black9 bg-[#fefefe]">
+          <div class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 h-[196px] w-[196px] relative gap-2.5 px-[26px] py-[30px] rounded-[150px] border-black9 bg-black1">
             <img src="/riderPageImage/helmat.svg" class="flex-grow-0 flex-shrink-0 w-[150px] h-[148px] rounded-[106px] object-none"/>
           </div>
-          <p class="self-stretch flex-grow-0 flex-shrink-0 w-[196px] text-2xl font-bold text-center text-black">
+          <p class="self-stretch flex-grow-0 flex-shrink-0 w-[196px] text-2xl font-bold text-center dark:text-black1">
             헬멧
           </p>
         </div>
         <div class="flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 h-[242px] w-[196px] relative gap-5">
-          <div class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 h-[196px] w-[196px] relative gap-2.5 px-[26px] py-[30px] rounded-[150px] bg-[#fefefe]">
+          <div class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 h-[196px] w-[196px] relative gap-2.5 px-[26px] py-[30px] rounded-[150px] bg-black1">
             <img src="/riderPageImage/light.svg" class="flex-grow-0 flex-shrink-0 w-[150px] h-[148px] rounded-[106px] object-cover"/>
           </div>
-          <p class="self-stretch flex-grow-0 flex-shrink-0 w-[196px] text-2xl font-bold text-center text-black">
+          <p class="self-stretch flex-grow-0 flex-shrink-0 w-[196px] text-2xl font-bold text-center dark:text-black1">
             라이트
           </p>
         </div>
         <div class="flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 h-[242px] w-[196px] relative gap-5">
-          <div class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 h-[196px] w-[196px] relative gap-2.5 px-[26px] py-[30px] rounded-[150px] bg-[#fefefe]">
+          <div class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 h-[196px] w-[196px] relative gap-2.5 px-[26px] py-[30px] rounded-[150px] bg-black1">
             <img src="/riderPageImage/waterBottle.svg" class="flex-grow-0 flex-shrink-0 w-[150px] h-[148px] rounded-[106px] object-cover"/>
           </div>
-          <p class="self-stretch flex-grow-0 flex-shrink-0 w-[196px] text-2xl font-bold text-center text-black">
+          <p class="self-stretch flex-grow-0 flex-shrink-0 w-[196px] text-2xl font-bold text-center dark:text-black1">
             물통 &#x26; 물통케이지
           </p>
         </div>
         <div class="flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 h-[242px] w-[196px] relative gap-5">
-          <div class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 h-[196px] w-[196px] relative gap-2.5 px-[26px] py-[30px] rounded-[150px] bg-[#fefefe]">
+          <div class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 h-[196px] w-[196px] relative gap-2.5 px-[26px] py-[30px] rounded-[150px] bg-black1">
             <img src="/riderPageImage/lock.svg" class="flex-grow-0 flex-shrink-0 w-[150px] h-[148px] rounded-[106px] object-cover"/>
           </div>
-          <p class="self-stretch flex-grow-0 flex-shrink-0 w-[196px] text-2xl font-bold text-center text-black">
+          <p class="self-stretch flex-grow-0 flex-shrink-0 w-[196px] text-2xl font-bold text-center dark:text-black1">
             자물쇠
           </p>
         </div>
         <div class="flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 h-[242px] w-[196px] relative gap-5">
-          <div class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 h-[196px] w-[196px] relative gap-2.5 px-[26px] py-[30px] rounded-[150px] bg-[#fefefe]">
+          <div class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 h-[196px] w-[196px] relative gap-2.5 px-[26px] py-[30px] rounded-[150px] bg-black1">
             <img src="/riderPageImage/phoneStand.svg" class="flex-grow-0 flex-shrink-0 w-[150px] h-[148px] rounded-[106px] object-cover"/>
           </div>
-          <p class="self-stretch flex-grow-0 flex-shrink-0 w-[196px] text-2xl font-bold text-center text-black">
+          <p class="self-stretch flex-grow-0 flex-shrink-0 w-[196px] text-2xl font-bold text-center dark:text-black1">
             휴대폰 거치대
           </p>
         </div>
         <div class="flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 h-[242px] w-[196px] relative gap-5">
-          <div class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 h-[196px] w-[196px] relative gap-2.5 px-[26px] py-[30px] rounded-[150px] bg-[#fefefe]">
+          <div class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 h-[196px] w-[196px] relative gap-2.5 px-[26px] py-[30px] rounded-[150px] bg-black1">
             <img src="/riderPageImage/pump.svg" class="flex-grow-0 flex-shrink-0 w-[150px] h-[148px] rounded-[106px] object-cover"/>
           </div>
-          <p class="self-stretch flex-grow-0 flex-shrink-0 w-[196px] text-2xl font-bold text-center text-black">
+          <p class="self-stretch flex-grow-0 flex-shrink-0 w-[196px] text-2xl font-bold text-center dark:text-black1">
             펌프
           </p>
         </div>
@@ -124,11 +124,11 @@ onMounted(() => {
               <line x1="0.5" y1="1.25" x2="512.5" y2="1.25" stroke="black" stroke-opacity="0.2" stroke-width="1.5"></line>
             </svg>
           </div>
-          <p class="self-stretch flex-grow-0 flex-shrink-0 w-[1256px] text-[40px] font-bold text-center text-black9">
+          <p class="self-stretch flex-grow-0 flex-shrink-0 w-[1256px] text-[40px] font-bold text-center dark:text-black1">
             라이딩의 즐거움을 더할 최상의 선택
           </p>
-          <p class="flex-grow-0 flex-shrink-0 w-[641px] text-xl font-medium text-center text-black">
-            <span class="flex-grow-0 flex-shrink-0 w-[641px] text-xl font-medium text-center text-black">
+          <p class="flex-grow-0 flex-shrink-0 w-[641px] text-xl font-medium text-center dark:text-black1">
+            <span class="flex-grow-0 flex-shrink-0 w-[641px] text-xl font-medium text-center dark:text-black1">
               라이딩에 필요한 모든 장비
             </span>
             <br/>
@@ -145,7 +145,7 @@ onMounted(() => {
             <p class="absolute left-[32.43px] top-[70px] text-[28px] font-bold text-left text-black1">
               자전거 부품
             </p>
-            <img src="/riderPageImage/ridersDefaultImg1.svg" class="w-[325.63px] h-[226.43px] absolute left-[274.46px] top-[-0.5px] object-none"/>
+            <img src="/riderPageImage/ridersDefaultImg1.svg" class="w-[325.63px] h-[231.43px] absolute left-[274.46px] top-[-0.5px] object-none"/>
             <p class="absolute left-8 top-[115.37px] text-xs font-semibold text-left text-black1">
               <span class="text-xs font-semibold text-left text-black1">타이어 / 안장 / 핸들 / 그립 / 테이프 / 페달 / 속도계</span>
               <br />
