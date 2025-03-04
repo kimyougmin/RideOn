@@ -1,4 +1,4 @@
-const naverURL = "/naver-api"
+const naverURL = import.meta.env.VITE_NAVER_SHOPPING_BASE_URL;
 const naverID = import.meta.env.VITE_NAVER_SHOPPING_CLIENT_ID;
 const naverSecret = import.meta.env.VITE_NAVER_SHOPPING_CLIENT_SECRET;
 import axios from "axios";
