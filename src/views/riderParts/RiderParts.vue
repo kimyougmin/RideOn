@@ -19,30 +19,6 @@ import BasicFooter from '@/components/BasicFooter.vue';
         </router-link>
       </div>
     </div>
-    <div class="flex flex-col justify-start items-center max-w-[1441px] relative gap-[130px]">
-        <div class="self-stretch flex-grow-0 flex-shrink-0 h-[750px] relative">
-    <img
-      src="../../../public/bicyclePageImage/ridePageHero.png"
-      class="w-full max-w-[1441px] h-[750px] absolute left-[-1px] top-[-1px] object-cover"
-    />
-    <div
-      class="w-[1441px] h-[750px] absolute left-[-1px] top-[-1px]"
-      style="background: linear-gradient(239.54deg, rgba(26,26,26,0.1) 5.9%, #1a1a1a 90.64%);"
-    ></div>
-    <p class="absolute left-[92px] top-[487px] text-6xl text-left text-[#f2f2f2]">
-      Gear Up, Ride Strong
-    </p>
-    <div
-      class="flex justify-center items-center absolute left-[92px] top-[591px] gap-2.5 px-8 py-3 rounded-[26.5px] border-2 border-[#fefefe]"
-    >
-      <p class="flex-grow-0 flex-shrink-0 text-xl font-semibold text-center text-[#fefefe]">
-        See More
-      </p>
-    </div>
-    <p class="absolute left-[92px] top-[433px] text-[32px] font-light text-left text-[#fefefe]">
-      Equip Yourself, Elevate Your Ride.
-    </p>
-  </div>
   <div
     class="flex flex-col justify-start items-start flex-grow-0 flex-shrink-0 w-[1256px] relative gap-8"
   >
