@@ -32,7 +32,7 @@
         @input="$emit('update:modelValue', $event.target.value)"
         type="text"
         id="keyword_search"
-        class="outline-none bg-transparent dark:caret-black1 dark:text-black1"
+        class="outline-none bg-transparent dark:caret-black1 dark:text-black1 flex-1"
         placeholder="제목, 내용, 작성자명으로 검색"
       />
     </div>
