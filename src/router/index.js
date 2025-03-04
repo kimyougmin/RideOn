@@ -6,8 +6,9 @@ import {
   NEWS_ROUTES,
   QNABOARD_ROUTES,
   RIDERPARTS_ROUTES,
+  RIDERCREWBOARD_ROUTES,
 } from './routes'
-import Main from '@/views/main/Main.vue'
+import MainPage from '@/views/main/MainPage.vue'
 import RoadMap from '@/views/roadMap/RoadMap.vue'
 import NotFound from '@/views/NotFound.vue'
 
@@ -17,7 +18,7 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: Main,
+      component: MainPage,
     },
     {
       path: '/roadMap',
@@ -26,8 +27,8 @@ const router = createRouter({
     },
     {
       path: '/:pathMatch(.*)*',
-      redirect: "/404",
-      component: NotFound
+      redirect: '/404',
+      component: NotFound,
     },
     ...BICYCLE_ROUTES,
     ...FREEBOARD_ROUTES,
@@ -35,6 +36,7 @@ const router = createRouter({
     ...QNABOARD_ROUTES,
     ...RIDERPARTS_ROUTES,
     ...USER_ROUTES,
+    ...RIDERCREWBOARD_ROUTES,
   ],
 })
 
