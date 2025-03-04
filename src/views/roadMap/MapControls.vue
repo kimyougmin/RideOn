@@ -5,7 +5,8 @@
 </script>
 
 <template>
-  <div class="relative flex gap-4 top-[2.5%] left-[68%] w-[570px] h-[42px] text-lg font-medium" >
+  <div class="relative flex top-[2.5%] w-full h-[42px] text-lg font-medium" >
+  <div class="ml-auto flex gap-4 max-w-[600px] flex-shrink-0 justify-end pr-8">
     <button class="bg-white flex items-center justify-center rounded-3xl gap-2 shadow-lg hover:scale-110 transition-transform duration-200 dark:text-black1 dark:bg-black9
     dark:hover:bg-primaryRed hover:bg-primaryRed"><svg width="26" height="24" viewBox="0 0 26 24" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <rect width="26" height="24" fill="url(#pattern0_273_497)"/>
@@ -49,5 +50,6 @@
 </defs>
 </svg>
 보관소</button>
+</div>
   </div>
 </template>
