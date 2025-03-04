@@ -52,7 +52,7 @@ export default {
 </script>
 
 <template>
-  <div class="flex flex-col min-h-screen dark:bg-black9 dark:text-white">
+  <div class="w-full block h-full dark:bg-black9">
     <BasicHeader :isDarkMode="isDarkMode" @toggle-dark-mode="darkMode" />
 
     <main class="w-[1440px] px-[93px] mx-auto pt-10 flex flex-col items-center gap-8 mb-20">
@@ -72,9 +72,7 @@ export default {
         </svg>
       </div>
 
-      <!-- 로그인 / 회원가입 선택 버튼 -->
       <div class="flex mt-[10px] mb-[10px]">
-        <!-- 로그인 버튼 -->
         <p
           class="w-[170px] h-[41px] font-bold rounded-l-[8px] flex items-center justify-center cursor-pointer border transition-all bg-black9 text-black1 border-black9 dark:bg-black1 dark:text-black7 dark:border-black1"
           @click="isLogin = true"
