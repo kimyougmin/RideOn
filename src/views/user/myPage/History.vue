@@ -1,86 +1,116 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { getUserApi } from '@/apis/auth'
 import TrashIcon from './components/TrashIcon.vue'
 import HeartIcon from './components/HeartIcon.vue'
+
+const router = useRouter()
 
 const truncateText = (text, limit) => {
   if (!text) return ''
   return text.length > limit ? text.slice(0, limit) + '...' : text
 }
 
-// 샘플 데이터 (게시글)
-const posts = ref([
-  {
-    id: 1,
-    category: '자유',
-    title: '자전거로 에버레스트를 등반하다',
-    content: '학교 선배님들이 저에게 자주 하던 말이었습니다...',
-    likes: 3,
-  },
-  {
-    id: 2,
-    category: '자유',
-    title: '첫 로드 자전거 구매 후기 🚴‍♂️',
-    content: '드디어 첫 로드 자전거를 구매한 기념으로 후기 남깁니다...',
-    likes: 10,
-  },
-  {
-    id: 3,
-    category: '팁',
-    title: '자전거 체인 유지 보수법',
-    content: '체인 오일 어떤 게 좋은지 아시나요?',
-    likes: 5,
-  },
-  {
-    id: 4,
-    category: '후기',
-    title: '자전거 여행: 제주도 한 바퀴',
-    content: '제주도를 자전거로 한 바퀴 돌았습니다!',
-    likes: 8,
-  },
-  {
-    id: 5,
-    category: '자유',
-    title: '한강 야간 라이딩 후기 🚴‍♂️🌙',
-    content:
-      '어제 밤, 친구들과 함께 한강 야간 라이딩을 다녀왔습니다. 바람이 선선하게 불고 도로도 한산해서 정말 기분 좋게 달릴 수 있었어요. 여의도에서 시작해서 뚝섬까지 왕복 20km 정도를 달렸는데, 중간중간 강바람 맞으며 쉬는 시간도 좋았어요. 특히, 반포대교 근처에서 보는 야경은 정말 환상적이었습니다! 다음에는 더 많은 코스를 도전해보고 싶네요. 혹시 추천해주실만한 야간 라이딩 코스 있나요? 🙂',
-    likes: 27,
-  },
-])
+// 게시판 ID와 게시판 이름 고정
+const channelIdToPathMap = {
+  "67c69541086c304511bcb6f7": "freeBoardDetail",
+  "67c69693086c304511bcb709": "qnaDetail"
+}
 
-// 샘플 데이터 (질문)
-const questions = ref([
-  {
-    id: 1,
-    category: '질문',
-    title: '자전거 프레임은 어떤걸 써야하나요?',
-    content: '알루미늄 vs 카본',
-    likes: 1,
-  },
-  {
-    id: 2,
-    category: '질문',
-    title: '중고 자전거 부품 구매할 때 주의해야 할 점이 있나요?',
-    content: '스크래치, 프레임 균열 확인이 필수인가요?',
-    likes: 14,
-  },
-  {
-    id: 3,
-    category: '질문',
-    title: '자전거 브레이크 패드 교체 주기?',
-    content: '브레이크 패드 언제 갈아줘야 하나요?',
-    likes: 7,
-  },
-  {
-    id: 4,
-    category: '질문',
-    title: '가성비 좋은 자전거 추천 부탁드립니다.',
-    content: '예산 100만 원으로 괜찮은 자전거 있을까요?',
-    likes: 3,
-  },
-])
+const posts = ref([])
+const questions = ref([])
+const userId = ref(null)
 
-// 더보기 기능: 게시글과 질문 각각 별도의 개수 상태 사용
+const loadUserId = () => {
+  const storedUser = localStorage.getItem('user')
+  if (storedUser) {
+    try {
+      userId.value = JSON.parse(storedUser)._id
+    } catch (error) {
+      console.error('유저 ID 파싱 실패:', error)
+    }
+  }
+}
+
+// ✅ 유저 게시글 불러오기
+const loadUserPosts = async () => {
+  if (!userId.value) {
+    console.error(' 유저 ID가 없습니다.')
+    return
+  }
+
+  try {
+    const response = await getUserApi(userId.value)
+
+    if (!response.data || !Array.isArray(response.data.posts)) {
+      console.error(' 데이터에서 posts 필드를 찾을 수 없습니다.')
+      return
+    }
+
+    const userData = response.data
+    userData.posts = userData.posts || []
+
+    posts.value = userData.posts
+      .filter(post => post.channel in channelIdToPathMap && channelIdToPathMap[post.channel] === "freeBoardDetail")
+      .map(post => {
+        try {
+          const parsedTitle = JSON.parse(post.title)
+          return {
+            id: post._id,
+            title: parsedTitle.title,
+            content: parsedTitle.content,
+            likes: post.likes?.length || 0,
+            image: post.image || "",
+            createdAt: post.createdAt,
+            channel: post.channel
+          }
+        } catch (error) {
+          console.error(`title 파싱 실패 (postId: ${post._id})`, error)
+          return null
+        }
+      }).filter(Boolean)
+
+    questions.value = userData.posts
+      .filter(post => post.channel in channelIdToPathMap && channelIdToPathMap[post.channel] === "qnaDetail")
+      .map(post => {
+        try {
+          const parsedTitle = JSON.parse(post.title)
+          return {
+            id: post._id,
+            title: parsedTitle.title,
+            content: parsedTitle.content,
+            likes: post.likes?.length || 0,
+            image: post.image || "",
+            createdAt: post.createdAt,
+            channel: post.channel
+          }
+        } catch (error) {
+          console.error(` title 파싱 실패 (postId: ${post._id})`, error)
+          return null
+        }
+      }).filter(Boolean)
+
+  } catch (error) {
+    console.error('해당 게시물을 불러올 수 없습니다', error)
+  }
+}
+
+const goToPostDetail = (postId, channel) => {
+  if (!channelIdToPathMap[channel]) {
+    console.error('잘못된 경로 입니다 다시 시도해주세요', channel)
+    return
+  }
+  const boardPath = channelIdToPathMap[channel]
+  router.push(`/${boardPath}/${postId}`)
+}
+
+// 🔹 페이지 로드 시 실행
+onMounted(() => {
+  loadUserId()
+  loadUserPosts()
+})
+
 const itemsPerPagePosts = ref(2)
 const itemsPerPageQuestions = ref(2)
 
@@ -98,18 +128,21 @@ const loadMoreQuestions = () => {
   itemsPerPageQuestions.value += 2
 }
 
-// **게시글 삭제**
+// 🔹 게시글 삭제 기능
 const deletePost = (id) => {
-  alert('클릭 되었습니다')
+  alert('게시글이 삭제되었습니다.')
   posts.value = posts.value.filter((post) => post.id !== id)
 }
 
-// 질문 삭제 임시
+// 🔹 질문 삭제 기능
 const deleteQuestion = (id) => {
-  alert('삭제 되었습니다')
+  alert('질문이 삭제되었습니다.')
   questions.value = questions.value.filter((question) => question.id !== id)
 }
 </script>
+
+
+
 <template>
   <section class="p-6 flex-grow">
     <!-- 활동 내역 제목 -->
@@ -121,14 +154,19 @@ const deleteQuestion = (id) => {
 
     <!-- 작성한 게시글 -->
     <div class="mb-12">
-      <p class="text-lg font-bold text-black9 dark:text-black1 flex items-center gap-2 mb-4">
+      <p class="text-lg font-bold text-black9 dark:text-black1 flex items-center gap-2 mb-4" @click="goToPostDetail(posts._id)">
         작성한 게시글 ✍️
         <span class="text-lg">({{ displayedPosts.length }})</span>
       </p>
 
+      <div v-if="displayedPosts.length === 0" class="text-black6 dark:text-black3 text-center mt-[100px]">
+        작성한 게시물이 없습니다.
+      </div>
+
       <div
         v-for="post in displayedPosts"
         :key="post.id"
+        @click="goToPostDetail(post.id, post.channel)"
         class="w-[800px] h-[165px] border p-5 rounded-lg shadow-sm bg-black1 dark:bg-black8 mt-4 relative"
       >
         <!-- 삭제 아이콘 -->
@@ -136,20 +174,12 @@ const deleteQuestion = (id) => {
           <TrashIcon class="w-5 h-5 cursor-pointer dark:text-black1" />
         </button>
 
-        <!-- 카테고리, 제목, 하트와 숫자 (baseline 정렬) -->
+        <!-- 카테고리, 제목, 하트와 숫자 -->
         <div class="flex items-baseline">
-          <!-- 채널 (카테고리) -->
-          <span
-            :class="post.category === '질문' ? 'text-[#1A9EFE]' : 'text-[#F85900]'"
-            class="text-lg font-bold mr-2"
-          >
-            {{ post.category }}
-          </span>
-          <!-- 제목 -->
+          <span class="text-lg font-bold text-[#F85900] mr-2">자유</span>
           <p class="text-lg font-bold text-black9 dark:text-black1 mr-2">
             {{ post.title }}
           </p>
-          <!-- 좋아요 (하트와 숫자) -->
           <span class="flex items-center">
             <HeartIcon class="w-4 h-4 cursor-pointer mr-1 dark:text-black1" />
             <span class="text-sm text-black7 dark:text-black1">{{ post.likes || 0 }}</span>
@@ -171,11 +201,17 @@ const deleteQuestion = (id) => {
       </div>
     </div>
 
+    <!-- 작성한 질문 -->
     <div class="mt-6">
-      <p class="text-lg font-bold text-black9 dark:text-black1 flex items-center gap-2 mb-4">
+      <p class="text-lg font-bold text-black9 dark:text-black1 flex items-center gap-2 mb-4"
+      :class="{ 'mt-[150px]': displayedQuestions.length === 0 }">
         작성한 질문 ❓
         <span class="text-lg">({{ displayedQuestions.length }})</span>
       </p>
+
+      <div v-if="displayedQuestions.length === 0" class=" text-black6 dark:text-black3 text-center mt-[100px]">
+        작성한 질문이 없습니다.
+      </div>
 
       <div
         v-for="question in displayedQuestions"
@@ -187,9 +223,7 @@ const deleteQuestion = (id) => {
         </button>
 
         <div class="flex items-baseline mb-2">
-          <span class="text-lg font-bold mr-2 text-[#1A9EFE]">
-            {{ question.category }}
-          </span>
+          <span class="text-lg font-bold mr-2 text-[#1A9EFE]">질문</span>
           <p class="text-lg font-bold text-black9 dark:text-black1 mr-2">
             {{ question.title }}
           </p>
@@ -202,15 +236,6 @@ const deleteQuestion = (id) => {
         <p class="text-sm text-black7 dark:text-black3 mb-4 break-all">
           {{ truncateText(question.content, 250) }}
         </p>
-      </div>
-
-      <div v-if="hasMoreQuestions" class="flex justify-center mt-4">
-        <button
-          @click="loadMoreQuestions"
-          class="w-[300px] h-[56px] mt-[40px] border rounded-lg font-semibold bg-black10 text-black1 dark:bg-black1 dark:text-black7 dark:border-black4 hover:bg-primaryRed hover:text-black1"
-        >
-          더보기
-        </button>
       </div>
     </div>
   </section>
