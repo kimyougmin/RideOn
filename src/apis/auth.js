@@ -38,3 +38,8 @@ export const postSigninApi = async ({ email, password }) => {
     throw error
   }
 }
+
+
+export const getUserApi = (id) => {
+  return axios.get(`http://13.209.75.182:5004/users/${id}`)
+}

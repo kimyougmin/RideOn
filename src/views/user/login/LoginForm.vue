@@ -47,11 +47,11 @@ const handleSubmit = async () => {
 
       console.log('로그인에 성공한 데이터', response)
 
-      if (!response || !response.user || !response.user.email || !response.user.fullName) {
+      if (!response || !response.user || !response.user.email || !response.user.fullName || !response.user._id) {
         throw new Error('잘못된 응답 데이터입니다.')
       }
 
-      userStore.login(response.user.email, response.user.fullName)
+      userStore.login(response.user.email, response.user.fullName, response.user._id)
       alert('로그인에 성공하셨습니다.')
       router.push('/')
     } catch (error) {
@@ -63,6 +63,7 @@ const handleSubmit = async () => {
     }
   }
 }
+
 
 const applyTheme = async (theme) => {
   if (theme === 'dark') {
