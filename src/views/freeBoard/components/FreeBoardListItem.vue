@@ -8,9 +8,13 @@ const { post } = defineProps({
   },
 })
 </script>
+
 <template>
   <router-link
-    :to="`/freeBoardDetail/${post.id}`"
+    :to="{
+      name: 'FreeBoardDetail',
+      params: { id: post.id },
+    }"
     class="min-h-64 col-span-3 flex flex-col bg-black1 drop-shadow-custom2 rounded-xl overflow-hidden dark:bg-black7 dark:text-black1 relative"
   >
     <div
@@ -28,15 +32,15 @@ const { post } = defineProps({
           fill="#DC3644"
         />
       </svg>
-      <span class="text-body1 text-primaryRed">{{ post.likes }}</span>
+      <span class="text-body1 text-primaryRed">{{ post.likes.length }}</span>
     </div>
     <div
-      class="flex items-center gap-2 rounded-t-lg overflow-hidden border-b-[0.5px] border-black4"
+      class="flex h-52 items-center gap-2 rounded-t-lg overflow-hidden border-b-[0.5px] border-black4"
     >
       <img
         :src="post.image || 'https://placehold.co/300x200?text=RideOn'"
         alt="placeholder"
-        class="w-full h-52 object-cover"
+        class="w-full h-full object-cover"
       />
     </div>
     <div class="flex flex-col gap-2 p-4">
