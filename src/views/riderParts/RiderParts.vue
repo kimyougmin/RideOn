@@ -220,7 +220,7 @@ onMounted(() => {
               <img :src="item.image" alt="Bike Image" class="w-[302px] h-[302px] object-cover border mx-auto">
               <p class="text-sm font-sans mb-1 mt-1 text-left">{{ item.mallName }}</p>
               <p class="font-impact text-left mb-2 ellipsis-multiline">{{ item.cleanTitle }}</p>
-              <p class="font-impact text-left">{{ item.lprice }}원</p>
+              <p class="font-impact text-left">{{ item.lprice ? Number(item.lprice).toLocaleString("ko-KR") + "원" : "가격 없음" }}</p>
             </div>
           </swiper-slide>
         </swiper>
