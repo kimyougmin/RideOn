@@ -9,9 +9,10 @@ const BICYCLE_ROUTES = [
     component: Bicycle,
   },
   {
-    path: '/bicycleDetail',
+    path: '/bicycleDetail/:id',
     name: 'bicycleDetail',
     component: BicycleDetail,
+    props: true,
   },
   {
     path: '/bicycleSearch',
