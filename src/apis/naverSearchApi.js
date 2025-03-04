@@ -19,7 +19,7 @@ export async function getNaverItems(targetWord) {
         display: 20,
       },
     });
-    console.log('✅ API 응답 데이터:', response.data);
+    console.log('API 응답 데이터:', response.data);
     if (response.data && response.data.items) {
       return response.data.items;
     } else {
@@ -27,14 +27,14 @@ export async function getNaverItems(targetWord) {
       return [];
     }
   } catch (error) {
-    console.error('🚨 API 호출 중 에러 발생:', error);
+    console.error('API 호출 중 에러 발생:', error);
     if (error.response) {
-      console.error('📌 응답 코드:', error.response.status);
-      console.error('📌 응답 데이터:', error.response.data);
+      console.error('응답 코드:', error.response.status);
+      console.error('응답 데이터:', error.response.data);
     } else if (error.request) {
-      console.error('📌 요청이 전송되지 않음:', error.request);
+      console.error('요청이 전송되지 않음:', error.request);
     } else {
-      console.error('📌 설정 오류:', error.message);
+      console.error('설정 오류:', error.message);
     }
     return [];
   }
