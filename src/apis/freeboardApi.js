@@ -7,10 +7,28 @@ const formOption = {
 }
 
 // 게시글 생성
-export const createFreeboardPost = async (formData) => {
+export const createFreeboardPost = async (postData) => {
   try {
+    const formData = new FormData()
+    const titleAndContent = JSON.stringify({
+      title: postData.title,
+      content: postData.content,
+      tags: postData.tags,
+    })
+
+    formData.append('title', titleAndContent)
+    formData.append('channelId', postData.channelId)
+
+    if (postData.image) {
+      formData.append('image', postData.image)
+    }
+
     const response = await axiosApi.post('/posts/create', formData, formOption)
-    return response.data
+    const parsedTitle = JSON.parse(response.data.title)
+    return {
+      ...response.data,
+      ...parsedTitle,
+    }
   } catch (error) {
     console.error('게시글 생성 오류:', error.response?.data || error.message)
     throw error

@@ -16,6 +16,7 @@ const tags = ref([])
 const tagInput = ref('')
 const thumbnailPreview = ref(null)
 const imageFile = ref(null)
+const isLoading = ref(false)
 
 const userStore = useUserStore()
 
@@ -97,26 +98,23 @@ const handleSubmit = async () => {
   }
 
   try {
-    const formData = new FormData()
-    const titleAndContent = JSON.stringify({
+    isLoading.value = true
+    const postData = {
       title: title.value,
       content: content.value,
       tags: tags.value,
-    })
-    formData.append('title', titleAndContent)
-    formData.append('channelId', RIDEON_FREEBOARD_CHANNEL_ID)
-
-    if (imageFile.value) {
-      formData.append('image', imageFile.value)
+      channelId: RIDEON_FREEBOARD_CHANNEL_ID,
+      image: imageFile.value,
     }
 
-    await createFreeboardPost(formData)
-
+    await createFreeboardPost(postData)
     alert('게시글이 작성되었습니다.')
     router.push('/freeBoard')
   } catch (error) {
     console.error(error)
     alert('게시글 생성중 오류가 발생했습니다.')
+  } finally {
+    isLoading.value = false
   }
 }
 </script>
@@ -270,8 +268,12 @@ const handleSubmit = async () => {
 
             <!-- 저장 & 취소 버튼 -->
             <div class="flex flex-col gap-4">
-              <button type="submit" class="px-6 py-2 rounded text-black1 bg-primaryRed">
-                저장
+              <button
+                type="submit"
+                class="px-6 py-2 rounded text-black1 bg-primaryRed"
+                :disabled="isLoading"
+              >
+                {{ isLoading ? '저장중...' : '저장' }}
               </button>
               <button
                 type="button"
