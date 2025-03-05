@@ -4,13 +4,13 @@ import MapHeader from "./MapHeader.vue";
 import L from "leaflet";
 import { fetchMap } from "./api/fetchMap";
 import { fetchPlaces } from "./api/fetchPlaces";
-import MapModal from "./MapModal.vue"; // MapModal 임포트
+import MapModal from "./MapModal.vue"; 
 
 const mapContainer = ref(null);
 const map = ref(null);
 const userLatLng = ref(null);
 const isMarkersVisible = ref(false);
-const selectedStation = ref(null); // 선택된 대여소 정보 저장
+const selectedStation = ref(null);
 const isToggled = ref(false);
 
 onMounted(() => {
@@ -27,12 +27,10 @@ const toggleBikeStations = () => {
   isToggled.value = !isToggled.value;
   if (map.value) {
     if (!isMarkersVisible.value) {
-      // fetchPlaces 호출 후 반환된 데이터를 selectedStation에 저장
       fetchPlaces(map.value, userLatLng.value, (stationData) => {
-        selectedStation.value = stationData; // 마커 클릭 시 모달에 표시할 데이터
+        selectedStation.value = stationData;
       });
     } else {
-      // 마커를 지도에서 제거
       map.value.eachLayer((layer) => {
         if (layer instanceof L.Marker) {
           map.value.removeLayer(layer);
@@ -49,7 +47,7 @@ const toggleBikeStations = () => {
     <div ref="mapContainer" class="absolute w-full h-full z-0"></div>
     <MapHeader />
 
-    <!-- MapModal에 선택된 대여소 정보 전달 -->
+
     <MapModal
       v-if="selectedStation"
       :stationName="selectedStation.stationName"

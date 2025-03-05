@@ -15,15 +15,14 @@ export function fetchMap(mapContainer, onLocationUpdate) {
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const userLatLng = L.latLng(position.coords.latitude, position.coords.longitude);
-        console.log("✅ 내 위치 감지됨:", userLatLng);
         map.setView([position.coords.latitude, position.coords.longitude], 15);
         
         if (onLocationUpdate) {
-          onLocationUpdate(userLatLng); // 콜백 함수 실행
+          onLocationUpdate(userLatLng);
         }
       },
       (error) => {
-        console.error("🚨 내 위치 정보를 불러올 수 없습니다.", error);
+        console.error(error);
       },
       { enableHighAccuracy: true, maximumAge: 0 }
     );
