@@ -57,7 +57,7 @@ defineProps({
       />
     </div>
     <div class="flex flex-col gap-2 p-4">
-      <h3 class="text-sub-title font-bold">{{ post.title }}</h3>
+      <h3 class="text-sub-title font-bold truncate">{{ post.title }}</h3>
       <p class="text-body1 line-clamp-3 font-light">
         {{ post.content }}
       </p>
@@ -98,7 +98,7 @@ defineProps({
             stroke-linecap="round"
           />
         </svg>
-        <span class="text-body1 text-black4">{{ post.tags?.join(' • ') || '' }}</span>
+        <span class="text-body1 text-black4 truncate">{{ post.tags?.join(' • ') || '' }}</span>
       </div>
       <div class="flex justify-between items-center">
         <div class="flex items-center gap-2">

@@ -128,7 +128,6 @@ onMounted(async () => {
   try {
     await freeBoardStore.fetchPostById(postId)
     post.value = freeBoardStore.currentPost
-    console.log('post:', post.value)
 
     userStore.loadUser()
 

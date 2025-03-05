@@ -23,7 +23,9 @@ defineProps({
       </div>
     </div>
     <hr />
-    <p class="text-body1 font-light leading-8 dark:text-black1" v-html="post.content"></p>
+    <p class="text-body1 font-light leading-8 dark:text-black1 whitespace-pre-wrap">
+      {{ post.content }}
+    </p>
     <div class="flex items-center gap-3 px-4 py-3 bg-black2 rounded dark:bg-black8">
       <span class="text-body1 font-bold dark:text-black1">Tags</span>
       <span

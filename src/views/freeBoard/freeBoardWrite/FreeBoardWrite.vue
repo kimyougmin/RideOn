@@ -138,7 +138,7 @@ const handleSubmit = async () => {
                 v-model="title"
                 type="text"
                 id="title"
-                class="w-full border border-black4 rounded-lg py-3 px-4 dark:bg-black8 dark:caret-black1"
+                class="w-full border border-black4 rounded-lg py-3 px-4 dark:bg-black8 dark:text-black1 dark:caret-black1"
                 :class="{ 'border-primaryRed': titleError }"
                 placeholder="제목을 입력해주세요."
               />
@@ -153,7 +153,7 @@ const handleSubmit = async () => {
               <textarea
                 v-model="content"
                 id="content"
-                class="w-full border border-black4 rounded-lg py-3 px-4 dark:bg-black8 dark:caret-black1"
+                class="w-full border border-black4 rounded-lg py-3 px-4 dark:bg-black8 dark:text-black1 dark:caret-black1"
                 :class="{ 'border-primaryRed': contentError }"
                 rows="20"
                 placeholder="내용을 입력해주세요."
