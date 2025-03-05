@@ -202,7 +202,7 @@ watch(searchValue, async (newQuestion) => {
         <div class="ml-4 bg-white w-[1120px] max-w-[1120px] p-4 drop-shadow-custom rounded-lg dark:bg-black8">
           <div v-if="seeMore" class="grid grid-cols-2 gap-4">
             <div  v-for="item in groupListShot" :key="item.id" class="flex">
-              <router-link :to="{ name: `bicycleDetail`, params: {id: item.id} , query: { id: item.id, rating: item.rating, category: item.category, name: item.name, price: item.price, image: item.image }}">
+              <router-link :to="{ name: `bicycleDetail`, params: {id: item.id}, query: { id: item.id, rating: item.rating, brand: item.brand, category: item.category, name: item.name, price: item.price, image: item.image }}">
                 <img :src="item.image" class="border rounded-lg w-[200px] h-[200px] mr-4">
               </router-link>
               <div>
@@ -237,7 +237,9 @@ watch(searchValue, async (newQuestion) => {
           </div>
           <div v-if="!seeMore" class="grid grid-cols-2 gap-4">
             <div  v-for="item in groupList" :key="item.id" class="flex">
-              <img :src="item.image" class="border rounded-lg w-[200px] h-[200px] mr-4">
+              <router-link :to="{ name: `bicycleDetail`, params: {id: item.id}, query: { id: item.id, rating: item.rating, category: item.category, name: item.name, price: item.price, image: item.image }}">
+                <img :src="item.image" class="border rounded-lg w-[200px] h-[200px] mr-4">
+              </router-link>
               <div>
                 <div class="flex justify-between">
                   <p class="mb-0 font-sans dark:text-black1">{{ item.brand }}</p>
