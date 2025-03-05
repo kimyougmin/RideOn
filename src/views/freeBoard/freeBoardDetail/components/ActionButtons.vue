@@ -25,7 +25,7 @@ defineProps({
   <article class="flex flex-col gap-2">
     <router-link
       to="/freeBoard"
-      class="max-h-10 px-3 py-2 border rounded flex items-center justify-center bg-black1"
+      class="max-h-10 px-3 py-2 border rounded flex items-center justify-center bg-black1 dark:bg-black7 dark:border-black5"
     >
       <svg
         width="20"
@@ -37,6 +37,7 @@ defineProps({
         <path
           d="M17.5 10.0003H2.5M2.5 10.0003L9.58333 2.91699M2.5 10.0003L9.58333 17.0837"
           stroke="#202020"
+          class="dark:stroke-black2"
           stroke-width="2.08333"
           stroke-linecap="round"
           stroke-linejoin="round"
@@ -45,7 +46,7 @@ defineProps({
     </router-link>
     <button
       @click="onShare"
-      class="max-h-10 px-3 py-2 border rounded flex items-center justify-center bg-black1"
+      class="max-h-10 px-3 py-2 border rounded flex items-center justify-center bg-black1 dark:bg-black7 dark:border-black5"
     >
       <svg
         width="26"
@@ -60,6 +61,7 @@ defineProps({
           stroke-width="2"
           stroke-linecap="round"
           stroke-linejoin="round"
+          class="dark:stroke-black2"
         />
         <path
           d="M19.25 8.83301C20.9759 8.83301 22.375 7.43389 22.375 5.70801C22.375 3.98212 20.9759 2.58301 19.25 2.58301C17.5241 2.58301 16.125 3.98212 16.125 5.70801C16.125 7.43389 17.5241 8.83301 19.25 8.83301Z"
@@ -67,6 +69,7 @@ defineProps({
           stroke-width="2"
           stroke-linecap="round"
           stroke-linejoin="round"
+          class="dark:stroke-black2"
         />
         <path
           d="M6.75 16.125C8.47589 16.125 9.875 14.7259 9.875 13C9.875 11.2741 8.47589 9.875 6.75 9.875C5.02411 9.875 3.625 11.2741 3.625 13C3.625 14.7259 5.02411 16.125 6.75 16.125Z"
@@ -74,15 +77,26 @@ defineProps({
           stroke-width="2"
           stroke-linecap="round"
           stroke-linejoin="round"
+          class="dark:stroke-black2"
         />
-        <path d="M16.6462 7.27051L9.35449 11.4372" stroke="#202020" stroke-width="2" />
-        <path d="M9.35449 14.5625L16.6462 18.7292" stroke="#202020" stroke-width="2" />
+        <path
+          d="M16.6462 7.27051L9.35449 11.4372"
+          stroke="#202020"
+          stroke-width="2"
+          class="dark:stroke-black2"
+        />
+        <path
+          d="M9.35449 14.5625L16.6462 18.7292"
+          stroke="#202020"
+          stroke-width="2"
+          class="dark:stroke-black2"
+        />
       </svg>
     </button>
     <button
       @click="onLike"
-      class="max-h-10 px-3 py-2 border border-primaryRed rounded flex items-center justify-center bg-black1"
-      :class="{ 'bg-primaryRed': isLiked }"
+      class="max-h-10 px-3 py-2 border border-primaryRed rounded flex items-center justify-center bg-black1 dark:bg-black7 dark:border-primaryRed"
+      :class="{ 'bg-primaryRed dark:bg-primaryRed': isLiked }"
     >
       <svg
         width="18"
