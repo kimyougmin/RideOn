@@ -1,7 +1,7 @@
 import L from "leaflet";
 
 export async function fetchPlaces(map, userLatLng, updateStationData) {
-  const apiKey = "IRGhFxC5PMvHbBWM%2F7LTGlQgR85OTnVunXgsxVV3UPEA4904FIiFn6%2BKnxOhd5QcdyQqDc9ncFkzSRhy%2Bls5pw%3D%3D";
+  const apiKey = import.meta.env.VITE_PLACES_API_KEY;
 
   const stationUrl = `http://apis.data.go.kr/B551982/pbdo/inf_101_00010001?serviceKey=${apiKey}&numOfRows=1000&pageNo=`;
   const availableBikesUrl = `http://apis.data.go.kr/B551982/pbdo/inf_101_00010002?serviceKey=${apiKey}&numOfRows=1000&pageNo=`;
@@ -23,7 +23,6 @@ export async function fetchPlaces(map, userLatLng, updateStationData) {
     const availableBikes = await fetchData(availableBikesUrl, 7);
 
     if (!stations.length || !availableBikes.length) {
-      console.warn("대여소 또는 사용 가능한 자전거 데이터가 없습니다.");
       return [];
     }
 

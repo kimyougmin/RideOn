@@ -1,7 +1,7 @@
 import L from "leaflet";
 
 export async function fetchConvenienceFacilities(map, userLatLng, type, updateFacilityData) {
-  const apiKey = "45777043636368303130354277447542";
+  const apiKey = import.meta.env.VITE_CONVENIENCE_API_KEY;
   const serviceName = "tvBicycleEtc";
   const startIndex = 1;
   const endIndex = 1000;
@@ -11,7 +11,6 @@ export async function fetchConvenienceFacilities(map, userLatLng, type, updateFa
   try {
     const response = await fetch(apiUrl);
     const data = await response.json();
-console.log(`✅ ${type} API 응답 데이터:`, data);
     if (!data.tvBicycleEtc || !data.tvBicycleEtc.row) {
       return [];
     }
@@ -43,7 +42,7 @@ console.log(`✅ ${type} API 응답 데이터:`, data);
       const lat = parseFloat(facility.YCRD);
       const lng = parseFloat(facility.XCRD);
       const address = facility.NEW_ADDR || "주소 정보 없음";
-
+      const useYn = facility.USE_YN || "정보 없음";
       if (isNaN(lat) || isNaN(lng)) return;
 
       const iconColor =
@@ -73,6 +72,7 @@ console.log(`✅ ${type} API 응답 데이터:`, data);
         updateFacilityData({
           name,
           type,
+          useYn, 
           address,
         });
       });

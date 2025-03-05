@@ -1,5 +1,5 @@
 import L from "leaflet";
-import { fetchBikeRoads } from "./fetchBikeRoads"; // 🚴‍♂️ 자전거 도로 추가 함수 가져오기
+import { fetchBikeRoads } from "./fetchBikeRoads";
 
 export function fetchMap(mapContainer, onLocationUpdate) {
   if (!mapContainer) throw new Error("지도를 불러올 수 없습니다.");
@@ -29,7 +29,6 @@ export function fetchMap(mapContainer, onLocationUpdate) {
     );
   }
 
-  // 🚴‍♂️ 자전거 도로 데이터 추가
   fetchBikeRoads(map);
 
   return { map };
