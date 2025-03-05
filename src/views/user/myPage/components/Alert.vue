@@ -1,37 +1,3 @@
-<template>
-  <div class="alert-container" v-if="visibleInternal">
-    <v-alert
-      v-if="type === 'success'"
-      color="success"
-      icon="mdi-check-circle"
-      class="custom-alert"
-      :class="{ 'dark-mode': isDarkMode }"
-      dense
-      outlined
-    >
-      <div class="alert-content">
-        <span>{{ message || '성공적으로 처리되었습니다!' }}</span>
-        <button class="close-btn" @click="handleClose">확인</button>
-      </div>
-    </v-alert>
-
-    <v-alert
-      v-if="type === 'error'"
-      color="error"
-      icon="mdi-alert-circle"
-      class="custom-alert"
-      :class="{ 'dark-mode': isDarkMode }"
-      dense
-      outlined
-    >
-      <div class="alert-content">
-        <span>{{ message || '오류가 발생했습니다. 다시 시도해주세요.' }}</span>
-        <button class="close-btn" @click="handleClose">확인</button>
-      </div>
-    </v-alert>
-  </div>
-</template>
-
 <script setup>
 import { ref, computed, watch } from 'vue'
 import { useTheme } from 'vuetify'
@@ -70,6 +36,42 @@ const handleClose = () => {
   emit('close')
 }
 </script>
+
+<template>
+  <div class="alert-container" v-if="visibleInternal">
+    <v-alert
+      v-if="type === 'success'"
+      color="success"
+      icon="mdi-check-circle"
+      class="custom-alert"
+      :class="{ 'dark-mode': isDarkMode }"
+      dense
+      outlined
+    >
+      <div class="alert-content">
+        <span>{{ message || '성공적으로 처리되었습니다!' }}</span>
+        <button class="close-btn" @click="handleClose">확인</button>
+      </div>
+    </v-alert>
+
+    <v-alert
+      v-if="type === 'error'"
+      color="error"
+      icon="mdi-alert-circle"
+      class="custom-alert"
+      :class="{ 'dark-mode': isDarkMode }"
+      dense
+      outlined
+    >
+      <div class="alert-content">
+        <span>{{ message || '오류가 발생했습니다. 다시 시도해주세요.' }}</span>
+        <button class="close-btn" @click="handleClose">확인</button>
+      </div>
+    </v-alert>
+  </div>
+</template>
+
+
 
 <style scoped>
 .alert-container {
