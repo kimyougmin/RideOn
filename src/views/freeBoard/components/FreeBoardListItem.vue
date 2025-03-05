@@ -1,10 +1,23 @@
 <script setup>
 import getRelativeTime from '@/utils/getRelativeTime'
 
-const { post } = defineProps({
+defineProps({
   post: {
     type: Object,
     required: true,
+    default: () => ({
+      _id: '',
+      title: '',
+      content: '',
+      image: '',
+      author: {
+        fullName: '',
+        coverImage: '',
+      },
+      likes: [],
+      tags: [],
+      createdAt: new Date(),
+    }),
   },
 })
 </script>
@@ -13,7 +26,7 @@ const { post } = defineProps({
   <router-link
     :to="{
       name: 'FreeBoardDetail',
-      params: { id: post.id },
+      params: { id: post._id },
     }"
     class="min-h-64 col-span-3 flex flex-col bg-black1 drop-shadow-custom2 rounded-xl overflow-hidden dark:bg-black7 dark:text-black1 relative"
   >
@@ -32,7 +45,7 @@ const { post } = defineProps({
           fill="#DC3644"
         />
       </svg>
-      <span class="text-body1 text-primaryRed">{{ post.likes.length }}</span>
+      <span class="text-body1 text-primaryRed">{{ post.likes?.length || 0 }}</span>
     </div>
     <div
       class="flex h-52 items-center gap-2 rounded-t-lg overflow-hidden border-b-[0.5px] border-black4"
@@ -85,7 +98,7 @@ const { post } = defineProps({
             stroke-linecap="round"
           />
         </svg>
-        <span class="text-body1 text-black4">{{ post.tags.join(' • ') }}</span>
+        <span class="text-body1 text-black4">{{ post.tags?.join(' • ') || '' }}</span>
       </div>
       <div class="flex justify-between items-center">
         <div class="flex items-center gap-2">
@@ -96,7 +109,7 @@ const { post } = defineProps({
               class="w-full h-full object-cover"
             />
           </div>
-          <span class="text-body1">{{ post.author?.fullName }}</span>
+          <span class="text-body1">{{ post.author?.fullName.split('|')[0] }}</span>
         </div>
         <div>
           <span class="text-body1">{{ getRelativeTime(post.createdAt) }}</span>
