@@ -1,7 +1,7 @@
 <script setup>
 import BasicHeader from '@/components/BasicHeader.vue';
 import BasicFooter from '@/components/BasicFooter.vue';
-import { ref, onMounted, computed, watchEffect } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { Swiper, SwiperSlide } from 'swiper/vue';
 import { getNaverItems } from '../../apis/naverSearchApi';
 import { useRouter } from 'vue-router';
@@ -37,15 +37,6 @@ const cleanedItems = computed(() => {
     return { ...item, cleanTitle };
   });
 });
-
-watchEffect(() => {
-  console.log("✅ cleanedItems:", cleanedItems.value);
-});
-
-const onSlideChange = (swiper) => {
-  console.log(`➡ 현재 슬라이드 index: ${swiper.activeIndex}`);
-  console.log(`📌 Swiper 전체 슬라이드 개수: ${swiper.slides.length}`);
-};
 
 const goToDetailPage = (item) => {
   itemStore.setSelectedItem(item);
@@ -229,7 +220,6 @@ onMounted(() => {
           :navigation="true"
           :modules="[Navigation]"
           class="mySwiper px-11 dark:bg-black9 pb-1"
-          @slideChange="onSlideChange"
         >
           <swiper-slide v-for="(item, index) in cleanedItems" :key="index">
             <div class="p-4" @click="goToDetailPage(item)">
