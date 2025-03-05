@@ -7,6 +7,7 @@ import { uploadUserPhoto } from '@/apis/uploadPhoto'
 import defaultProfile from './images/userImg.svg'
 import { useUserStore } from '@/stores/user'
 import { formatPhoneNumber } from '@/utils/format'
+import AlertComponent from './components/Alert.vue'
 // import useSignupValidation from '../signup/useSignupValidation'
 
 const props = defineProps({
@@ -26,6 +27,14 @@ const props = defineProps({
 const emit = defineEmits(['updateUser', 'changeNickname'])
 const router = useRouter()
 const userStore = useUserStore()
+
+const showAlert = ref(false)
+const alertType = ref('success')
+const alertMessage = ref('')
+
+const handleAlertClose = () => {
+  showAlert.value = false
+}
 
 const user = ref({ ...props.userData })
 const isDataLoaded = ref(false)
@@ -186,10 +195,14 @@ const handleFileChange = async (e) => {
       profileImageVersion.value = Date.now()
     }, 1000)
 
-    alert('프로필 이미지가 수정되었습니다!')
+    alertType.value = 'success'
+    alertMessage.value = '프로필 이미지가 수정되었습니다!'
+    showAlert.value = true
   } catch (error) {
     console.error('프로필 이미지 수정 실패:', error)
-    alert('프로필 이미지 수정에 실패하였습니다.')
+    alertType.value = 'error'
+    alertMessage.value = '프로필 이미지 수정에 실패하였습니다.'
+    showAlert.value = true
   }
 }
 
@@ -210,7 +223,9 @@ const updateProfile = async () => {
       }
     }
     if (!token) {
-      alert('세션이 만료되었습니다. 다시 로그인해주세요.')
+      alertType.value = 'error'
+      alertMessage.value = '세션이 만료되었습니다. 다시 로그인해주세요.'
+      showAlert.value = true
       router.push('/login')
       return
     }
@@ -249,10 +264,14 @@ const updateProfile = async () => {
     userStore.user = updatedUser
     localStorage.setItem('user', JSON.stringify(updatedUser))
 
-    alert('개인 정보가 수정되었습니다!')
+    alertType.value = 'success'
+    alertMessage.value = '개인 정보가 수정되었습니다!'
+    showAlert.value = true
   } catch (error) {
     console.error('개인 정보 수정 실패:', error)
-    alert('개인 정보 수정에 실패하였습니다.')
+    alertType.value = 'error'
+    alertMessage.value = '개인 정보 수정에 실패하였습니다.'
+    showAlert.value = true
   }
 }
 </script>
@@ -314,4 +333,11 @@ const updateProfile = async () => {
       수정 완료
     </button>
   </section>
+  <!-- alert -->
+  <AlertComponent
+    :type="alertType"
+    :message="alertMessage"
+    :visible="showAlert"
+    @close="handleAlertClose"
+  />
 </template>

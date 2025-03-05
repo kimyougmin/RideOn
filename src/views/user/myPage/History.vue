@@ -5,9 +5,18 @@ import { getUserApi } from '@/apis/auth'
 import { deletePostApi } from '@/apis/posts'
 import TrashIcon from './components/TrashIcon.vue'
 import HeartIcon from './components/HeartIcon.vue'
+import AlertComponent from './components/Alert.vue'
 
 const router = useRouter()
 const route = useRoute()
+
+const showAlert = ref(false)
+const alertType = ref('success')
+const alertMessage = ref('')
+
+const handleAlertClose = () => {
+  showAlert.value = false
+}
 
 const truncateText = (text, limit) => {
   if (!text) return ''
@@ -211,11 +220,15 @@ const deletePost = async (id) => {
     // Bearer 접두사 붙이기
     const token = rawToken.startsWith('Bearer ') ? rawToken : `Bearer ${rawToken}`
     await deletePostApi(id, token)
-    alert('게시글이 삭제되었습니다.')
+    alertType.value = 'success'
+    alertMessage.value = '게시글이 삭제되었습니다.'
+    showAlert.value = true
     posts.value = posts.value.filter((post) => post.id !== id)
   } catch (error) {
     console.error('게시글 삭제 실패:', error)
-    alert('게시글 삭제에 실패했습니다.')
+    alertType.value = 'error'
+    alertMessage.value = '게시글 삭제에 실패했습니다.'
+    showAlert.value = true
   }
 }
 
@@ -236,11 +249,15 @@ const deleteQuestion = async (id) => {
     }
     const token = rawToken.startsWith('Bearer ') ? rawToken : `Bearer ${rawToken}`
     await deletePostApi(id, token)
-    alert('질문이 삭제되었습니다.')
+    alertType.value = 'success'
+    alertMessage.value = '질문이 삭제되었습니다.'
+    showAlert.value = true
     questions.value = questions.value.filter((question) => question.id !== id)
   } catch (error) {
     console.error('질문 삭제 실패:', error)
-    alert('질문 삭제에 실패했습니다.')
+    alertType.value = 'error'
+    alertMessage.value = '질문 삭제에 실패했습니다.'
+    showAlert.value = true
   }
 }
 
@@ -384,4 +401,11 @@ const deleteQuestion = async (id) => {
       </div>
     </div>
   </section>
+  <!-- alert -->
+  <AlertComponent
+    :type="alertType"
+    :message="alertMessage"
+    :visible="showAlert"
+    @close="handleAlertClose"
+  />
 </template>
