@@ -1,7 +1,7 @@
 <script setup>
 import BasicHeader from '@/components/BasicHeader.vue';
 import BasicFooter from '@/components/BasicFooter.vue';
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, watchEffect } from 'vue';
 import { Swiper, SwiperSlide } from 'swiper/vue';
 import { getNaverItems } from '../../apis/naverSearchApi';
 import { useRouter } from 'vue-router';
@@ -10,14 +10,14 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import  './swiperCss.css';
+import { Navigation } from 'swiper/modules';
 
-const query = ref('자전거용품');
+const query = ref('자전거부품');
 const items = ref([]);
 const router = useRouter();
 const itemStore = useItemStore();
 
 const fetchNaverDatas = async () => {
-  console.log(query.value);
   if(!query.value) return;
   try {
     items.value = await getNaverItems(query.value);
@@ -29,22 +29,30 @@ const fetchNaverDatas = async () => {
 const cleanedItems = computed(() => {
   return items.value.map(item => {
     if (typeof item.title !== 'string') return { ...item, cleanTitle: '제목 없음' };
-
     const parts = item.title.split('<b>');
     let cleanTitle = parts[0].trim();
     if (!cleanTitle && parts.length > 1) {
       cleanTitle = parts[1].split('</b>')[1]?.trim() || parts[1].replace('</b>', '').trim();
     }
-
     return { ...item, cleanTitle };
   });
 });
+
+watchEffect(() => {
+  console.log("✅ cleanedItems:", cleanedItems.value);
+});
+
+const onSlideChange = (swiper) => {
+  console.log(`➡ 현재 슬라이드 index: ${swiper.activeIndex}`);
+  console.log(`📌 Swiper 전체 슬라이드 개수: ${swiper.slides.length}`);
+};
 
 const goToDetailPage = (item) => {
   itemStore.setSelectedItem(item);
   localStorage.setItem('selectedItem', JSON.stringify(item));
   router.push('/riderPartsDetail');
 };
+
 onMounted(() => {
   fetchNaverDatas();
 });
@@ -214,12 +222,14 @@ onMounted(() => {
         <swiper
           v-if="items.length > 0"
           :slidesPerView="4"
+          :slidesPerGroup="4"
           :spaceBetween="30"
           :loop="true"
           :pagination="{ clickable: true }"
           :navigation="true"
-          :modules="modules"
+          :modules="[Navigation]"
           class="mySwiper px-11 dark:bg-black9 pb-1"
+          @slideChange="onSlideChange"
         >
           <swiper-slide v-for="(item, index) in cleanedItems" :key="index">
             <div class="p-4" @click="goToDetailPage(item)">
