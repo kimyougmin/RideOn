@@ -6,13 +6,19 @@ const devAPI = axios.create({
     'Content-Type': 'application/json',
   },
 })
-
+// 게시물 삭제 
 export const deletePostApi = async (postId, token) => {
+  if (!token) {
+    throw new Error('토큰이 존재하지 않습니다.')
+  }
+  // Bearer 붙이기
+  const authToken = token.startsWith('Bearer ') ? token : `Bearer ${token}`
+
   try {
     const response = await devAPI.delete('/posts/delete', {
       headers: {
         accept: 'application/json',
-        Authorization: `Bearer ${token}`,
+        Authorization: authToken,
       },
       data: { id: postId },
     })
