@@ -1,6 +1,6 @@
 <script setup>
 import { onMounted, ref, watch } from 'vue'
-import { useFreeBoardStore } from '@/stores/freeBoardStore'
+import { useFreeBoardStore } from '@/stores/freeBoard'
 import BasicFooter from '@/components/BasicFooter.vue'
 import BasicHeader from '@/components/BasicHeader.vue'
 import FreeBoardListItem from './components/FreeBoardListItem.vue'
@@ -54,7 +54,7 @@ onMounted(async () => {
 
       <!-- 게시글 목록 영역 -->
       <section class="grid grid-cols-12 gap-4">
-        <FreeBoardListItem v-for="post in filteredPosts" :key="post.id" :post="post" />
+        <FreeBoardListItem v-for="post in filteredPosts" :key="post._id" :post="post" />
       </section>
     </main>
     <BasicFooter />
