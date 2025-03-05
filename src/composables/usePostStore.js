@@ -24,13 +24,7 @@ export function usePostStore(options = {}) {
 
         try {
           const response = await getPostsApi(channelId)
-          this.posts = response.map((post) => {
-            const parsedTitle = JSON.parse(post.title)
-            return {
-              ...post,
-              ...parsedTitle,
-            }
-          })
+          this.posts = response
         } catch (error) {
           this.error = '게시글 목록을 불러오는데 실패했습니다.'
           console.error('게시글 목록 조회 실패:', error)

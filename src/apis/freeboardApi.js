@@ -39,7 +39,13 @@ export const createFreeboardPost = async (postData) => {
 export const getFreeboardPosts = async (channelId) => {
   try {
     const response = await axiosApi.get(`/posts/channel/${channelId}`)
-    return response.data
+    return response.data.map((post) => {
+      const parsedTitle = JSON.parse(post.title)
+      return {
+        ...post,
+        ...parsedTitle,
+      }
+    })
   } catch (error) {
     console.error('게시글 목록 조회 오류:', error.response?.data || error.message)
     throw error
