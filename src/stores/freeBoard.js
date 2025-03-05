@@ -8,15 +8,21 @@ import {
   unlikeFreeboardPost,
 } from '@/apis/freeboardApi'
 
-export const useFreeBoardStore = defineStore(
-  'freeBoard',
-  usePostStore({
-    getPostsApi: getFreeboardPosts,
-    updatePostApi: updateFreeboardPost,
-    likePostApi: likeFreeboardPost,
-    unlikePostApi: unlikeFreeboardPost,
-    channelId: RIDEON_FREEBOARD_CHANNEL_ID,
-    hasImageUpload: true,
-    hasStatus: false,
+const freeBoardStore = usePostStore({
+  getPostsApi: getFreeboardPosts,
+  updatePostApi: updateFreeboardPost,
+  likePostApi: likeFreeboardPost,
+  unlikePostApi: unlikeFreeboardPost,
+  channelId: RIDEON_FREEBOARD_CHANNEL_ID,
+  hasImageUpload: true,
+  hasStatus: false,
+})
+
+export const useFreeBoardStore = defineStore('freeBoard', {
+  state: () => ({
+    ...freeBoardStore.state(),
   }),
-)
+  actions: {
+    ...freeBoardStore.actions,
+  },
+})
