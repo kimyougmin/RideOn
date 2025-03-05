@@ -5,6 +5,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { createFreeboardPost } from '@/apis/freeboardApi'
 import { RIDEON_FREEBOARD_CHANNEL_ID } from '@/constants/channelId'
+import { useUserStore } from '@/stores/user'
 
 const router = useRouter()
 const title = ref('')
@@ -15,6 +16,8 @@ const tags = ref([])
 const tagInput = ref('')
 const thumbnailPreview = ref(null)
 const imageFile = ref(null)
+
+const userStore = useUserStore()
 
 const addTag = (e) => {
   if (e.key === 'Enter' && tagInput.value.trim()) {
@@ -83,11 +86,7 @@ const validateFields = () => {
 }
 
 const handleSubmit = async () => {
-  const user = localStorage.getItem('user')
-  const userData = JSON.parse(user)
-  const token = userData.token
-
-  if (!token) {
+  if (!userStore.isLoggedIn) {
     alert('로그인 후 이용해주세요.')
     router.push('/login')
     return
@@ -99,7 +98,6 @@ const handleSubmit = async () => {
 
   try {
     const formData = new FormData()
-
     const titleAndContent = JSON.stringify({
       title: title.value,
       content: content.value,
