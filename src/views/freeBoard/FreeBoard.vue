@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref, watch } from 'vue'
+import { onMounted, ref, computed } from 'vue'
 import { useFreeBoardStore } from '@/stores/freeBoard'
 import BasicFooter from '@/components/BasicFooter.vue'
 import BasicHeader from '@/components/BasicHeader.vue'
@@ -12,23 +12,21 @@ const freeBoardStore = useFreeBoardStore()
 const selectedSort = ref('latest')
 const searchKeyword = ref('')
 const searchTags = ref([])
-const filteredPosts = ref([])
 
-const handleSearch = () => {
-  filteredPosts.value = freeBoardStore.filterPosts(
+const filteredPosts = computed(() => {
+  return freeBoardStore.filterPosts(
     searchKeyword.value,
     searchTags.value,
     selectedSort.value === 'likes' ? 'mostLiked' : selectedSort.value,
   )
-}
-
-watch(selectedSort, () => {
-  handleSearch()
 })
 
 onMounted(async () => {
-  await freeBoardStore.fetchPosts()
-  handleSearch()
+  try {
+    await freeBoardStore.fetchPosts()
+  } catch (error) {
+    console.error('게시글 목록 조회 실패:', error)
+  }
 })
 </script>
 
@@ -40,8 +38,8 @@ onMounted(async () => {
 
       <!-- 검색 영역 -->
       <section class="flex flex-col gap-4">
-        <KeywordSearch v-model="searchKeyword" @search="handleSearch" />
-        <TagSearch v-model="searchTags" @search="handleSearch" />
+        <KeywordSearch v-model="searchKeyword" />
+        <TagSearch v-model="searchTags" />
       </section>
 
       <!-- 정렬 옵션 & 글쓰기 버튼 -->
