@@ -18,6 +18,10 @@ defineProps({
     type: Boolean,
     required: true,
   },
+  isLoading: {
+    type: Boolean,
+    required: true,
+  },
 })
 </script>
 
@@ -95,6 +99,7 @@ defineProps({
     </button>
     <button
       @click="onLike"
+      :disabled="isLoading"
       class="max-h-10 px-3 py-2 border border-primaryRed rounded flex items-center justify-center bg-black1 dark:bg-black7 dark:border-primaryRed"
       :class="{ 'bg-primaryRed dark:bg-primaryRed': isLiked }"
     >

@@ -26,15 +26,17 @@ defineProps({
     <p class="text-body1 font-light leading-8 dark:text-black1 whitespace-pre-wrap">
       {{ post.content }}
     </p>
-    <div class="flex items-center gap-3 px-4 py-3 bg-black2 rounded dark:bg-black8">
-      <span class="text-body1 font-bold dark:text-black1">Tags</span>
-      <span
-        v-for="tag in post.tags"
-        :key="tag"
-        class="text-body2 bg-black1 text-black10 px-4 py-1 rounded dark:bg-black7 dark:text-black1"
-      >
-        {{ tag }}
-      </span>
+    <div class="grid grid-cols-10 gap-3 px-4 py-3 bg-black2 rounded dark:bg-black8">
+      <span class="col-span-1 text-body1 font-bold dark:text-black1">Tags</span>
+      <div class="col-span-9 flex flex-wrap gap-2">
+        <span
+          v-for="tag in post.tags"
+          :key="tag"
+          class="text-body2 bg-black1 text-black10 px-4 py-1 rounded dark:bg-black7 dark:text-black1"
+        >
+          {{ tag }}
+        </span>
+      </div>
     </div>
   </article>
 </template>

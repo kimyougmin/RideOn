@@ -9,6 +9,7 @@ import { useUserStore } from '@/stores/user'
 import { onMounted, ref } from 'vue'
 import ActionButtons from './components/ActionButtons.vue'
 import PostContent from './components/PostContent.vue'
+import { RIDEON_FREEBOARD_CHANNEL_ID } from '@/constants/channelId'
 
 const DUMMY_POST = {
   id: 1,
@@ -76,6 +77,7 @@ const isLiked = ref(false)
 
 const postId = route.params.id
 const post = ref(DUMMY_POST)
+const isLoading = ref(false)
 
 const handleShare = () => {
   navigator.clipboard
@@ -97,6 +99,7 @@ const handleLike = async () => {
   }
 
   try {
+    isLoading.value = true
     const newLikeStatus = !isLiked.value
 
     const postData = {
@@ -104,7 +107,7 @@ const handleLike = async () => {
       title: post.value.title,
       content: post.value.content,
       tags: post.value.tags,
-      channelId: post.value.channel._id,
+      channelId: RIDEON_FREEBOARD_CHANNEL_ID,
       image: post.value.image,
     }
 
@@ -121,11 +124,14 @@ const handleLike = async () => {
     isLiked.value = newLikeStatus
   } catch (error) {
     console.error('좋아요 처리 중 오류가 발생했습니다:', error)
+  } finally {
+    isLoading.value = false
   }
 }
 
 onMounted(async () => {
   try {
+    isLoading.value = true
     await freeBoardStore.fetchPostById(postId)
     post.value = freeBoardStore.currentPost
 
@@ -138,6 +144,8 @@ onMounted(async () => {
   } catch (error) {
     console.error('게시글을 불러오는데 실패했습니다:', error)
     router.push('/freeBoard')
+  } finally {
+    isLoading.value = false
   }
 })
 </script>
@@ -152,6 +160,7 @@ onMounted(async () => {
           :onLike="handleLike"
           :likes="post.likes"
           :isLiked="isLiked"
+          :isLoading="isLoading"
         />
         <PostContent :post="post" />
       </section>
