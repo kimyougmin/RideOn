@@ -5,9 +5,21 @@ import { defineProps } from 'vue'
 import { ref } from 'vue'
 import { postSignupApi } from '@/apis/auth'
 import { useRouter } from 'vue-router'
+import AlertComponent from '../myPage/components/Alert.vue'
 
 const router = useRouter();
 const isDarkMode = ref(false);
+
+const showAlert = ref(false)
+const alertType = ref('success')
+const alertMessage = ref('')
+
+const handleAlertClose = () => {
+  showAlert.value = false;
+  if (alertType.value === 'success') {
+    router.push('/login');
+  }
+}
 
 const handleSignup = async () => {
   validateEmail();
@@ -31,10 +43,18 @@ const handleSignup = async () => {
         nickname: `${name.value}|${additionalInfo}`, 
       });
 
-      alert('회원가입이 완료되었습니다.');
-      router.push('/login'); 
+      alertType.value = 'success'
+      showAlert.value = true
+      setTimeout(() => {
+        if (showAlert.value) {
+          showAlert.value = false
+          router.push('/login');
+        }
+      }, 4000)
     } catch (error) {
-      alert('회원가입에 실패하였습니다. 잠시후 다시 시도해주세요.');
+      alertType.value = 'error'
+      alertMessage.value = '회원가입에 실패하였습니다. 잠시후 다시 시도해주세요.'
+      showAlert.value = true
       console.log(error);
     }
   }
@@ -197,4 +217,11 @@ const { birthYear, birthMonth, birthDay, yearList, monthList, dayList } = useDat
         <a href="/" class="underline ml-1 dark:text-blue-400 text-blue-600">홈으로 돌아가기</a>
       </p>
   </form>
+  <!-- alert -->
+  <AlertComponent 
+      :type="alertType" 
+      :message="alertMessage" 
+      :visible="showAlert" 
+      @close="handleAlertClose"
+    />
 </template>

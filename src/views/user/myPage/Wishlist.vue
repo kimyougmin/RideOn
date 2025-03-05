@@ -194,27 +194,26 @@ const removeFromWishlist = (id) => {
         </div>
 
         <!-- 텍스트 박스 -->
-        <div
-          class="w-full h-[97px] px-2 py-2 bg-black1 dark:bg-black9 rounded-b-lg flex flex-col justify-between relative"
-        >
-          <!-- 브랜드 및 상품명 -->
-          <div>
-            <p class="text-md text-black5 dark:text-black3 leading-none">{{ item.brand }}</p>
-            <p class="font-bold text-black9 dark:text-black1 text-lg leading-tight">
-              {{ item.name }}
-            </p>
-          </div>
+        <div class="w-full h-[97px] px-2 py-2 bg-black1 dark:bg-black9 rounded-b-lg relative">
+          <!-- 브랜드 -->
+          <p class="text-sm text-black5 dark:text-black3 leading-none mb-4">
+            {{ item.brand }}
+          </p>
 
-          <div class="flex items-center justify-between mt-[-5px] relative">
-            <p class="text-lg font-bold text-black7 dark:text-black1 leading-tight">
+          <!-- 상품명 -->
+          <p class="sub-title font-bold text-black9 dark:text-black1 leading-tight mb-1">
+            {{ item.name }}
+          </p>
+
+          <!-- 가격 & 하트 아이콘 -->
+          <div class="flex items-center justify-between">
+            <p class="sub-title font-bold text-black7 dark:text-black1 leading-tight">
               {{ item.price.toLocaleString() }}원
             </p>
-
-            <!-- 하트 아이콘  -->
             <img
               src="./images/heart.svg"
               alt="찜 삭제"
-              class="w-[16px] h-[15px] cursor-pointer transition-transform hover:scale-110 absolute right-[5px] bottom-[23px]"
+              class="w-[16px] h-[15px] cursor-pointer transition-transform hover:scale-110"
               @click="removeFromWishlist(item.id)"
             />
           </div>

@@ -7,7 +7,7 @@ import { onMounted, ref } from 'vue'
 
 const relevantProduct = ref([]);
 const route = useRoute();
-const { id, category, name, price, image, rating } = route.query;
+const { id, category, name, price, image, rating, brand } = route.query;
 
 function getRandomInt(max) {
   return Math.floor(Math.random() * max);
@@ -34,7 +34,7 @@ onMounted(() => {
         <img :src="image" class="border rounded-lg w-[514px] h-[514px]"/>
         <div class="p-4 grid grid-cols-1 content-between">
           <div>
-            <p class="font-sans text-sm dark:text-black1">{{ brand }}</p>
+            <p class="font-sans  dark:text-black1">{{ brand }}</p>
             <p class="font-impact text-3xl w-[440px] h-[72px] dark:text-black1">{{ name }}</p>
             <v-rating
               hover
