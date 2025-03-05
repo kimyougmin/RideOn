@@ -87,12 +87,13 @@ watchEffect(() => {
         </svg>
 
         <!-- userIcon  -->
-        <svg
-          width="25"
-          height="26"
-          viewBox="0 0 25 26"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
+        <router-link to="/mypage">
+          <svg
+            width="25"
+            height="26"
+            viewBox="0 0 25 26"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
         >
           <path
             d="M6 22.1663V21.1247C6 17.0976 9.26459 13.833 13.2917 13.833C17.3187 13.833 20.5833 17.0976 20.5833 21.1247V22.1663"
@@ -108,7 +109,8 @@ watchEffect(() => {
             stroke-linecap="round"
             stroke-linejoin="round"
           />
-        </svg>
+          </svg>
+        </router-link>
       </div>
       <div v-if="isDarkMode" class="flex max-w-[119px] justify-between">
         <!-- searchIcon  -->
