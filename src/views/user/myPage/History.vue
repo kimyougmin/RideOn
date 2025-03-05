@@ -14,8 +14,8 @@ const truncateText = (text, limit) => {
 
 // 게시판 ID와 게시판 이름 고정
 const channelIdToPathMap = {
-  "67c69541086c304511bcb6f7": "freeBoardDetail",
-  "67c69693086c304511bcb709": "qnaDetail"
+  '67c69541086c304511bcb6f7': 'freeBoardDetail',
+  '67c69693086c304511bcb709': 'qnaBoard/detail',
 }
 
 const posts = ref([])
@@ -33,10 +33,9 @@ const loadUserId = () => {
   }
 }
 
-// ✅ 유저 게시글 불러오기
 const loadUserPosts = async () => {
   if (!userId.value) {
-    console.error(' 유저 ID가 없습니다.')
+    console.error('유저 ID가 없습니다.')
     return
   }
 
@@ -44,7 +43,7 @@ const loadUserPosts = async () => {
     const response = await getUserApi(userId.value)
 
     if (!response.data || !Array.isArray(response.data.posts)) {
-      console.error(' 데이터에서 posts 필드를 찾을 수 없습니다.')
+      console.error('데이터에서 posts 필드를 찾을 수 없습니다.')
       return
     }
 
@@ -52,8 +51,12 @@ const loadUserPosts = async () => {
     userData.posts = userData.posts || []
 
     posts.value = userData.posts
-      .filter(post => post.channel in channelIdToPathMap && channelIdToPathMap[post.channel] === "freeBoardDetail")
-      .map(post => {
+      .filter(
+        (post) =>
+          post.channel in channelIdToPathMap &&
+          channelIdToPathMap[post.channel] === 'freeBoardDetail'
+      )
+      .map((post) => {
         try {
           const parsedTitle = JSON.parse(post.title)
           return {
@@ -61,19 +64,25 @@ const loadUserPosts = async () => {
             title: parsedTitle.title,
             content: parsedTitle.content,
             likes: post.likes?.length || 0,
-            image: post.image || "",
+            image: post.image || '',
             createdAt: post.createdAt,
-            channel: post.channel
+            channel: post.channel,
           }
         } catch (error) {
           console.error(`title 파싱 실패 (postId: ${post._id})`, error)
           return null
         }
-      }).filter(Boolean)
+      })
+      .filter(Boolean)
 
+    // Q&A 게시글 처리: 임시 데이터 없이 API 데이터만 사용
     questions.value = userData.posts
-      .filter(post => post.channel in channelIdToPathMap && channelIdToPathMap[post.channel] === "qnaDetail")
-      .map(post => {
+      .filter(
+        (post) =>
+          post.channel in channelIdToPathMap &&
+          channelIdToPathMap[post.channel] === 'qnaDetail'
+      )
+      .map((post) => {
         try {
           const parsedTitle = JSON.parse(post.title)
           return {
@@ -81,20 +90,21 @@ const loadUserPosts = async () => {
             title: parsedTitle.title,
             content: parsedTitle.content,
             likes: post.likes?.length || 0,
-            image: post.image || "",
+            image: post.image || '',
             createdAt: post.createdAt,
-            channel: post.channel
+            channel: post.channel,
           }
         } catch (error) {
-          console.error(` title 파싱 실패 (postId: ${post._id})`, error)
+          console.error(`title 파싱 실패 (postId: ${post._id})`, error)
           return null
         }
-      }).filter(Boolean)
-
+      })
+      .filter(Boolean)
   } catch (error) {
     console.error('해당 게시물을 불러올 수 없습니다', error)
   }
 }
+
 
 const goToPostDetail = (postId, channel) => {
   if (!channelIdToPathMap[channel]) {
@@ -105,7 +115,6 @@ const goToPostDetail = (postId, channel) => {
   router.push(`/${boardPath}/${postId}`)
 }
 
-// 🔹 페이지 로드 시 실행
 onMounted(() => {
   loadUserId()
   loadUserPosts()
@@ -128,38 +137,45 @@ const loadMoreQuestions = () => {
   itemsPerPageQuestions.value += 2
 }
 
-// 🔹 게시글 삭제 기능
+//  게시글 삭제 기능 ( 구헌 전 )
 const deletePost = (id) => {
   alert('게시글이 삭제되었습니다.')
   posts.value = posts.value.filter((post) => post.id !== id)
 }
 
-// 🔹 질문 삭제 기능
+// 질문 삭제 기능 ( 구헌 전 )
 const deleteQuestion = (id) => {
   alert('질문이 삭제되었습니다.')
   questions.value = questions.value.filter((question) => question.id !== id)
 }
 </script>
 
-
-
 <template>
   <section class="p-6 flex-grow">
     <!-- 활동 내역 제목 -->
     <p class="text-2xl font-bold text-black9 dark:text-black1 mb-2">활동내역</p>
-    <p class="text-sm text-black6 dark:text-black3 w-full max-w-[800px] leading-relaxed break-keep mb-8">
-      내가 작성한 게시글과 질문들을 한눈에 확인할 수 있습니다. 작성한 글을 수정하거나 삭제할 수 있으며,
-      필요한 정보를 빠르게 찾아볼 수 있습니다. 내가 남긴 기록을 관리하며 커뮤니티에서 활발하게 소통해보세요!
+    <p
+      class="text-sm text-black6 dark:text-black3 w-full max-w-[800px] leading-relaxed break-keep mb-8"
+    >
+      내가 작성한 게시글과 질문들을 한눈에 확인할 수 있습니다. 작성한 글을 수정하거나 삭제할 수
+      있으며, 필요한 정보를 빠르게 찾아볼 수 있습니다. 내가 남긴 기록을 관리하며 커뮤니티에서
+      활발하게 소통해보세요!
     </p>
 
     <!-- 작성한 게시글 -->
     <div class="mb-12">
-      <p class="text-lg font-bold text-black9 dark:text-black1 flex items-center gap-2 mb-4" @click="goToPostDetail(posts._id)">
+      <p
+        class="text-lg font-bold text-black9 dark:text-black1 flex items-center gap-2 mb-4"
+        @click="goToPostDetail(posts._id)"
+      >
         작성한 게시글 ✍️
         <span class="text-lg">({{ displayedPosts.length }})</span>
       </p>
 
-      <div v-if="displayedPosts.length === 0" class="text-black6 dark:text-black3 text-center mt-[100px]">
+      <div
+        v-if="displayedPosts.length === 0"
+        class="text-black6 dark:text-black3 text-center mt-[100px]"
+      >
         작성한 게시물이 없습니다.
       </div>
 
@@ -203,13 +219,18 @@ const deleteQuestion = (id) => {
 
     <!-- 작성한 질문 -->
     <div class="mt-6">
-      <p class="text-lg font-bold text-black9 dark:text-black1 flex items-center gap-2 mb-4"
-      :class="{ 'mt-[150px]': displayedQuestions.length === 0 }">
+      <p
+        class="text-lg font-bold text-black9 dark:text-black1 flex items-center gap-2 mb-4"
+        :class="{ 'mt-[150px]': displayedQuestions.length === 0 }"
+      >
         작성한 질문 ❓
         <span class="text-lg">({{ displayedQuestions.length }})</span>
       </p>
 
-      <div v-if="displayedQuestions.length === 0" class=" text-black6 dark:text-black3 text-center mt-[100px]">
+      <div
+        v-if="displayedQuestions.length === 0"
+        class="text-black6 dark:text-black3 text-center mt-[100px]"
+      >
         작성한 질문이 없습니다.
       </div>
 
@@ -222,9 +243,10 @@ const deleteQuestion = (id) => {
           <TrashIcon class="w-5 h-5 cursor-pointer dark:text-black1" />
         </button>
 
-        <div class="flex items-baseline mb-2">
+        <div class="flex items-baseline mb-2" @click="goToPostDetail(question.id, question.channel)">
           <span class="text-lg font-bold mr-2 text-[#1A9EFE]">질문</span>
-          <p class="text-lg font-bold text-black9 dark:text-black1 mr-2">
+          <p
+            class="text-lg font-bold text-black9 dark:text-black1 mr-2">
             {{ question.title }}
           </p>
           <span class="flex items-center">
@@ -236,6 +258,14 @@ const deleteQuestion = (id) => {
         <p class="text-sm text-black7 dark:text-black3 mb-4 break-all">
           {{ truncateText(question.content, 250) }}
         </p>
+      </div>
+      <div v-if="hasMoreQuestions" class="flex justify-center mt-4">
+        <button
+          @click="loadMoreQuestions"
+          class="w-[300px] h-[56px] mt-[40px] border rounded-lg font-semibold bg-black10 text-black1 dark:bg-black1 dark:text-black7 dark:border-black4 hover:bg-primaryRed hover:text-black1"
+        >
+          더보기
+        </button>
       </div>
     </div>
   </section>
