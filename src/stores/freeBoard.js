@@ -116,38 +116,15 @@ export const useFreeBoardStore = defineStore('freeBoard', {
       }
     },
 
-    // 게시글 좋아요
-    async likePost(postId) {
-      try {
-        const response = await likeFreeboardPost(postId)
-
-        return response
-      } catch (error) {
-        console.error('게시글 좋아요 실패:', error)
-        throw error
-      }
-    },
-
-    // 게시글 좋아요 취소
-    async unlikePost(likeId) {
-      try {
-        const response = await unlikeFreeboardPost(likeId)
-        return response
-      } catch (error) {
-        console.error('게시글 좋아요 취소 실패:', error)
-        throw error
-      }
-    },
-
     async updatePost(postData) {
       try {
-        const response = await updateFreeboardPost(postData)
+        const updatedPost = await updateFreeboardPost(postData)
 
         // 현재 게시글 업데이트
         if (this.currentPost && this.currentPost._id === postData.id) {
           this.currentPost = {
             ...this.currentPost,
-            ...response,
+            ...updatedPost,
           }
         }
 
@@ -156,13 +133,41 @@ export const useFreeBoardStore = defineStore('freeBoard', {
         if (postIndex !== -1) {
           this.posts[postIndex] = {
             ...this.posts[postIndex],
-            ...response,
+            ...updatedPost,
           }
         }
 
-        return response
+        return updatedPost
       } catch (error) {
         console.error('게시글 업데이트 실패:', error)
+        throw error
+      }
+    },
+
+    // 게시글 좋아요
+    async likePost(postId, postData) {
+      try {
+        await likeFreeboardPost(postId)
+
+        const updatedPost = await this.updatePost(postData)
+
+        return updatedPost
+      } catch (error) {
+        console.error('게시글 좋아요 실패:', error)
+        throw error
+      }
+    },
+
+    // 게시글 좋아요 취소
+    async unlikePost(likeId, postData) {
+      try {
+        await unlikeFreeboardPost(likeId)
+
+        const updatedPost = await this.updatePost(postData)
+
+        return updatedPost
+      } catch (error) {
+        console.error('게시글 좋아요 취소 실패:', error)
         throw error
       }
     },

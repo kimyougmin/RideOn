@@ -99,26 +99,25 @@ const handleLike = async () => {
   try {
     const newLikeStatus = !isLiked.value
 
-    if (!newLikeStatus) {
-      const likeId = post.value.likes.find((like) => like.user === userStore.user._id)._id
-      await freeBoardStore.unlikePost(likeId)
-    } else {
-      await freeBoardStore.likePost(post.value._id)
-    }
-
-    const updatedPost = await freeBoardStore.updatePost({
+    const postData = {
       id: post.value._id,
       title: post.value.title,
       content: post.value.content,
       tags: post.value.tags,
       channelId: post.value.channel._id,
       image: post.value.image,
-    })
-
-    post.value = {
-      ...post.value,
-      likes: updatedPost.likes,
     }
+
+    let updatedPost
+
+    if (!newLikeStatus) {
+      const likeId = post.value.likes.find((like) => like.user === userStore.user._id)._id
+      updatedPost = await freeBoardStore.unlikePost(likeId, postData)
+    } else {
+      updatedPost = await freeBoardStore.likePost(post.value._id, postData)
+    }
+
+    post.value = updatedPost
     isLiked.value = newLikeStatus
   } catch (error) {
     console.error('좋아요 처리 중 오류가 발생했습니다:', error)
