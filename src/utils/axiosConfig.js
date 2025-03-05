@@ -10,14 +10,15 @@ const axiosApi = axios.create({
 
 const getToken = () => {
   const user = localStorage.getItem('user')
-  const userData = JSON.parse(user)
+  if (!user) return null
 
-  if (!userData) {
-    alert('로그인 후 이용해주세요.')
-    window.location.href = '/login'
+  try {
+    const userData = JSON.parse(user)
+    return userData?.token || null
+  } catch (error) {
+    console.error('토큰 파싱 오류:', error)
+    return null
   }
-
-  return userData.token
 }
 
 // 요청 인터셉터 설정 (토큰 추가)
@@ -30,22 +31,20 @@ axiosApi.interceptors.request.use(
     }
     return config
   },
-  (error) => Promise.reject(error),
+  (error) => {
+    return Promise.reject(error)
+  },
 )
 
 // 응답 인터셉터 설정 (토큰 만료 처리)
 axiosApi.interceptors.response.use(
   (response) => response,
-  async (error) => {
-    if (
-      error.response?.status === 401 ||
-      error.response?.status === 403 ||
-      error.response?.status === 404
-    ) {
-      console.warn('토큰이 만료되었습니다.')
-      localStorage.removeItem('user')
+  (error) => {
+    if (error.response?.status === 401) {
+      alert('로그인이 필요한 서비스입니다.')
       window.location.href = '/login'
     }
+    return Promise.reject(error)
   },
 )
 
