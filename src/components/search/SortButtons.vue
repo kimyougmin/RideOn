@@ -24,7 +24,7 @@ defineEmits(['update:modelValue'])
 
 const sortOptions = [
   { value: 'latest', label: '최신순' },
-  { value: 'popular', label: '인기순' },
-  { value: 'views', label: '조회순' },
+  { value: 'mostLiked', label: '인기순' },
+  { value: 'mostComments', label: '댓글많은순' },
 ]
 </script>
