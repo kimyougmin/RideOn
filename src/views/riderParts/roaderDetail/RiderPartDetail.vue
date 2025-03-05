@@ -15,8 +15,6 @@ onMounted(() => {
     itemStore.restoreItem();
     item.value = itemStore.selectedItem;
   }
-
-  console.log("✅ 복구된 아이템:", item.value);
 });
 
 watch(() => route.path, (newPath) => {

@@ -41,7 +41,6 @@ const cleanedItems = computed(() => {
 });
 
 const goToDetailPage = (item) => {
-  console.log("✅ 저장되는 아이템:", item); // 콘솔에서 확인
   itemStore.setSelectedItem(item);
   localStorage.setItem('selectedItem', JSON.stringify(item));
   router.push('/riderPartsDetail');
