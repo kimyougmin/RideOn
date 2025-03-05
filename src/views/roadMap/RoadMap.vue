@@ -118,7 +118,9 @@ watch(selectedFacility, (newVal) => {
             'bg-white dark:text-black1 hover:text-black1 dark:bg-black9 dark:hover:bg-primaryRed hover:bg-primaryRed': !isToggled.bikeStations,
             'bg-primaryRed text-white dark:bg-primaryRed dark:text-white': isToggled.bikeStations
           }"
-          class="flex items-center justify-center rounded-3xl gap-2 shadow-lg hover:scale-110 transition-transform duration-200">
+          class="flex items-center justify-center rounded-3xl gap-2 
+       shadow-[2px_4px_0_rgba(0,0,0,0.2)] dark:shadow-[0_4px_0_rgba(255,255,255,0.1)] 
+       hover:scale-110 transition-transform duration-200">
           <svg width="26" height="24" viewBox="0 0 26 24" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <rect width="26" height="24" fill="url(#pattern0_273_497)"/>
 <defs>
@@ -136,7 +138,9 @@ watch(selectedFacility, (newVal) => {
             'bg-white text-black dark:text-black1 hover:text-black1 dark:bg-black9 dark:hover:bg-black9 hover:bg-black9': !isToggled.repairShops,
             'bg-black9 text-white dark:bg-black9 dark:text-white': isToggled.repairShops
           }"
-          class="flex items-center justify-center rounded-3xl gap-2 shadow-lg hover:scale-110 transition-transform duration-200">
+          class="flex items-center justify-center rounded-3xl gap-2 
+       shadow-[2px_4px_0_rgba(0,0,0,0.2)] dark:shadow-[0_4px_0_rgba(255,255,255,0.1)] 
+       hover:scale-110 transition-transform duration-200">
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <rect width="20" height="20" fill="url(#pattern0_273_500)"/>
 <defs>
@@ -154,7 +158,9 @@ watch(selectedFacility, (newVal) => {
             'bg-white text-black dark:text-black1 dark:bg-black9 dark:hover:bg-[#1CA673] hover:bg-[#1CA673] hover:text-black1' : !isToggled.airPumps,
             'bg-[#1CA673] text-white dark:bg-[#1CA673] dark:text-white': isToggled.airPumps
           }"
-          class="flex items-center justify-center rounded-3xl gap-2 shadow-lg hover:scale-110 transition-transform duration-200">
+          class="flex items-center justify-center rounded-3xl gap-2 
+       shadow-[2px_3px_0_rgba(0,0,0,0.2)] dark:shadow-[0_4px_0_rgba(255,255,255,0.1)] 
+       hover:scale-110 transition-transform duration-200">
           <svg width="20" height="22" viewBox="0 0 20 22" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <rect width="20" height="22" fill="url(#pattern0_273_503)"/>
 <defs>
@@ -172,7 +178,9 @@ watch(selectedFacility, (newVal) => {
             'bg-white text-black dark:text-black1 dark:bg-black9 dark:hover:bg-[#1A9EFE] hover:bg-[#1A9EFE] hover:text-black1': !isToggled.racks,
             'bg-[#1A9EFE]  text-white dark:bg-[#1A9EFE]  dark:text-white': isToggled.racks
           }"
-          class="flex items-center justify-center rounded-3xl gap-2 shadow-lg hover:scale-110 transition-transform duration-200">
+          class="flex items-center justify-center rounded-3xl gap-2 
+       shadow-[2px_3px_0_rgba(0,0,0,0.2)] dark:shadow-[0_4px_0_rgba(255,255,255,0.1)] 
+       hover:scale-110 transition-transform duration-200">
          
 <svg width="23" height="24" viewBox="0 0 23 24" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <rect y="0.5" width="23" height="23" fill="url(#pattern0_273_506)"/>
