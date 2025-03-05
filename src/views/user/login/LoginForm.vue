@@ -122,6 +122,7 @@ const validatePassword = () => {
 <template>
   <form @submit.prevent="handleSubmit" class="w-full flex flex-col items-center">
     <div class="w-[428px] space-y-[32px]">
+      <button type="submit" class="hidden"></button>
       <!-- 이메일 -->
       <div>
         <label class="block text-sm font-medium mb-1 text-black7 dark:text-black3">이메일</label>
@@ -175,7 +176,7 @@ const validatePassword = () => {
         class=" w-[428px] h-[47px] border rounded text-lg font-bold -translate-y-2 transition-all focus:ring-2 focus:ring-primaryRed flex items-center justify-center cursor-pointer
                bg-black7 text-black1 border-black7 hover:bg-primaryRed hover:text-white
                dark:bg-black3 dark:text-black7 dark:border-black3 dark:hover:bg-primaryRed"
-        @click="handleSubmit"
+        @click="handleSubmit" @keydown.enter="handleSubmit"
       >
         {{ isLoading ? '로그인 중...' : '로그인' }}
       </p>
