@@ -28,6 +28,7 @@ export async function fetchPlaces(map, userLatLng, updateStationData) {
     }
 
     const bikeDataMap = new Map();
+
     availableBikes.forEach((bike) => {
       const bikeStationId = bike.rntstnId?.trim();
       if (bikeStationId) {
@@ -69,6 +70,8 @@ export async function fetchPlaces(map, userLatLng, updateStationData) {
         popupAnchor: [0, -30],
       });
 
+      
+    
       const marker = L.marker([lat, lng], { icon: customIcon }).addTo(map);
       markers.push(marker);
 
