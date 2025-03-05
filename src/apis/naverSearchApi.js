@@ -4,9 +4,6 @@ const naverID = import.meta.env.VITE_NAVER_SHOPPING_CLIENT_ID;
 const naverSecret = import.meta.env.VITE_NAVER_SHOPPING_CLIENT_SECRET;
 import axios from "axios";
 
-console.log("✅ NAVER CLIENT ID:", import.meta.env.VITE_NAVER_SHOPPING_CLIENT_ID);
-console.log("✅ NAVER CLIENT SECRET:", import.meta.env.VITE_NAVER_SHOPPING_CLIENT_SECRET);
-
 const naverShoppingApi = axios.create({
   baseURL: naverURL,
   timeout: 5000,
@@ -19,7 +16,7 @@ export async function getNaverItems(targetWord) {
         query: targetWord,
         display: 20,
       },
-      headers: {  // ✅ headers를 개별 요청에 추가
+      headers: {
         'X-Naver-Client-Id': naverID,
         'X-Naver-Client-Secret': naverSecret,
       },
