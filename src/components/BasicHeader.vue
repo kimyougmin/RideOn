@@ -153,6 +153,7 @@ watchEffect(() => {
         </svg>
 
         <!-- userIcon  -->
+        <router-link to="/mypage">
         <svg
           width="25"
           height="26"
@@ -175,6 +176,7 @@ watchEffect(() => {
             stroke-linejoin="round"
           />
         </svg>
+        </router-link>
       </div>
     </div>
     <div class="flex gap-10">
