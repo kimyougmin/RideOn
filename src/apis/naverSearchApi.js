@@ -9,12 +9,12 @@ const naverShoppingApi = axios.create({
   timeout: 5000,
 });
 
-export async function getNaverItems(targetWord) {
+export async function getNaverItems(targetWord, displayCount = 32) {
   try {
     const response = await naverShoppingApi.get('/v1/search/shop.json', {
       params: {
         query: targetWord,
-        display: 32,
+        display: displayCount,
       },
       headers: {
         'X-Naver-Client-Id': naverID,

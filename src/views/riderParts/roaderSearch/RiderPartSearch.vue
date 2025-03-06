@@ -37,7 +37,7 @@ const loadMore = () => {
 };
 
 onMounted(async () => {
-  items.value = await getNaverItems("자전거부품");
+  items.value = await getNaverItems("자전거부품", 81);
   visibleItems.value = cleanedItems.value.slice(0, itemsPerPage);
 });
 </script>
@@ -132,7 +132,7 @@ onMounted(async () => {
           />
         <p class="flex-grow-0 flex-shrink-0 text-base text-left text-black pt-4  dark:bg-black9">
           <span class="flex-grow-0 flex-shrink-0 text-base font-light text-left dark:text-black1">검색된 상품 </span>
-          <span class="flex-grow-0 flex-shrink-0 text-base font-semibold text-left dark:text-black1">{{ items.length }}</span>
+          <span class="flex-grow-0 flex-shrink-0 text-base font-semibold text-left dark:text-black1">{{ visibleItems.length }}</span>
           <span class="flex-grow-0 flex-shrink-0 text-base font-light text-left dark:text-black1">개</span>
         </p>
       </div>
@@ -172,15 +172,16 @@ onMounted(async () => {
           </div>
       </div>
       <!-- 더보기 -->
-      <div
+      <div class="p-[40px] flex items-center justify-center">
+        <div
         v-if="visibleItems.length < items.length"
         @click="loadMore"
-        class="flex justify-center items-center flex-grow-0 flex-shrink-0 w-[300px] relative gap-8 p-4 rounded bg-[#202020] mt-[32px] mx-[478px] cursor-pointer hover:bg-[#303030] transition-all dark:bg-black9"
+        class="flex justify-center items-center flex-grow-0 flex-shrink-0 w-[300px] h-[56px] relative gap-8 p-4 rounded-[4px] bg-black9 mt-[32px] mx-[478px] cursor-pointer hover:bg-[#303030] transition-all dark:bg-black1"
       >
-        <p class="flex-grow-0 flex-shrink-0 text-xl font-bold text-center text-white">
+        <p class="flex-grow-0 flex-shrink-0 text-xl font-bold text-center text-white dark:text-black10 pt-3">
           더보기
         </p>
-      </div>
+      </div></div>
     </div>
     <BasicFooter/>
   </div>
