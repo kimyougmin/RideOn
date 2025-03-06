@@ -52,10 +52,10 @@ const goToDetail = (item) => {
 <template>
   <article class="w-full flex flex-col gap-8">
     <div class="flex items-center gap-8">
-      <div class="text-primaryRed text-title">
+      <h3 class="text-primaryRed text-title font-bold">
         Best <br />
         Product
-      </div>
+      </h3>
       <hr class="w-full border-black4" />
       <router-link
         to="riderPartsSearch"
