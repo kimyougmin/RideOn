@@ -11,6 +11,8 @@ import KeywordSearch from '@/components/search/KeywordSearch.vue'
 import TagSearch from '@/components/search/TagSearch.vue'
 import PopularTags from './components/PopularTags.vue'
 import SortButtons from '@/components/search/SortButtons.vue'
+import { useUserStore } from '@/stores/user'
+import { useRouter } from 'vue-router'
 
 const DUMMY_WRITERS = [
   {
@@ -34,6 +36,9 @@ const DUMMY_WRITERS = [
 ]
 
 const qnaBoardStore = useQnaBoardStore()
+const userStore = useUserStore()
+const router = useRouter()
+
 const searchKeyword = ref('')
 const searchTags = ref([])
 const selectedSort = ref('latest')
@@ -55,6 +60,16 @@ onMounted(async () => {
     console.error('게시글 목록 조회 실패:', error)
   }
 })
+
+const handleWriteClick = () => {
+  if (!userStore.isLoggedIn) {
+    alert('로그인 후 이용해주세요.')
+    router.push('/login')
+    return
+  }
+
+  router.push('/qnaBoard/write')
+}
 </script>
 
 <template>
@@ -79,9 +94,9 @@ onMounted(async () => {
         <!-- 정렬 옵션 & 글쓰기 버튼 -->
         <section class="flex items-center justify-between">
           <SortButtons v-model="selectedSort" />
-          <router-link to="/qnaBoard/write" class="bg-black6 px-6 py-2 rounded text-black1"
-            >질문하기</router-link
-          >
+          <button @click="handleWriteClick" class="bg-black6 px-6 py-2 rounded text-black1">
+            질문하기
+          </button>
         </section>
 
         <!-- 질문 게시판 목록 -->
