@@ -38,12 +38,16 @@ const toggleBikeStations = async () => {
 
   isLoadingMarkers.value = true;
 
-  if (!isToggled.value.bikeStations) {
-    if (bikeMarkers.value.length > 0) {
-      bikeMarkers.value.forEach(marker => map.value.removeLayer(marker));
-      bikeMarkers.value = [];
-    }
+  if (isToggled.value.bikeStations) {
+    bikeMarkers.value.forEach(marker => {
+      if (map.value.hasLayer(marker)) {
+        map.value.removeLayer(marker);
+      }
+    });
 
+
+    bikeMarkers.value = [];
+  } else {
     const newMarkers = await fetchPlaces(map.value, userLatLng.value, (stationData) => {
       selectedFacility.value = {
         type: "bikeStation",
@@ -56,15 +60,11 @@ const toggleBikeStations = async () => {
     });
 
     bikeMarkers.value = newMarkers || [];
-  } else {
-    bikeMarkers.value.forEach(marker => map.value.removeLayer(marker));
-    bikeMarkers.value = [];
   }
 
   isToggled.value.bikeStations = !isToggled.value.bikeStations;
-  isLoadingMarkers.value = false; 
+  isLoadingMarkers.value = false;
 };
-
 const toggleConvenienceFacilities = async (type) => {
   if (!map.value) return;
   
