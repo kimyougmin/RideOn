@@ -54,7 +54,6 @@ const riderCrew = ref(DUMMY_RIDER_CREW)
 const isLoading = ref(false)
 const isAuthor = ref(false)
 const isRecruiting = ref(true)
-const isJoined = ref(false)
 
 const handleShare = () => {
   navigator.clipboard
@@ -132,7 +131,6 @@ const handleJoin = async () => {
     isLoading.value = true
     await riderCrewStore.joinCrew(crewId)
     riderCrew.value = riderCrewStore.currentPost
-    isJoined.value = true
   } catch (error) {
     console.error('크루 참여 중 오류가 발생했습니다:', error)
   } finally {
@@ -181,10 +179,6 @@ onMounted(async () => {
     isAuthor.value = userStore.user._id === riderCrewStore.currentPost.author._id
 
     isRecruiting.value = riderCrewStore.currentPost.status === 'RECRUITING'
-
-    isJoined.value = riderCrewStore.currentPost.memberInfo.members.some(
-      (member) => member._id === userStore.user._id,
-    )
   } catch (error) {
     console.error('게시글을 불러오는데 실패했습니다:', error)
     router.push('/riderCrewBoard')
@@ -236,13 +230,13 @@ onMounted(async () => {
           v-else
           class="w-full text-white rounded-lg p-4 text-center"
           :class="{
-            'bg-black7': !isRecruiting || isJoined,
-            'bg-blue-500': isRecruiting && !isJoined,
+            'bg-black7': !isRecruiting,
+            'bg-blue-500': isRecruiting,
           }"
           @click="handleJoin"
-          :disabled="isLoading || !isRecruiting || isJoined"
+          :disabled="isLoading || !isRecruiting"
         >
-          {{ isJoined ? '참여중' : isRecruiting ? '함께하기' : '모집 마감됨' }}
+          {{ isRecruiting ? '함께하기' : '모집 마감됨' }}
         </button>
         <router-link
           to="/riderCrewBoard/write"

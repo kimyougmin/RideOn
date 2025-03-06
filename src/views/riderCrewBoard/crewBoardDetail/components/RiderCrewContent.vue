@@ -29,7 +29,10 @@ defineProps({
     </div>
   </div>
   <div class="flex flex-col gap-4">
-    <div class="py-2 text-center border-2 border-primaryRed rounded">
+    <div
+      v-if="riderCrew.status === 'RECRUITING'"
+      class="py-2 text-center border-2 border-primaryRed rounded"
+    >
       <span class="text-sub-title font-bold text-primaryRed">
         남은 자리 {{ riderCrew.memberInfo.max - riderCrew.memberInfo.current }}개
       </span>
