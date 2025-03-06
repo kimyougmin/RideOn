@@ -1,14 +1,17 @@
 import { defineStore } from 'pinia'
 import { usePostStore } from '@/composables/usePostStore'
 import { RIDEON_QNA_CHANNEL_ID } from '@/constants/channelId'
-import { getQnaPosts, updateQnaPost, likeQnaPost, unlikeQnaPost } from '@/apis/qnaApi'
+import { getQnaPosts, updateQnaPost } from '@/apis/qnaApi'
+import { likePost, unlikePost } from '@/apis/likeApi'
+import { createComment, deleteComment } from '@/apis/commentApi'
 
-// 기본 스토어 설정에 status 관련 상태 추가
 const qnaStore = usePostStore({
   getPostsApi: getQnaPosts,
   updatePostApi: updateQnaPost,
-  likePostApi: likeQnaPost,
-  unlikePostApi: unlikeQnaPost,
+  likePostApi: likePost,
+  unlikePostApi: unlikePost,
+  createCommentApi: createComment,
+  deleteCommentApi: deleteComment,
   channelId: RIDEON_QNA_CHANNEL_ID,
   hasStatus: true,
 })

@@ -20,15 +20,21 @@ defineProps({
     <!-- 질문 정보 상단 -->
     <div class="flex flex-col gap-4">
       <div class="flex gap-4 items-center">
-        <span class="text-body1 px-4 py-1 rounded-full bg-black2 dark:bg-black7 dark:text-black1">{{
-          qna.isSolved ? '해결' : '미해결'
-        }}</span>
+        <span
+          class="text-body1 px-4 py-1 rounded-full"
+          :class="{
+            'bg-green-600 text-black1': qna.status === 'SOLVED',
+            'bg-black2 text-black10': qna.status !== 'SOLVED',
+          }"
+        >
+          {{ qna.status === 'SOLVED' ? '해결' : '미해결' }}
+        </span>
         <span class="text-sub-title font-bold dark:text-black1">{{ qna.title }}</span>
       </div>
-      <p class="text-body1 font-light m-0 dark:text-black3">
+      <p class="text-body1 font-light m-0 dark:text-black3 line-clamp-2">
         {{ qna.content }}
       </p>
-      <div class="flex items-center gap-3">
+      <div class="flex flex-wrap items-center gap-3">
         <span
           v-for="tag in qna.tags"
           :key="tag"

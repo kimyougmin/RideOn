@@ -98,18 +98,18 @@ const handleLike = async () => {
     return
   }
 
+  const postData = {
+    id: post.value._id,
+    title: post.value.title,
+    content: post.value.content,
+    tags: post.value.tags,
+    channelId: RIDEON_FREEBOARD_CHANNEL_ID,
+    image: post.value.image,
+  }
+
   try {
     isLoading.value = true
     const newLikeStatus = !isLiked.value
-
-    const postData = {
-      id: post.value._id,
-      title: post.value.title,
-      content: post.value.content,
-      tags: post.value.tags,
-      channelId: RIDEON_FREEBOARD_CHANNEL_ID,
-      image: post.value.image,
-    }
 
     let updatedPost
 
@@ -124,6 +124,48 @@ const handleLike = async () => {
     isLiked.value = newLikeStatus
   } catch (error) {
     console.error('좋아요 처리 중 오류가 발생했습니다:', error)
+  } finally {
+    isLoading.value = false
+  }
+}
+
+const handleCommentSubmit = async (newComment) => {
+  try {
+    isLoading.value = true
+    const postData = {
+      id: post.value._id,
+      title: post.value.title,
+      content: post.value.content,
+      tags: post.value.tags,
+      channelId: RIDEON_FREEBOARD_CHANNEL_ID,
+      image: post.value.image,
+    }
+
+    await freeBoardStore.createComment(postId, newComment, postData)
+    post.value = freeBoardStore.currentPost
+  } catch (error) {
+    console.error('댓글 생성 중 오류가 발생했습니다:', error)
+  } finally {
+    isLoading.value = false
+  }
+}
+
+const handleDeleteComment = async (commentId) => {
+  try {
+    isLoading.value = true
+    const postData = {
+      id: post.value._id,
+      title: post.value.title,
+      content: post.value.content,
+      tags: post.value.tags,
+      channelId: RIDEON_FREEBOARD_CHANNEL_ID,
+      image: post.value.image,
+    }
+
+    await freeBoardStore.deleteComment(commentId, postData)
+    post.value = freeBoardStore.currentPost
+  } catch (error) {
+    console.error('댓글 삭제 중 오류가 발생했습니다:', error)
   } finally {
     isLoading.value = false
   }
@@ -171,8 +213,13 @@ onMounted(async () => {
       <article class="w-[1440px] mx-auto flex gap-4 items-center justify-center">
         <div class="w-10 h-10"></div>
         <section class="max-w-[620px] flex flex-col gap-8">
-          <CommentForm />
-          <CommentList :comments="post.comments" />
+          <CommentForm @submit="handleCommentSubmit" :isLoading="isLoading" />
+          <CommentList
+            :authorId="userStore.user._id"
+            :comments="post.comments"
+            :onDelete="handleDeleteComment"
+            :isLoading="isLoading"
+          />
         </section>
       </article>
     </section>
