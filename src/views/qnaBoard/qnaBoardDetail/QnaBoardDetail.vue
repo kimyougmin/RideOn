@@ -124,6 +124,48 @@ const handleLike = async () => {
   }
 }
 
+const handleCommentSubmit = async (newComment) => {
+  try {
+    isLoading.value = true
+    const qnaData = {
+      id: qna.value._id,
+      title: qna.value.title,
+      content: qna.value.content,
+      tags: qna.value.tags,
+      channelId: RIDEON_QNA_CHANNEL_ID,
+      image: qna.value.image,
+    }
+
+    await qnaStore.createComment(qnaId, newComment, qnaData)
+    qna.value = qnaStore.currentPost
+  } catch (error) {
+    console.error('댓글 생성 중 오류가 발생했습니다:', error)
+  } finally {
+    isLoading.value = false
+  }
+}
+
+const handleDeleteComment = async (commentId) => {
+  try {
+    isLoading.value = true
+    const qnaData = {
+      id: qna.value._id,
+      title: qna.value.title,
+      content: qna.value.content,
+      tags: qna.value.tags,
+      channelId: RIDEON_QNA_CHANNEL_ID,
+      image: qna.value.image,
+    }
+
+    await qnaStore.deleteComment(commentId, qnaData)
+    qna.value = qnaStore.currentPost
+  } catch (error) {
+    console.error('댓글 삭제 중 오류가 발생했습니다:', error)
+  } finally {
+    isLoading.value = false
+  }
+}
+
 onMounted(async () => {
   try {
     isLoading.value = true
@@ -159,8 +201,13 @@ onMounted(async () => {
       <article class="col-span-6 flex flex-col gap-8">
         <QnaContent :qna="qna" />
         <hr class="border-black3 dark:border-black6" />
-        <CommentForm />
-        <CommentList :comments="qna.comments" />
+        <CommentForm @submit="handleCommentSubmit" :isLoading="isLoading" />
+        <CommentList
+          :authorId="userStore.user._id"
+          :comments="qna.comments"
+          :onDelete="handleDeleteComment"
+          :isLoading="isLoading"
+        />
       </article>
       <article class="col-span-2 flex flex-col gap-4">
         <AuthorInfo :author="qna.author" />
