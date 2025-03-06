@@ -4,16 +4,35 @@ import BasicFooter from '@/components/BasicFooter.vue';
 import { ref, onMounted, watch} from 'vue';
 import { useItemStore } from '@/stores/riderItemStore';
 import { useRoute } from 'vue-router';
+import { fetchLikeCreateApi } from '@/apis/fetchLikeCreateApi.js'
+import { fetchLikeRemoveApi } from '@/apis/fetchLikeRemoveApi.js'
+import { fetchUserLikesApi } from '@/apis/userLikesApi.js'
 
 const route = useRoute();
 const itemStore = useItemStore();
 const item = ref(null);
+const union = ref([]);
+const isLiked = ref(false);
+const user = JSON.parse(localStorage.getItem('user'));
 
-onMounted(() => {
+onMounted(async () => {
   const productId = route.params.productId;
   if (!productId) {
     console.warn("⚠️ productId가 없습니다!");
     return;
+  }
+
+  if (user && user._id !== undefined) {
+    try {
+      const likeData = await fetchUserLikesApi(user._id);
+      union.value = likeData.map((e) => e.title);
+
+      // 2️⃣ 현재 상품이 찜한 목록에 있는지 확인
+      isLiked.value = union.value.includes(productId);
+      console.log("✅ 현재 상품 찜 상태:", isLiked.value);
+    } catch (error) {
+      console.error("❌ 찜한 상품 불러오기 실패:", error);
+    }
   }
 
   if (itemStore.selectedItem && itemStore.selectedItem.productId === productId) {
@@ -37,6 +56,55 @@ onMounted(() => {
     }
   }
 });
+
+const likeCreateHandler = async () => {
+  if (user && user._id !== undefined && item.value) {
+    const requestData = {
+      _id: user._id,
+      title: item.value.productId,
+      name: item.value.cleanTitle,
+      price: item.value.lprice,
+      image: item.value.image,
+      brand: item.value.mallName,
+      category: item.value.category4
+    };
+
+    console.log("📡 API 요청 데이터:", requestData); // 요청 데이터 출력
+
+    try {
+      const response = await fetchLikeCreateApi(requestData);
+      console.log("✅ API 응답 데이터:", response); // 응답 데이터 출력
+      alert("✅ 찜하기 성공!");
+    } catch (error) {
+      console.error("❌ API 요청 실패:", error);
+      alert("⚠️ 찜하기 중 오류 발생!");
+    }
+  }
+};
+const likeRemoveHandler = async () => {
+  if (user && user._id !== undefined && item.value) {
+    console.log("💔 찜하기 취소 버튼 클릭됨!");  // ✅ 실행 확인 로그
+    try {
+      const { productId } = item.value;
+
+      await fetchLikeRemoveApi({
+        id: user._id,   // ✅ API 요청 ID 확인
+        title: productId
+      });
+
+      console.log("💔 찜하기 취소 성공!", productId);  // ✅ 성공 로그
+
+      // 상태 변경
+      union.value = union.value.filter((e) => e !== productId);
+      isLiked.value = false; // ✅ UI 업데이트
+    } catch (error) {
+      console.error("❌ 찜하기 취소 실패:", error);
+    }
+  } else {
+    console.warn("⚠️ User ID 또는 item이 없습니다!");
+  }
+};
+
 
 watch(() => itemStore.selectedItem, (newItem) => {
   if (newItem) {
@@ -66,10 +134,8 @@ watch(() => itemStore.selectedItem, (newItem) => {
                 <a :href="item.link"><p class="text-black1 mb-0 font-bold text-center">구매하러 가기</p></a>
               </div>
               <div class="grid grid-cols-2 gap-4">
-                <div class="flex border border-black7 bg-black1 rounded-lg justify-center align-center py-2">
-                  <svg width="18" height="17" viewBox="0 0 18 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M17 5.09091C17 2.83156 15.1345 1 12.8333 1C11.1128 1 9.63581 2.02389 9 3.48493C8.3642 2.02389 6.88722 1 5.16667 1C2.86548 1 1 2.83156 1 5.09091C1 11.6551 9 16 9 16C9 16 17 11.6551 17 5.09091Z" class="dark:stroke-black1" stroke="#2A2A2A" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
+                <div class="flex border border-black7 bg-black1 rounded-lg justify-center align-center py-2" @click="isLiked ? likeRemoveHandler() : likeCreateHandler()">
+                  <img :src="isLiked ? '/riderPageImage/fullHeart.svg' : '/riderPageImage/emptyHeart.svg'" />
                   <p class="mb-0 ml-2 font-impact">찜하기</p>
                 </div>
                 <div class="flex border bg-black1 border-black7 rounded-lg justify-center align-center py-2">

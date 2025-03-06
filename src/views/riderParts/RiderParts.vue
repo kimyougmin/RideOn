@@ -17,7 +17,6 @@ const fetchNaverDatas = async () => {
   if (!query.value) return
   try {
     items.value = await getNaverItems(query.value)
-    console.log('✅ API 응답 데이터:', items)
 
     // API 응답 후 바로 그룹화 로직 실행
     const tempList = []
