@@ -1,15 +1,15 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { fetchUserLikesApi } from '@/apis/userLikesApi'
+import { fetchUserLikesApi, removeUserLikeApi } from '@/apis/userLikesApi'
 
 // 기본 이미지 URL
-const defaultImage =
-  'https://img.danawa.com/prod_img/500000/437/092/img/28092437_1.jpg?shrink=330:*&_v=20240108170952'
+const defaultImage = 'https://img.danawa.com/prod_img/500000/437/092/img/28092437_1.jpg?shrink=330:*&_v=20240108170952'
 
 // 로컬스토리지에서 `_id` 가져오기
 const userData = JSON.parse(localStorage.getItem('user'))
 const userId = userData?._id || null
 console.log(userId)
+
 // 찜 목록 데이터
 const wishlist = ref([])
 
@@ -23,32 +23,53 @@ const filters = ref([
 // 현재 선택된 필터 (기본값: 자전거)
 const activeFilter = ref('bike')
 
-// API 호출 후 데이터 세팅 (async/await 적용)
+// API 호출 후 데이터 세팅
 const fetchWishlist = async () => {
   if (!userId) {
-    console.error('사용자 ID가 없음')
+    console.error('사용자 ID가 없음 - 없으면 안됨')
     return
   }
 
   try {
-    console.log(' 찜 목록 불러오는 중...')
+    console.log(' 찜 목록 불러오는 중')
     const data = await fetchUserLikesApi(userId)
 
-    console.log(' API 응답 데이터:', data)
+    console.log('API 응답 데이터:', data)
 
     wishlist.value = data.map((item) => ({
       id: item.like_key,
+      title: item.title,
       name: item.name,
       price: Number(item.price),
       image: item.image || defaultImage,
       brand: item.brand,
-      category: ['MTB', 'KID', 'LOAD', 'HYBRID', 'EBIKE', 'PIXIE'].includes(item.category) ? 'bike' : item.category,
+      category: ['MTB', 'KID', '로드', 'HYBRID', 'EBIKE', 'PIXIE'].includes(item.category) ? 'bike' : item.category,
     }))
   } catch (error) {
-    console.error(' 찜 목록 불러오기 실패:', error)
+    console.error('찜 목록 불러오기 실패:', error)
   }
 }
 
+// 찜 목록에서 제거하는 함수 (API 호출)
+const removeFromWishlist = async (item) => {
+  if (!userId || !item.title) return
+
+  try {
+    const response = await removeUserLikeApi(item.title, userId)
+
+    if (response?.status === 200) {
+      wishlist.value = wishlist.value.filter((w) => w.id !== item.id)
+      console.log('찜 삭제 성공:', response.message)
+    } else {
+      console.error('찜 삭제 실패:', response)
+    }
+  } catch (error) {
+    console.error('찜 삭제 중 오류 발생:', error)
+  }
+}
+
+// 컴포넌트가 마운트되면 찜 목록 불러오기
+onMounted(fetchWishlist)
 
 // 필터링된 찜 목록
 const filteredWishlist = computed(() => {
@@ -72,18 +93,7 @@ const setActiveFilter = (filter) => {
   activeFilter.value = filter
   itemsPerPage.value = 9 // 필터 변경 시 처음 9개만 보이도록 리셋
 }
-
-// 찜 목록에서 제거하는 함수
-const removeFromWishlist = (id) => {
-  wishlist.value = wishlist.value.filter((item) => item.id !== id)
-}
-
-// 컴포넌트가 마운트되면 찜 목록 불러오기
-onMounted(async () => {
-  await fetchWishlist() // 
-})
 </script>
-
 
 <template>
   <section class="w-full ml-[10px]">
@@ -108,8 +118,10 @@ onMounted(async () => {
       </button>
     </div>
 
+    <p v-if="wishlist.length === 0" class="text-center text-black5 dark:text-black3 mt-[250px]">
+      찜 목록이 없습니다.
+    </p>
 
-    <p v-if="wishlist.length === 0" class="text-center text-black5 dark:text-black3 mt-[250px]"> 찜 목록이 없습니다. </p>
     <!-- 찜 목록 -->
     <div class="grid grid-cols-3 gap-x-[14px] gap-y-[35px]">
       <div
@@ -118,9 +130,7 @@ onMounted(async () => {
         class="w-[300px] rounded-lg border border-black3 dark:border-black5"
       >
         <!-- 이미지 박스 -->
-        <div
-          class="w-full h-[191px] border-b dark:b flex items-center justify-center bg-black1 dark:bg-black1 rounded-t-lg"
-        >
+        <div class="w-full h-[191px] border-b flex items-center justify-center bg-black1 dark:bg-black1 rounded-t-lg">
           <img
             :src="item.image || defaultImage"
             alt="상품 이미지"
@@ -149,7 +159,7 @@ onMounted(async () => {
               src="./images/heart.svg"
               alt="찜 삭제"
               class="w-[16px] h-[15px] cursor-pointer transition-transform hover:scale-110"
-              @click="removeFromWishlist(item.id)"
+              @click="removeFromWishlist(item)"
             />
           </div>
         </div>

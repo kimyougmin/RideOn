@@ -19,3 +19,21 @@ export const fetchUserLikesApi = async (userId) => {
     return []
   }
 }
+
+
+// 사용자 찜 삭제 api
+export const removeUserLikeApi = async (title, userId) => {
+  try {
+    const response = await axios.post(`${API_URL}/like/remove`, { title, id: userId }, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      }
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error('찜 삭제 오류:', error);
+    return null;
+  }
+};
