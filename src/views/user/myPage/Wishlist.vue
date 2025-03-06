@@ -3,7 +3,8 @@ import { ref, computed, onMounted } from 'vue'
 import { fetchUserLikesApi } from '@/apis/userLikesApi'
 import { fetchLikeRemoveApi } from '@/apis/fetchLikeRemoveApi'
 import AlertMessage from './components/Alert.vue'
-import bikeCategoryData from '@/../public/bike_category_data.json' 
+import bikeCategoryData from '@/../public/bike_category_data.json'
+import { getNaverItems } from '@/apis/naverSearchApi'
 
 // 알림창 상태
 const showAlert = ref(false)
@@ -28,7 +29,7 @@ const filters = ref([
 
 const activeFilter = ref('bike')
 
-// 기존 카테고리 매핑 함수 (필요에 따라 수정)
+// 기존 카테고리 매핑 함수 (알고있는 카테고리가 있다면 추가해주세요!)
 const mapCategory = (category) => {
   const bikeCategories = ['MTB', 'KID', '로드', 'HYBRID', 'EBIKE', 'PIXIE'] // 자전거
   const partsCategories = ['기타자전거 부품', '자전거 부품', '부품', '자전거부품'] // 자전거 부품
@@ -154,8 +155,21 @@ const setActiveFilter = (filter) => {
   itemsPerPage.value = 9 
 }
 
-// 디테일 페이지로 이동하는 함수
-const goToDetailPage = (item) => {
+
+const goToDetailPage = async (item) => {
+  // parts 카테고리 상품이라면 네이버 쇼핑 API를 호출해서 productId를 가져온다.
+  if (item.category === 'parts' || item.category === 'gear') {
+    const results = await getNaverItems(item.name, 1)
+    if (results && results.length > 0) {
+      const naverProductId = results[0].productId || results[0].itemId
+      if (naverProductId) {
+        window.location.href = `/riderPartsDetail/${naverProductId}`
+        return
+      }
+    }
+  }
+  
+  // 네이버 API로 productId를 얻지 못했거나, parts가 아니라면 기존 JSON 매칭 로직을 사용
   const productDetails = findProductDetails(item)
   if (productDetails) {
     const queryParams = new URLSearchParams({
@@ -167,10 +181,8 @@ const goToDetailPage = (item) => {
       price: productDetails.price,
       image: productDetails.image,
     }).toString()
-    // 제품 id를 경로에 포함시켜 이동
     window.location.href = `/bicycleDetail/${productDetails.id}?${queryParams}`
   } else {
-    // JSON에 찾지 못하면 기존 wishlist 데이터로 이동 (fallback)
     const queryParams = new URLSearchParams({
       id: item.id, 
       rating: item.rating || '',
@@ -183,6 +195,7 @@ const goToDetailPage = (item) => {
     window.location.href = `/bicycleDetail/${item.id}?${queryParams}`
   }
 }
+
 
 const truncatedName = (name) => {
   const maxLength = 22
