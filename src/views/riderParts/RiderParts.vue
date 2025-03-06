@@ -21,6 +21,7 @@ const fetchNaverDatas = async () => {
   if(!query.value) return;
   try {
     items.value = await getNaverItems(query.value);
+    console.log("✅ API 응답 데이터:", items);
   } catch (error) {
     console.error('검색 오류 : ', error);
   }
