@@ -2,28 +2,45 @@
 import { ref, computed, onMounted } from 'vue'
 import { fetchUserLikesApi } from '@/apis/userLikesApi'
 import { fetchLikeRemoveApi } from '@/apis/fetchLikeRemoveApi'
+import AlertMessage from './components/Alert.vue'
+
+// 알림창 상태
+const showAlert = ref(false)
+const alertMessage = ref('')
+const alertType = ref('success')
+
 // 기본 이미지 URL
 const defaultImage =
   'https://img.danawa.com/prod_img/500000/437/092/img/28092437_1.jpg?shrink=330:*&_v=20240108170952'
 
-// 로컬스토리지에서 `_id` 가져오기
 const userData = JSON.parse(localStorage.getItem('user'))
 const userId = userData?._id || null
 
 // 찜 목록 데이터
 const wishlist = ref([])
 
-// 필터 옵션
 const filters = ref([
   { id: 'bike', text: '자전거' },
   { id: 'parts', text: '자전거부품' },
   { id: 'gear', text: '라이더용품' },
 ])
 
-// 현재 선택된 필터 (기본값: 자전거)
 const activeFilter = ref('bike')
 
-// API 호출 후 데이터 세팅
+const mapCategory = (category) => {
+  const bikeCategories = ['MTB', 'KID', '로드', 'HYBRID', 'EBIKE', 'PIXIE'] // 자전거
+  const partsCategories = ['기타자전거 부품', '자전거 부품', '부품', '자전거부품'] // 자전거 부품
+
+  if (bikeCategories.includes(category)) {
+    return 'bike'
+  }
+  if (partsCategories.includes(category)) {
+    return 'parts'
+  }
+
+  return 'gear'
+}
+
 const fetchWishlist = async () => {
   if (!userId) {
     console.error('사용자 ID가 없음 - 없으면 안됨')
@@ -40,9 +57,7 @@ const fetchWishlist = async () => {
       price: Number(item.price),
       image: item.image || defaultImage,
       brand: item.brand,
-      category: ['MTB', 'KID', '로드', 'HYBRID', 'EBIKE', 'PIXIE'].includes(item.category)
-        ? 'bike'
-        : item.category,
+      category: mapCategory(item.category),
     }))
   } catch (error) {
     console.error('찜 목록 불러오기 실패:', error)
@@ -61,6 +76,13 @@ const removeFromWishlist = async (item) => {
 
     if (response?.status === 200) {
       wishlist.value = wishlist.value.filter((w) => w.id !== item.id)
+
+      alertMessage.value = '찜 목록에서 제거되었습니다.'
+      alertType.value = 'success'
+      showAlert.value = true
+      setTimeout(() => {
+        showAlert.value = false
+      }, 1000)
     } else {
       console.error(' 찜 삭제 실패:', response.message || response)
     }
@@ -92,8 +114,28 @@ const loadMore = () => {
 // 필터 변경
 const setActiveFilter = (filter) => {
   activeFilter.value = filter
-  itemsPerPage.value = 9 // 필터 변경 시 처음 9개만 보이도록 리셋
+  itemsPerPage.value = 9 
 }
+
+const goToDetailPage = (item) => {
+  const queryParams = new URLSearchParams({
+    id: item.id, 
+    rating: 4.5,
+    brand: item.brand,
+    category: item.category,
+    name: item.name,
+    price: item.price,
+    image: item.image,
+  }).toString()
+
+  window.location.href = `/bicycleDetail/1?${queryParams}`
+}
+
+const truncatedName = (name) => {
+  const maxLength = 22
+  return name.length > maxLength ? name.slice(0, maxLength) + '...' : name
+}
+
 </script>
 
 <template>
@@ -138,6 +180,7 @@ const setActiveFilter = (filter) => {
             :src="item.image || defaultImage"
             alt="상품 이미지"
             class="w-[180px] h-auto object-contain"
+            @click="goToDetailPage(item)"
           />
         </div>
 
@@ -150,7 +193,7 @@ const setActiveFilter = (filter) => {
 
           <!-- 상품명 -->
           <p class="sub-title font-bold text-black9 dark:text-black1 leading-tight mb-1">
-            {{ item.name }}
+            {{ truncatedName(item.name) }}
           </p>
 
           <!-- 가격 & 하트 아이콘 -->
@@ -179,4 +222,10 @@ const setActiveFilter = (filter) => {
       </button>
     </div>
   </section>
+  <AlertMessage
+    :message="alertMessage"
+    :type="alertType"
+    :visible="showAlert"
+    @close="showAlert = false"
+  />
 </template>
