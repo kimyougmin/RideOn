@@ -38,6 +38,15 @@ const handleSlideChange = (swiper) => {
   isBeginning.value = swiper.isBeginning
   isEnd.value = swiper.isEnd
 }
+
+const goToDetail = (item) => {
+  if (!item || !item.productId) {
+    console.warn("⚠️ productId가 없습니다!", item);
+    return;
+  }
+  itemStore.setSelectedItem(item);
+  router.push(`/riderPartsDetail/${item.productId}`);
+};
 </script>
 
 <template>
