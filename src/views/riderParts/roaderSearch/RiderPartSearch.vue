@@ -1,44 +1,57 @@
 <script setup>
-import ShopHeader from '@/components/ShopHeader.vue'
-import BasicFooter from '@/components/BasicFooter.vue';
-import { ref, onMounted, computed, watchEffect } from "vue";
+import ShopHeader from "@/components/ShopHeader.vue";
+import BasicFooter from "@/components/BasicFooter.vue";
+import { ref, onMounted, watch, computed } from "vue";
 import { getNaverItems } from "@/apis/naverSearchApi";
 
-const selectedSort = ref("추천순");
+const selectedSort = ref("sim");
 const items = ref([]);
-const visibleItems = ref([]); // 화면에 보이는 상품 리스트
-const itemsPerPage = 9; // 한 번에 표시할 개수
-const isLiked = ref(false); // 좋아요 상태
+const visibleItems = ref([]);
+const itemsPerPage = 9;
+const searchQuery = ref("");
 
 const sortOptions = [
-  { label: "추천순", value: "추천순" },
-  { label: "낮은 가격순", value: "낮은 가격순" },
-  { label: "높은 가격순", value: "높은 가격순" },
-  { label: "판매 많은순", value: "판매 많은순" },
-  { label: "리뷰 많은순", value: "리뷰 많은순" },
-  { label: "신상품순", value: "신상품순" },
+  { label: "추천순", value: "sim" },
+  { label: "낮은 가격순", value: "asc" },
+  { label: "높은 가격순", value: "dsc" },
+  { label: "신상품순", value: "date" },
 ];
 
 const cleanedItems = computed(() => {
   return items.value.map(item => {
     if (typeof item.title !== 'string') return { ...item, cleanTitle: '제목 없음' };
-    const cleanTitle = item.title.replace(/<\/?b>/g, ""); // <b>, </b> 제거
+    const parts = item.title.split('<b>');
+    let cleanTitle = parts[0].trim();
+    if (!cleanTitle && parts.length > 1) {
+      cleanTitle = parts[1].split('</b>')[1]?.trim() || parts[1].replace('</b>', '').trim();
+    }
     return { ...item, cleanTitle };
   });
 });
 
-watchEffect(() => {
+const searchItems = async () => {
+  if (!searchQuery.value.trim()) return;
+  const results = await getNaverItems(searchQuery.value, 100, selectedSort.value);
+  items.value = results;
   visibleItems.value = cleanedItems.value.slice(0, itemsPerPage);
-});
+};
 
 const loadMore = () => {
   const nextItems = cleanedItems.value.slice(visibleItems.value.length, visibleItems.value.length + itemsPerPage);
   visibleItems.value.push(...nextItems);
 };
 
+watch(selectedSort, async () => {
+  await searchItems();
+});
+
+watch(searchQuery, async () => {
+  await searchItems();
+});
+
 onMounted(async () => {
-  items.value = await getNaverItems("자전거부품", 81);
-  visibleItems.value = cleanedItems.value.slice(0, itemsPerPage);
+  searchQuery.value = "자전거부품";
+  await searchItems();
 });
 </script>
 
@@ -95,10 +108,10 @@ onMounted(async () => {
                 :key="sort.value"
                 class="flex-grow-0 flex-shrink-0 text-xl text-left cursor-pointer transition-colors duration-200 text-black6"
                 :class="{
-                  'w-14': sort.value === '추천순', // 추천순이면 w-14 적용
-                  'w-[97px]': sort.value !== '추천순', // 나머지는 기본 w-[97px]
-                  'text-black font-bold dark:text-black1': selectedSort === sort.value, // 선택된 항목이면 강조 + 다크모드에서 black1
-                  'text-black6 dark:text-black4': selectedSort !== sort.value // 선택되지 않은 항목 스타일
+                  'w-14': sort.value === 'sim',
+                  'w-[97px]': sort.value !== 'sim',
+                  'text-black font-bold dark:text-black1': selectedSort === sort.value,
+                  'text-black6 dark:text-black4': selectedSort !== sort.value
                 }"
                 @click="selectedSort = sort.value"
               >
