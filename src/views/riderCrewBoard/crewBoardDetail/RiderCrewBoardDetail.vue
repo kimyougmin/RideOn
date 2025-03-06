@@ -11,6 +11,7 @@ import { useRiderCrewBoardStore } from '@/stores/riderCrewBoard'
 import { onMounted, ref } from 'vue'
 import { useUserStore } from '@/stores/user'
 import { RIDEON_RIDERCREW_CHANNEL_ID } from '@/constants/channelId'
+import CrewLocationMap from './components/CrewLocationMap.vue'
 
 const DUMMY_RIDER_CREW = {
   id: 1,
@@ -203,9 +204,7 @@ onMounted(async () => {
       </article>
       <article class="col-span-6 flex flex-col gap-8">
         <RiderCrewContent :riderCrew="riderCrew" />
-        <div class="w-full h-64 bg-black2 rounded-lg flex items-center justify-center">
-          지도가 들어갈 공간
-        </div>
+        <CrewLocationMap :location="riderCrew.location" />
         <hr class="border-black3 dark:border-black6" />
         <CommentForm @submit="handleCommentSubmit" :isLoading="isLoading" />
         <CommentList
