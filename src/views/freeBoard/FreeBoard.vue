@@ -66,7 +66,7 @@ onMounted(async () => {
       </section>
 
       <!-- 게시글 목록 영역 -->
-      <section class="grid grid-cols-12 gap-4">
+      <section class="grid grid-cols-12 grid-rows-2 gap-4 min-h-[512px]">
         <FreeBoardListItem v-for="post in filteredPosts" :key="post._id" :post="post" />
       </section>
     </main>
