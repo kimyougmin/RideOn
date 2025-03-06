@@ -14,7 +14,7 @@ export const createQnaPost = async (postData) => {
       title: postData.title,
       content: postData.content,
       tags: postData.tags,
-      status: 'unsolved', // QnA 게시글 초기 상태는 미해결
+      status: 'UNSOLVED', // QnA 게시글 초기 상태는 미해결
     })
 
     formData.append('title', titleAndContent)
@@ -57,7 +57,7 @@ export const updateQnaPost = async (updatePost) => {
       title: updatePost.title,
       content: updatePost.content,
       tags: updatePost.tags,
-      status: updatePost.status || 'unsolved',
+      status: updatePost.status || 'UNSOLVED',
     })
 
     formData.append('postId', updatePost.id)
