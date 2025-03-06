@@ -2,7 +2,7 @@
 import { ref } from 'vue';
 import PersonalInfo from './PersonalInfo.vue';
 import Wishlist from './Wishlist.vue';
-// import Cart from './Cart.vue';
+import Cart from './Cart.vue';
 import History from './History.vue';
 import MypageSidebar from './MypageSidebar.vue';
 import BasicHeader from '@/components/BasicHeader.vue';
@@ -36,6 +36,7 @@ const toggleDarkMode = () => {
         <PersonalInfo v-if="activeMenu === 'profile'" />
         <Wishlist v-if="activeMenu === 'wishlist'" />
         <History v-if="activeMenu === 'history'" />
+        <Cart v-if="activeMenu === 'cart'" />
       </section>
     </main>
 
