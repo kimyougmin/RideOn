@@ -11,7 +11,7 @@ defineProps({
 
 <template>
   <article class="w-[620px] flex flex-col gap-8">
-    <div class="w-full h-[400px] overflow-hidden rounded-lg">
+    <div v-if="post.image" class="w-full h-[400px] overflow-hidden rounded-lg">
       <img :src="post.image" alt="placeholder" class="w-full h-full object-cover" />
     </div>
     <div class="flex flex-col gap-4">
