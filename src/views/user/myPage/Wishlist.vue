@@ -118,18 +118,26 @@ const setActiveFilter = (filter) => {
 }
 
 const goToDetailPage = (item) => {
-  const queryParams = new URLSearchParams({
-    id: item.id, 
-    rating: 4.5,
-    brand: item.brand,
-    category: item.category,
-    name: item.name,
-    price: item.price,
-    image: item.image,
-  }).toString()
-
-  window.location.href = `/bicycleDetail/1?${queryParams}`
+  if (item.category === 'bike') {
+    // 자전거는 기존처럼 쿼리 파라미터 포함해서 이동
+    const queryParams = new URLSearchParams({
+      id: item.id, 
+      rating: 4.5,
+      brand: item.brand,
+      category: item.category,
+      name: item.name,
+      price: item.price,
+      image: item.image,
+    }).toString()
+    window.location.href = `/bicycleDetail/1?${queryParams}`
+  } else {
+    // 부품 & 용품은 `/riderPartsDetail`로만 이동 (쿼리 X)
+    window.location.href = '/riderPartsDetail'
+    // productId - 기능 완성 되면 변경
+    // window.location.href = `/riderPartsDetail?productId=${item.id}`
+  }
 }
+
 
 const truncatedName = (name) => {
   const maxLength = 22
