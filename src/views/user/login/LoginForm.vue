@@ -124,72 +124,74 @@ const handleAlertClose = () => {
 </script>
 
 <template>
-  <form @submit.prevent="handleSubmit" class="w-full flex flex-col items-center">
-    <div class="w-[428px] space-y-[32px]">
-      <button type="submit" class="hidden"></button>
-      <!-- 이메일 -->
-      <div>
-        <label class="block text-sm font-medium mb-1 text-black7 dark:text-black3">이메일</label>
-        <input
-          v-model="email"
-          type="email"
-          ref="emailRef"
-          class="w-full h-[48px] p-3 border border-black4 rounded text-base bg-transparent focus:border-primaryRed outline-none dark:border-black1 dark:placeholder:text-black1 dark:text-black1 placeholder:text-black4"
-          placeholder="이메일을 입력하세요."
-          @blur="validateEmail"
-        />
-        <p class="text-primaryRed text-sm h-5">{{ emailError }}</p>
-      </div>
-
-      <!-- 비밀번호 -->
-      <div>
-        <label class="block text-sm font-medium mb-1 text-black7 dark:text-black3">비밀번호</label>
-        <input
-          v-model="password"
-          type="password"
-          ref="passwordRef"
-          class="w-full h-[48px] p-3 border border-black4 rounded text-base bg-transparent focus:border-primaryRed outline-none dark:border-black1 dark:placeholder:text-black1 dark:text-black1 placeholder:text-black4"
-          placeholder="비밀번호를 입력하세요."
-          @focus="handleFocus('password')"
-          @blur="validatePassword"
-        />
-        <p class="text-primaryRed text-sm h-5">{{ passwordError }}</p>
-      </div>
-
-      <!-- 체크박스 및 링크 -->
-      <div class="flex justify-between items-center text-sm mb-1 w-[428px] -mt-[16px]">
-        <div class="flex items-center">
-          <label class="flex items-center cursor-pointer">
-            <input type="checkbox" class="mr-2" v-model="rememberMe" />
-            <p class="cursor-pointer dark:text-black3 mt-[15px]">아이디 저장</p>
-          </label>
-        </div>
+  <div class="min-h-screen flex items-start justify-center pt-[50px]">
+    <form @submit.prevent="handleSubmit" class="w-full flex flex-col items-center mt-[-71px]">
+      <div class="w-[428px] space-y-[32px]">
+        <button type="submit" class="hidden"></button>
+        <!-- 이메일 -->
         <div>
-          <a href="#" class="mr-2 dark:text-black3">아이디 찾기</a>
-          <a href="#" class="dark:text-black3">비밀번호 찾기</a>
+          <label class="block text-sm font-medium mb-1 text-black7 dark:text-black3">이메일</label>
+          <input
+            v-model="email"
+            type="email"
+            ref="emailRef"
+            class="w-full h-[48px] p-3 border border-black4 rounded text-base bg-transparent focus:border-primaryRed outline-none dark:border-black1 dark:placeholder:text-black1 dark:text-black1 placeholder:text-black4"
+            placeholder="이메일을 입력하세요."
+            @blur="validateEmail"
+          />
+          <p class="text-primaryRed text-sm h-5">{{ emailError }}</p>
         </div>
+
+        <!-- 비밀번호 -->
+        <div>
+          <label class="block text-sm font-medium mb-1 text-black7 dark:text-black3">비밀번호</label>
+          <input
+            v-model="password"
+            type="password"
+            ref="passwordRef"
+            class="w-full h-[48px] p-3 border border-black4 rounded text-base bg-transparent focus:border-primaryRed outline-none dark:border-black1 dark:placeholder:text-black1 dark:text-black1 placeholder:text-black4"
+            placeholder="비밀번호를 입력하세요."
+            @blur="validatePassword"
+          />
+          <p class="text-primaryRed text-sm h-5">{{ passwordError }}</p>
+        </div>
+
+        <!-- 체크박스 및 링크 -->
+        <div class="flex justify-between items-center text-sm mb-1 w-[428px] -mt-[16px]">
+          <div class="flex items-center">
+            <label class="flex items-center cursor-pointer">
+              <input type="checkbox" class="mr-2" v-model="rememberMe" />
+              <p class="cursor-pointer dark:text-black3 mt-[15px]">아이디 저장</p>
+            </label>
+          </div>
+          <div>
+            <a href="#" class="mr-2 dark:text-black3">아이디 찾기</a>
+            <a href="#" class="dark:text-black3">비밀번호 찾기</a>
+          </div>
+        </div>
+
+        <!-- LoginButtons 컴포넌트 -->
+        <LoginButtons class="mt-[15px]" />
+
+        <!-- 로그인 버튼 -->
+        <p
+          class="w-[428px] h-[47px] border rounded text-lg font-bold -translate-y-2 transition-all focus:ring-2 focus:ring-primaryRed flex items-center justify-center cursor-pointer bg-black7 text-black1 border-black7 hover:bg-primaryRed hover:text-white dark:bg-black3 dark:text-black7 dark:border-black3 dark:hover:bg-primaryRed"
+          @click="handleSubmit"
+          @keydown.enter="handleSubmit"
+        >
+          {{ isLoading ? '로그인 중...' : '로그인' }}
+        </p>
+
+        <p v-if="apiError" class="text-primaryRed text-sm text-center mt-2">{{ apiError }}</p>
+
+        <p class="mt-[10px] text-sm dark:text-black3 text-center">
+          Wherever you want, <span class="text-primaryRed font-bold">RideOn</span>
+          <a href="/" class="underline ml-1 dark:text-blue-400 text-blue-600">홈으로 돌아가기</a>
+        </p>
       </div>
+    </form>
+  </div>
 
-      <!-- LoginButtons 컴포넌트 -->
-      <LoginButtons class="mt-[15px]" />
-
-      <!-- 로그인 버튼 -->
-      <p
-        class="w-[428px] h-[47px] border rounded text-lg font-bold -translate-y-2 transition-all focus:ring-2 focus:ring-primaryRed flex items-center justify-center cursor-pointer bg-black7 text-black1 border-black7 hover:bg-primaryRed hover:text-white dark:bg-black3 dark:text-black7 dark:border-black3 dark:hover:bg-primaryRed"
-        @click="handleSubmit"
-        @keydown.enter="handleSubmit"
-      >
-        {{ isLoading ? '로그인 중...' : '로그인' }}
-      </p>
-
-      <p v-if="apiError" class="text-primaryRed text-sm text-center mt-2">{{ apiError }}</p>
-
-      <p class="mt-[10px] text-sm dark:text-black3 text-center">
-        Wherever you want, <span class="text-primaryRed font-bold">RideOn</span>
-        <a href="/" class="underline ml-1 dark:text-blue-400 text-blue-600">홈으로 돌아가기</a>
-      </p>
-    </div>
-  </form>
   <!-- alert -->
   <AlertComponent
     :type="alertType || 'success'"

@@ -8,7 +8,7 @@ import defaultProfile from './images/userImg.svg'
 import { useUserStore } from '@/stores/user'
 import { formatPhoneNumber } from '@/utils/format'
 import AlertComponent from './components/Alert.vue'
-// import useSignupValidation from '../signup/useSignupValidation'
+import { validateUserInput, showAlert, alertType, alertMessage } from './components/useValidation'
 
 const props = defineProps({
   userData: {
@@ -27,10 +27,6 @@ const props = defineProps({
 const emit = defineEmits(['updateUser', 'changeNickname'])
 const router = useRouter()
 const userStore = useUserStore()
-
-const showAlert = ref(false)
-const alertType = ref('success')
-const alertMessage = ref('')
 
 const handleAlertClose = () => {
   showAlert.value = false
@@ -60,7 +56,6 @@ const loadUserInfo = async () => {
 
       if (data.fullName) {
         const parts = data.fullName.split('|').map((p) => p.trim())
-
         nickname = parts[0] || '사용자'
 
         // Base64로 인코딩된 JSON 데이터 디코딩 후 추출
@@ -207,6 +202,10 @@ const handleFileChange = async (e) => {
 }
 
 const updateProfile = async () => {
+  if (!validateUserInput(user.value)) {
+    return;
+  }
+  
   try {
     let storedToken = localStorage.getItem('userInfo') || localStorage.getItem('user')
     let token = null
