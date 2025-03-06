@@ -1,14 +1,14 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { fetchUserLikesApi, removeUserLikeApi } from '@/apis/userLikesApi'
-
+import { fetchUserLikesApi } from '@/apis/userLikesApi'
+import { fetchLikeRemoveApi } from '@/apis/fetchLikeRemoveApi'
 // 기본 이미지 URL
-const defaultImage = 'https://img.danawa.com/prod_img/500000/437/092/img/28092437_1.jpg?shrink=330:*&_v=20240108170952'
+const defaultImage =
+  'https://img.danawa.com/prod_img/500000/437/092/img/28092437_1.jpg?shrink=330:*&_v=20240108170952'
 
 // 로컬스토리지에서 `_id` 가져오기
 const userData = JSON.parse(localStorage.getItem('user'))
 const userId = userData?._id || null
-console.log(userId)
 
 // 찜 목록 데이터
 const wishlist = ref([])
@@ -31,10 +31,7 @@ const fetchWishlist = async () => {
   }
 
   try {
-    console.log(' 찜 목록 불러오는 중')
     const data = await fetchUserLikesApi(userId)
-
-    console.log('API 응답 데이터:', data)
 
     wishlist.value = data.map((item) => ({
       id: item.like_key,
@@ -43,7 +40,9 @@ const fetchWishlist = async () => {
       price: Number(item.price),
       image: item.image || defaultImage,
       brand: item.brand,
-      category: ['MTB', 'KID', '로드', 'HYBRID', 'EBIKE', 'PIXIE'].includes(item.category) ? 'bike' : item.category,
+      category: ['MTB', 'KID', '로드', 'HYBRID', 'EBIKE', 'PIXIE'].includes(item.category)
+        ? 'bike'
+        : item.category,
     }))
   } catch (error) {
     console.error('찜 목록 불러오기 실패:', error)
@@ -52,19 +51,21 @@ const fetchWishlist = async () => {
 
 // 찜 목록에서 제거하는 함수 (API 호출)
 const removeFromWishlist = async (item) => {
-  if (!userId || !item.title) return
+  if (!userId || !item.title) {
+    console.error('실패')
+    return
+  }
 
   try {
-    const response = await removeUserLikeApi(item.title, userId)
+    const response = await fetchLikeRemoveApi({ title: item.title, id: userId })
 
     if (response?.status === 200) {
       wishlist.value = wishlist.value.filter((w) => w.id !== item.id)
-      console.log('찜 삭제 성공:', response.message)
     } else {
-      console.error('찜 삭제 실패:', response)
+      console.error(' 찜 삭제 실패:', response.message || response)
     }
   } catch (error) {
-    console.error('찜 삭제 중 오류 발생:', error)
+    console.error(' 찜 삭제 중 오류 발생:', error)
   }
 }
 
@@ -130,7 +131,9 @@ const setActiveFilter = (filter) => {
         class="w-[300px] rounded-lg border border-black3 dark:border-black5"
       >
         <!-- 이미지 박스 -->
-        <div class="w-full h-[191px] border-b flex items-center justify-center bg-black1 dark:bg-black1 rounded-t-lg">
+        <div
+          class="w-full h-[191px] border-b flex items-center justify-center bg-black1 dark:bg-black1 rounded-t-lg"
+        >
           <img
             :src="item.image || defaultImage"
             alt="상품 이미지"

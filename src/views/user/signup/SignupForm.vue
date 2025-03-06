@@ -55,7 +55,7 @@ const handleSignup = async () => {
       alertType.value = 'error'
       alertMessage.value = '회원가입에 실패하였습니다. 잠시후 다시 시도해주세요.'
       showAlert.value = true
-      console.log(error);
+      console.error(error);
     }
   }
 };
