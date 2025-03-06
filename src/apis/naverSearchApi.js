@@ -9,19 +9,19 @@ const naverShoppingApi = axios.create({
   timeout: 5000,
 });
 
-export async function getNaverItems(targetWord) {
+export async function getNaverItems(targetWord, displayCount = 32, sortOption = "sim") {
   try {
     const response = await naverShoppingApi.get('/v1/search/shop.json', {
       params: {
         query: targetWord,
-        display: 20,
+        display: displayCount,
+        sort: sortOption,
       },
       headers: {
         'X-Naver-Client-Id': naverID,
         'X-Naver-Client-Secret': naverSecret,
       },
     });
-    console.log('API 응답 데이터:', response.data);
     if (response.data && response.data.items) {
       return response.data.items;
     } else {

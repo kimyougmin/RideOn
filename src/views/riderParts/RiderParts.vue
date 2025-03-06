@@ -10,17 +10,18 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import  './swiperCss.css';
+import { Navigation } from 'swiper/modules';
 
-const query = ref('자전거용품');
+const query = ref('자전거부품');
 const items = ref([]);
 const router = useRouter();
 const itemStore = useItemStore();
 
 const fetchNaverDatas = async () => {
-  console.log(query.value);
   if(!query.value) return;
   try {
     items.value = await getNaverItems(query.value);
+    console.log("✅ API 응답 데이터:", items);
   } catch (error) {
     console.error('검색 오류 : ', error);
   }
@@ -29,23 +30,21 @@ const fetchNaverDatas = async () => {
 const cleanedItems = computed(() => {
   return items.value.map(item => {
     if (typeof item.title !== 'string') return { ...item, cleanTitle: '제목 없음' };
-
     const parts = item.title.split('<b>');
     let cleanTitle = parts[0].trim();
     if (!cleanTitle && parts.length > 1) {
       cleanTitle = parts[1].split('</b>')[1]?.trim() || parts[1].replace('</b>', '').trim();
     }
-
     return { ...item, cleanTitle };
   });
 });
 
 const goToDetailPage = (item) => {
-  console.log("✅ 저장되는 아이템:", item); // 콘솔에서 확인
   itemStore.setSelectedItem(item);
   localStorage.setItem('selectedItem', JSON.stringify(item));
   router.push('/riderPartsDetail');
 };
+
 onMounted(() => {
   fetchNaverDatas();
 });
@@ -154,7 +153,7 @@ onMounted(() => {
               라이딩에 필요한 모든 장비
             </span>
             <br/>
-            <span class="flex-grow-0 flex-shrink-0 w-[641px] text-xl font-medium text-center text-black">
+            <span class="flex-grow-0 flex-shrink-0 w-[641px] text-xl font-medium text-center dark:text-black1">
               내구성 높은 부품, 편안한 라이딩을 위한 용품, 그리고 스타일을 더할 액세서리까지
             </span>
           </p>
@@ -215,11 +214,12 @@ onMounted(() => {
         <swiper
           v-if="items.length > 0"
           :slidesPerView="4"
+          :slidesPerGroup="4"
           :spaceBetween="30"
           :loop="true"
           :pagination="{ clickable: true }"
           :navigation="true"
-          :modules="modules"
+          :modules="[Navigation]"
           class="mySwiper px-11 dark:bg-black9 pb-1"
         >
           <swiper-slide v-for="(item, index) in cleanedItems" :key="index">

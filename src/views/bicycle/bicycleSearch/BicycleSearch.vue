@@ -2,14 +2,19 @@
 
 import ShopHeader from '@/components/ShopHeader.vue'
 import BasicFooter from '@/components/BasicFooter.vue'
-import { onMounted, ref, watch } from 'vue'
+import { nextTick, onMounted, ref, watch } from 'vue'
 import bikeCategory from '../../../../public/bike_category_data.json'
 import bikeBrand from '../../../../public/bike_brand_data.json'
+import { fetchUserLikesApi } from '@/apis/userLikesApi.js'
+import { fetchLikeCreateApi } from '@/apis/fetchLikeCreateApi.js'
+import { fetchLikeRemoveApi } from '@/apis/fetchLikeRemoveApi.js'
+
 const groupList = ref([]);
 const groupListShot = ref([]);
-const selectOption = ref([]);
-const seeMore = ref(true);
+const union = ref([]);
 const searchValue = ref("");
+const seeMore = ref(true);
+const selectOption = ref([]);
 
 const receiveHandler = (newValue) => {
   searchValue.value = newValue;
@@ -27,7 +32,13 @@ const onSelectDeleteHandler = (e) => {
   selectOption.value = selectOption.value.filter(item => item !== e);
 };
 
-onMounted(() => {
+onMounted(async () => {
+  const user = JSON.parse(localStorage.getItem('user'));
+  if(user._id !== undefined){
+    const date = await fetchUserLikesApi(user._id);
+    union.value = date.map((e) => e.title);
+  }
+
   const tempList = [];
   for(const item in bikeCategory) {
     if(item !== "KID") {
@@ -36,13 +47,13 @@ onMounted(() => {
       }
     }
   }
-  groupList.value = tempList;
-  const temp =[];
-  for(let i = 0; i < 6; i++) {
-    temp.push(tempList[i]);
-  }
-  groupListShot.value = temp;
+  groupList.value.splice(0, groupList.value.length, ...tempList);
+
+  await nextTick(); // Vue 상태 업데이트 후 실행
+  groupListShot.value = tempList.slice(0, 6);
+
 });
+
 watch(selectOption, async (newQuestion, oldQuestion) => {
   const category = [];
   const brand = [];
@@ -135,6 +146,20 @@ watch(searchValue, async (newQuestion) => {
   }
   groupList.value = tempList;
 })
+const likeCreateHandler = async (item) => {
+  const user = JSON.parse(localStorage.getItem('user'));
+  if(user._id !== undefined){
+    union.value = [...union.value, `${item.id}`];
+    await fetchLikeCreateApi({_id: item.id, title: user._id, name: item.name, price: item.price, image: item.image, brand: item.brand, category: item.category})
+  }
+}
+const likeRemoveHandler = async (item) => {
+  const user = JSON.parse(localStorage.getItem('user'));
+  if(user._id !== undefined){
+    union.value = union.value.filter((e) => e !== `${item.id}`);
+    await fetchLikeRemoveApi({id: user._id, title:  item.id});
+  }
+}
 </script>
 
 <template>
@@ -200,8 +225,8 @@ watch(searchValue, async (newQuestion) => {
         </div>
 
         <div class="ml-4 bg-white w-[1120px] max-w-[1120px] p-4 drop-shadow-custom rounded-lg dark:bg-black8">
-          <div v-if="seeMore" class="grid grid-cols-2 gap-4">
-            <div  v-for="item in groupListShot" :key="item.id" class="flex">
+          <div v-if="seeMore && union.length > 0" class="grid grid-cols-2 gap-4">
+            <div v-for="item in groupListShot" :key="item.id" class="flex">
               <router-link :to="{ name: `bicycleDetail`, params: {id: item.id}, query: { id: item.id, rating: item.rating, brand: item.brand, category: item.category, name: item.name, price: item.price, image: item.image }}">
                 <img :src="item.image" class="border rounded-lg w-[200px] h-[200px] mr-4">
               </router-link>
@@ -209,8 +234,12 @@ watch(searchValue, async (newQuestion) => {
                 <div class="flex justify-between">
                   <p class="mb-0 font-sans dark:text-black1">{{ item.brand }}</p>
                   <!-- 찜 -->
-                  <svg width="18" height="17" viewBox="0 0 18 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <svg v-if="!union.includes(`${item.id}`)"  @click="likeCreateHandler(item)" width="18" height="17" viewBox="0 0 18 17" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M17 5.09091C17 2.83156 15.1345 1 12.8333 1C11.1128 1 9.63581 2.02389 9 3.48493C8.3642 2.02389 6.88722 1 5.16667 1C2.86548 1 1 2.83156 1 5.09091C1 11.6551 9 16 9 16C9 16 17 11.6551 17 5.09091Z" class="dark:stroke-black1" stroke="#2A2A2A" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <!-- 채워진찜 -->
+                  <svg v-else @click="likeRemoveHandler(item)" width="16" height="15" viewBox="0 0 16 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M16 4.09091C16 1.83156 14.1345 0 11.8333 0C10.1128 0 8.63581 1.02389 8 2.48493C7.3642 1.02389 5.88722 0 4.16667 0C1.86548 0 0 1.83156 0 4.09091C0 10.6551 8 15 8 15C8 15 16 10.6551 16 4.09091Z" fill="#DC3644"/>
                   </svg>
                 </div>
                 <p class="my-[9px] font-impact truncate h-[24px] w-[220px] dark:text-black1">{{ item.name }}</p>
@@ -237,15 +266,19 @@ watch(searchValue, async (newQuestion) => {
           </div>
           <div v-if="!seeMore" class="grid grid-cols-2 gap-4">
             <div  v-for="item in groupList" :key="item.id" class="flex">
-              <router-link :to="{ name: `bicycleDetail`, params: {id: item.id}, query: { id: item.id, rating: item.rating, category: item.category, name: item.name, price: item.price, image: item.image }}">
+              <router-link :to="{ name: `bicycleDetail`, params: {id: item.id}, query: { id: item.id, rating: item.rating, brand: item.brand, category: item.category, name: item.name, price: item.price, image: item.image }}">
                 <img :src="item.image" class="border rounded-lg w-[200px] h-[200px] mr-4">
               </router-link>
               <div>
                 <div class="flex justify-between">
                   <p class="mb-0 font-sans dark:text-black1">{{ item.brand }}</p>
                   <!-- 찜 -->
-                  <svg width="18" height="17" viewBox="0 0 18 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <svg v-if="!union.includes(`${item.id}`)" @click="likeCreateHandler(item)" width="18" height="17" viewBox="0 0 18 17" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M17 5.09091C17 2.83156 15.1345 1 12.8333 1C11.1128 1 9.63581 2.02389 9 3.48493C8.3642 2.02389 6.88722 1 5.16667 1C2.86548 1 1 2.83156 1 5.09091C1 11.6551 9 16 9 16C9 16 17 11.6551 17 5.09091Z" class="dark:stroke-black1" stroke="#2A2A2A" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <!-- 채워진 찜 -->
+                  <svg v-else @click="likeRemoveHandler(item)" width="16" height="15" viewBox="0 0 16 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M16 4.09091C16 1.83156 14.1345 0 11.8333 0C10.1128 0 8.63581 1.02389 8 2.48493C7.3642 1.02389 5.88722 0 4.16667 0C1.86548 0 0 1.83156 0 4.09091C0 10.6551 8 15 8 15C8 15 16 10.6551 16 4.09091Z" fill="#DC3644"/>
                   </svg>
                 </div>
                 <p class="my-[9px] font-impact truncate h-[24px] w-[220px] dark:text-black1">{{ item.name }}</p>

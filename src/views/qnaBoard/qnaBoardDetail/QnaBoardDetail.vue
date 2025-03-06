@@ -99,22 +99,13 @@ const handleLike = async () => {
     isLoading.value = true
     const newLikeStatus = !isLiked.value
 
-    const qnaData = {
-      id: qna.value._id,
-      title: qna.value.title,
-      content: qna.value.content,
-      tags: qna.value.tags,
-      channelId: RIDEON_QNA_CHANNEL_ID,
-      image: qna.value.image,
-    }
-
     let updatedPost
 
     if (!newLikeStatus) {
       const likeId = qna.value.likes.find((like) => like.user === userStore.user._id)._id
-      updatedPost = await qnaStore.unlikePost(likeId, qnaData)
+      updatedPost = await qnaStore.unlikePost(likeId, qnaId)
     } else {
-      updatedPost = await qnaStore.likePost(qna.value._id, qnaData)
+      updatedPost = await qnaStore.likePost(qnaId)
     }
 
     qna.value = updatedPost
@@ -129,16 +120,7 @@ const handleLike = async () => {
 const handleCommentSubmit = async (newComment) => {
   try {
     isLoading.value = true
-    const qnaData = {
-      id: qna.value._id,
-      title: qna.value.title,
-      content: qna.value.content,
-      tags: qna.value.tags,
-      channelId: RIDEON_QNA_CHANNEL_ID,
-      image: qna.value.image,
-    }
-
-    await qnaStore.createComment(qnaId, newComment, qnaData)
+    await qnaStore.createComment(qnaId, newComment)
     qna.value = qnaStore.currentPost
   } catch (error) {
     console.error('댓글 생성 중 오류가 발생했습니다:', error)
@@ -150,16 +132,7 @@ const handleCommentSubmit = async (newComment) => {
 const handleDeleteComment = async (commentId) => {
   try {
     isLoading.value = true
-    const qnaData = {
-      id: qna.value._id,
-      title: qna.value.title,
-      content: qna.value.content,
-      tags: qna.value.tags,
-      channelId: RIDEON_QNA_CHANNEL_ID,
-      image: qna.value.image,
-    }
-
-    await qnaStore.deleteComment(commentId, qnaData)
+    await qnaStore.deleteComment(commentId, qnaId)
     qna.value = qnaStore.currentPost
   } catch (error) {
     console.error('댓글 삭제 중 오류가 발생했습니다:', error)

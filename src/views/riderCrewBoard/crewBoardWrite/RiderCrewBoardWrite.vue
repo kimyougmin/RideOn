@@ -105,9 +105,10 @@ const CONTENT_PLACEHOLDER =
                   />
                   <label
                     :for="location"
-                    class="text-body1 px-4 py-1 border rounded-full cursor-pointer transition-colors"
+                    class="text-body1 px-4 py-1 border rounded-full cursor-pointer transition-colors dark:text-black3 dark:border-black3"
                     :class="{
-                      'bg-primaryRed text-white border-primaryRed': selectedLocation === location,
+                      'bg-primaryRed text-white border-primaryRed dark:bg-primaryRed dark:text-black1 dark:border-primaryRed':
+                        selectedLocation === location,
                     }"
                   >
                     {{ location }}
@@ -131,9 +132,9 @@ const CONTENT_PLACEHOLDER =
                   />
                   <label
                     :for="'member-count-' + count.value"
-                    class="text-body1 px-4 py-1 border rounded-full cursor-pointer transition-colors"
+                    class="text-body1 px-4 py-1 border rounded-full cursor-pointer transition-colors dark:text-black3 dark:border-black3"
                     :class="{
-                      'bg-primaryRed text-white border-primaryRed':
+                      'bg-primaryRed text-white border-primaryRed dark:bg-primaryRed dark:text-black1 dark:border-primaryRed':
                         selectedMemberCount === count.value,
                     }"
                   >

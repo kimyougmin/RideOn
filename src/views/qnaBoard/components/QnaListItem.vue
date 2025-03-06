@@ -15,7 +15,7 @@ defineProps({
       name: 'QnaBoardDetail',
       params: { id: qna._id },
     }"
-    class="w-full flex flex-col gap-6 items-start py-8 border-t border-black3 dark:border-black6"
+    class="w-full flex flex-col gap-6 items-start py-8 border-t border-black3 dark:border-black6 grow-0"
   >
     <!-- 질문 정보 상단 -->
     <div class="flex flex-col gap-4">

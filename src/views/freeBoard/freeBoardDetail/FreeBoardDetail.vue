@@ -9,7 +9,6 @@ import { useUserStore } from '@/stores/user'
 import { onMounted, ref } from 'vue'
 import ActionButtons from './components/ActionButtons.vue'
 import PostContent from './components/PostContent.vue'
-import { RIDEON_FREEBOARD_CHANNEL_ID } from '@/constants/channelId'
 
 const DUMMY_POST = {
   id: 1,
@@ -98,15 +97,6 @@ const handleLike = async () => {
     return
   }
 
-  const postData = {
-    id: post.value._id,
-    title: post.value.title,
-    content: post.value.content,
-    tags: post.value.tags,
-    channelId: RIDEON_FREEBOARD_CHANNEL_ID,
-    image: post.value.image,
-  }
-
   try {
     isLoading.value = true
     const newLikeStatus = !isLiked.value
@@ -115,9 +105,9 @@ const handleLike = async () => {
 
     if (!newLikeStatus) {
       const likeId = post.value.likes.find((like) => like.user === userStore.user._id)._id
-      updatedPost = await freeBoardStore.unlikePost(likeId, postData)
+      updatedPost = await freeBoardStore.unlikePost(likeId, postId)
     } else {
-      updatedPost = await freeBoardStore.likePost(post.value._id, postData)
+      updatedPost = await freeBoardStore.likePost(postId)
     }
 
     post.value = updatedPost
@@ -132,16 +122,7 @@ const handleLike = async () => {
 const handleCommentSubmit = async (newComment) => {
   try {
     isLoading.value = true
-    const postData = {
-      id: post.value._id,
-      title: post.value.title,
-      content: post.value.content,
-      tags: post.value.tags,
-      channelId: RIDEON_FREEBOARD_CHANNEL_ID,
-      image: post.value.image,
-    }
-
-    await freeBoardStore.createComment(postId, newComment, postData)
+    await freeBoardStore.createComment(postId, newComment)
     post.value = freeBoardStore.currentPost
   } catch (error) {
     console.error('댓글 생성 중 오류가 발생했습니다:', error)
@@ -153,16 +134,7 @@ const handleCommentSubmit = async (newComment) => {
 const handleDeleteComment = async (commentId) => {
   try {
     isLoading.value = true
-    const postData = {
-      id: post.value._id,
-      title: post.value.title,
-      content: post.value.content,
-      tags: post.value.tags,
-      channelId: RIDEON_FREEBOARD_CHANNEL_ID,
-      image: post.value.image,
-    }
-
-    await freeBoardStore.deleteComment(commentId, postData)
+    await freeBoardStore.deleteComment(commentId, postId)
     post.value = freeBoardStore.currentPost
   } catch (error) {
     console.error('댓글 삭제 중 오류가 발생했습니다:', error)
