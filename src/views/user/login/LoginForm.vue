@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, watchEffect, nextTick,  } from 'vue'
+import { ref, onMounted, watchEffect, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import { postSigninApi } from '@/apis/auth'
 import { useUserStore } from '@/stores/user'
@@ -39,8 +39,6 @@ const handleSubmit = async () => {
       apiError.value = ''
 
       const response = await postSigninApi({ email: email.value, password: password.value })
-
-      console.log('로그인에 성공한 데이터', response)
 
       if (
         !response ||
@@ -193,10 +191,10 @@ const handleAlertClose = () => {
     </div>
   </form>
   <!-- alert -->
-      <AlertComponent
-        :type="alertType || 'success'"
-        :message="alertMessage"
-        :visible="showAlert"
-        @close="handleAlertClose"
-      />
+  <AlertComponent
+    :type="alertType || 'success'"
+    :message="alertMessage"
+    :visible="showAlert"
+    @close="handleAlertClose"
+  />
 </template>

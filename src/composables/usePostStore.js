@@ -4,8 +4,9 @@ export function usePostStore(options = {}) {
     updatePostApi,
     likePostApi,
     unlikePostApi,
+    createCommentApi,
+    deleteCommentApi,
     channelId,
-    // hasImageUpload = true,
     hasStatus = false,
   } = options
 
@@ -33,11 +34,20 @@ export function usePostStore(options = {}) {
         }
       },
 
-      async fetchPostById(id) {
+      async fetchPostById(id, refresh = false) {
         this.isLoading = true
         this.error = null
 
         try {
+          if (refresh) {
+            await this.fetchPosts()
+            const post = this.posts.find((post) => post._id === id)
+            if (post) {
+              this.currentPost = post
+              return post
+            }
+          }
+
           const existingPost = this.posts.find((post) => post._id === id)
           if (existingPost) {
             this.currentPost = existingPost
@@ -144,10 +154,10 @@ export function usePostStore(options = {}) {
         }
       },
 
-      async likePost(postId, postData) {
+      async likePost(postId) {
         try {
           await likePostApi(postId)
-          const updatedPost = await this.updatePost(postData)
+          const updatedPost = await this.fetchPostById(postId, true)
           return updatedPost
         } catch (error) {
           console.error('게시글 좋아요 실패:', error)
@@ -155,13 +165,35 @@ export function usePostStore(options = {}) {
         }
       },
 
-      async unlikePost(likeId, postData) {
+      async unlikePost(likeId, postId) {
         try {
           await unlikePostApi(likeId)
-          const updatedPost = await this.updatePost(postData)
+          const updatedPost = await this.fetchPostById(postId, true)
           return updatedPost
         } catch (error) {
           console.error('게시글 좋아요 취소 실패:', error)
+          throw error
+        }
+      },
+
+      async createComment(postId, comment) {
+        try {
+          await createCommentApi(postId, comment)
+          const updatedPost = await this.fetchPostById(postId, true)
+          return updatedPost
+        } catch (error) {
+          console.error('게시글 댓글 생성 실패:', error)
+          throw error
+        }
+      },
+
+      async deleteComment(commentId, postId) {
+        try {
+          await deleteCommentApi(commentId)
+          const updatedPost = await this.fetchPostById(postId, true)
+          return updatedPost
+        } catch (error) {
+          console.error('게시글 댓글 삭제 실패:', error)
           throw error
         }
       },

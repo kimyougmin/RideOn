@@ -14,7 +14,7 @@ export const createQnaPost = async (postData) => {
       title: postData.title,
       content: postData.content,
       tags: postData.tags,
-      status: 'unsolved', // QnA 게시글 초기 상태는 미해결
+      status: 'UNSOLVED', // QnA 게시글 초기 상태는 미해결
     })
 
     formData.append('title', titleAndContent)
@@ -57,7 +57,7 @@ export const updateQnaPost = async (updatePost) => {
       title: updatePost.title,
       content: updatePost.content,
       tags: updatePost.tags,
-      status: updatePost.status || 'unsolved',
+      status: updatePost.status || 'UNSOLVED',
     })
 
     formData.append('postId', updatePost.id)
@@ -85,30 +85,6 @@ export const deleteQnaPost = async (postId) => {
     return response.data
   } catch (error) {
     console.error('QnA 게시글 삭제 오류:', error.response?.data || error.message)
-    throw error
-  }
-}
-
-// 게시글 좋아요
-export const likeQnaPost = async (postId) => {
-  try {
-    const response = await axiosApi.post('/likes/create', { postId })
-    return response.data
-  } catch (error) {
-    console.error('QnA 게시글 좋아요 오류:', error.response?.data || error.message)
-    throw error
-  }
-}
-
-// 게시글 좋아요 취소
-export const unlikeQnaPost = async (likeId) => {
-  try {
-    const response = await axiosApi.delete('/likes/delete', {
-      data: { id: likeId },
-    })
-    return response.data
-  } catch (error) {
-    console.error('QnA 게시글 좋아요 취소 오류:', error.response?.data || error.message)
     throw error
   }
 }

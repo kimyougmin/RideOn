@@ -9,7 +9,6 @@ import { useUserStore } from '@/stores/user'
 import { onMounted, ref } from 'vue'
 import ActionButtons from './components/ActionButtons.vue'
 import PostContent from './components/PostContent.vue'
-import { RIDEON_FREEBOARD_CHANNEL_ID } from '@/constants/channelId'
 
 const DUMMY_POST = {
   id: 1,
@@ -102,28 +101,43 @@ const handleLike = async () => {
     isLoading.value = true
     const newLikeStatus = !isLiked.value
 
-    const postData = {
-      id: post.value._id,
-      title: post.value.title,
-      content: post.value.content,
-      tags: post.value.tags,
-      channelId: RIDEON_FREEBOARD_CHANNEL_ID,
-      image: post.value.image,
-    }
-
     let updatedPost
 
     if (!newLikeStatus) {
       const likeId = post.value.likes.find((like) => like.user === userStore.user._id)._id
-      updatedPost = await freeBoardStore.unlikePost(likeId, postData)
+      updatedPost = await freeBoardStore.unlikePost(likeId, postId)
     } else {
-      updatedPost = await freeBoardStore.likePost(post.value._id, postData)
+      updatedPost = await freeBoardStore.likePost(postId)
     }
 
     post.value = updatedPost
     isLiked.value = newLikeStatus
   } catch (error) {
     console.error('좋아요 처리 중 오류가 발생했습니다:', error)
+  } finally {
+    isLoading.value = false
+  }
+}
+
+const handleCommentSubmit = async (newComment) => {
+  try {
+    isLoading.value = true
+    await freeBoardStore.createComment(postId, newComment)
+    post.value = freeBoardStore.currentPost
+  } catch (error) {
+    console.error('댓글 생성 중 오류가 발생했습니다:', error)
+  } finally {
+    isLoading.value = false
+  }
+}
+
+const handleDeleteComment = async (commentId) => {
+  try {
+    isLoading.value = true
+    await freeBoardStore.deleteComment(commentId, postId)
+    post.value = freeBoardStore.currentPost
+  } catch (error) {
+    console.error('댓글 삭제 중 오류가 발생했습니다:', error)
   } finally {
     isLoading.value = false
   }
@@ -171,8 +185,13 @@ onMounted(async () => {
       <article class="w-[1440px] mx-auto flex gap-4 items-center justify-center">
         <div class="w-10 h-10"></div>
         <section class="max-w-[620px] flex flex-col gap-8">
-          <CommentForm />
-          <CommentList :comments="post.comments" />
+          <CommentForm @submit="handleCommentSubmit" :isLoading="isLoading" />
+          <CommentList
+            :authorId="userStore.user._id"
+            :comments="post.comments"
+            :onDelete="handleDeleteComment"
+            :isLoading="isLoading"
+          />
         </section>
       </article>
     </section>

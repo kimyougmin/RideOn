@@ -73,6 +73,8 @@ const isLiked = ref(false)
 
 const qna = ref(DUMMY_QNA)
 const isLoading = ref(false)
+const isAuthor = ref(false)
+const isSolved = ref(false)
 
 const handleShare = () => {
   navigator.clipboard
@@ -97,6 +99,52 @@ const handleLike = async () => {
     isLoading.value = true
     const newLikeStatus = !isLiked.value
 
+    let updatedPost
+
+    if (!newLikeStatus) {
+      const likeId = qna.value.likes.find((like) => like.user === userStore.user._id)._id
+      updatedPost = await qnaStore.unlikePost(likeId, qnaId)
+    } else {
+      updatedPost = await qnaStore.likePost(qnaId)
+    }
+
+    qna.value = updatedPost
+    isLiked.value = newLikeStatus
+  } catch (error) {
+    console.error('좋아요 처리 중 오류가 발생했습니다:', error)
+  } finally {
+    isLoading.value = false
+  }
+}
+
+const handleCommentSubmit = async (newComment) => {
+  try {
+    isLoading.value = true
+    await qnaStore.createComment(qnaId, newComment)
+    qna.value = qnaStore.currentPost
+  } catch (error) {
+    console.error('댓글 생성 중 오류가 발생했습니다:', error)
+  } finally {
+    isLoading.value = false
+  }
+}
+
+const handleDeleteComment = async (commentId) => {
+  try {
+    isLoading.value = true
+    await qnaStore.deleteComment(commentId, qnaId)
+    qna.value = qnaStore.currentPost
+  } catch (error) {
+    console.error('댓글 삭제 중 오류가 발생했습니다:', error)
+  } finally {
+    isLoading.value = false
+  }
+}
+
+const handleSolve = async () => {
+  try {
+    isLoading.value = true
+
     const qnaData = {
       id: qna.value._id,
       title: qna.value.title,
@@ -104,21 +152,14 @@ const handleLike = async () => {
       tags: qna.value.tags,
       channelId: RIDEON_QNA_CHANNEL_ID,
       image: qna.value.image,
+      status: 'SOLVED',
     }
 
-    let updatedPost
-
-    if (!newLikeStatus) {
-      const likeId = qna.value.likes.find((like) => like.user === userStore.user._id)._id
-      updatedPost = await qnaStore.unlikePost(likeId, qnaData)
-    } else {
-      updatedPost = await qnaStore.likePost(qna.value._id, qnaData)
-    }
-
-    qna.value = updatedPost
-    isLiked.value = newLikeStatus
+    await qnaStore.updatePost(qnaData)
+    qna.value = qnaStore.currentPost
+    isSolved.value = true
   } catch (error) {
-    console.error('좋아요 처리 중 오류가 발생했습니다:', error)
+    console.error('게시글 해결 중 오류가 발생했습니다:', error)
   } finally {
     isLoading.value = false
   }
@@ -134,6 +175,10 @@ onMounted(async () => {
 
     const hasLiked = qnaStore.currentPost.likes.some((like) => like.user === userStore.user._id)
     isLiked.value = hasLiked
+
+    isAuthor.value = userStore.user._id === qnaStore.currentPost.author._id
+
+    isSolved.value = qnaStore.currentPost.status === 'SOLVED'
   } catch (error) {
     console.error('게시글을 불러오는데 실패했습니다:', error)
     router.push('/qnaBoard')
@@ -159,11 +204,25 @@ onMounted(async () => {
       <article class="col-span-6 flex flex-col gap-8">
         <QnaContent :qna="qna" />
         <hr class="border-black3 dark:border-black6" />
-        <CommentForm />
-        <CommentList :comments="qna.comments" />
+        <CommentForm @submit="handleCommentSubmit" :isLoading="isLoading" />
+        <CommentList
+          :authorId="userStore.user._id"
+          :comments="qna.comments"
+          :onDelete="handleDeleteComment"
+          :isLoading="isLoading"
+        />
       </article>
       <article class="col-span-2 flex flex-col gap-4">
         <AuthorInfo :author="qna.author" />
+        <button
+          v-if="isAuthor"
+          class="w-full text-white rounded-lg p-4 text-center"
+          :class="{ 'bg-black7': isSolved, 'bg-green-600': !isSolved }"
+          @click="handleSolve"
+          :disabled="isLoading || isSolved"
+        >
+          {{ isSolved ? '해결완료' : '해결' }}
+        </button>
         <router-link
           to="/qnaBoard/write"
           class="w-full bg-black6 text-white rounded-lg p-4 text-center"
