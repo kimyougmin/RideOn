@@ -141,7 +141,7 @@ const goToDetail = (item) => {
                 <p class="text-body1 text-left dark:text-black3 m-0">
                   {{ item.mallName || item.brand }}
                 </p>
-                <p class="text-sub-title text-left dark:text-black1 truncate mb-4">
+                <p class="text-sub-title font-bold text-left dark:text-black1 truncate mb-4">
                   {{ item.title.replace(/<\/?[^>]+(>|$)/g, '') }}
                 </p>
               </div>
