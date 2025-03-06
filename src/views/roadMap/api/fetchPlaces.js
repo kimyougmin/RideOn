@@ -69,8 +69,6 @@ export async function fetchPlaces(map, userLatLng, updateStationData) {
         popupAnchor: [0, -30],
       });
 
-      
-    
       const marker = L.marker([lat, lng], { icon: customIcon }).addTo(map);
       markers.push(marker);
 
