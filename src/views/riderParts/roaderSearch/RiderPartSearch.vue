@@ -5,7 +5,6 @@ import { ref, onMounted, watch, computed } from "vue";
 import { getNaverItems } from "@/apis/naverSearchApi";
 import { useRouter } from 'vue-router';
 import { useItemStore } from "@/stores/riderItemStore";
-import { toRaw } from 'vue';
 
 const selectedSort = ref("sim");
 const items = ref([]);
@@ -55,17 +54,10 @@ watch(searchQuery, async () => {
 });
 
 const goToDetail = (item) => {
-  console.log("📌 선택한 아이템:", item);
-
   if (!item || !item.productId) {
-    console.warn("⚠️ productId가 없습니다!", item);
     return;
   }
-
-  // ✅ Pinia에 데이터 저장
   itemStore.setSelectedItem(item);
-  console.log("✅ Pinia에 저장 완료:", item);
-
   router.push(`/riderPartsDetail/${item.productId}`);
 };
 

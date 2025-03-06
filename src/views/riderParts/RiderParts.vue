@@ -40,30 +40,18 @@ const cleanedItems = computed(() => {
 });
 
 const goToDetail = (item) => {
-  console.log('📌 선택한 아이템:', item); // 디버깅 로그
-  console.log("🔍 item.productId의 타입:", typeof item.productId);
-  console.log("🔍 item.productId 값:", item.productId);
-
-  // ✅ `productId`를 강제로 문자열로 변환하여 검증
-  const productId = item.productId ? String(item.productId).trim() : null;
-
-  if (!productId || productId === "null" || productId === "undefined") {
-    console.warn("⚠️ productId가 잘못되었습니다!", item);
+  if (!item || !item.productId) {
+    console.warn("⚠️ productId가 없습니다!", item);
     return;
   }
-
-  itemStore.setSelectedItem(item); // Pinia에 아이템 저장
-  localStorage.setItem("selectedItem", JSON.stringify(item)); // ✅ 로컬 스토리지에도 저장
-
-  console.log("🚀 이동할 URL:", `/riderPartsDetail/${productId}`);
-  router.push(`/riderPartsDetail/${productId}`);
+  itemStore.setSelectedItem(item);
+  router.push(`/riderPartsDetail/${item.productId}`);
 };
 
 onMounted(() => {
   fetchNaverDatas();
 });
 </script>
-
 
 <template>
   <div class="w-full block h-full dark:bg-black9">
