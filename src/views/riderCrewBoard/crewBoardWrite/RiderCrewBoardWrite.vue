@@ -2,13 +2,13 @@
 import BasicHeader from '@/components/BasicHeader.vue'
 import BasicFooter from '@/components/BasicFooter.vue'
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { createRiderCrewPost } from '@/apis/riderCrewApi'
+import { RIDEON_RIDERCREW_CHANNEL_ID } from '@/constants/channelId'
+import { useUserStore } from '@/stores/user'
 
-const thumbnailPreview = ref(null)
-
-// 지역과 멤버 수 상태 추가
-const selectedLocation = ref('')
-const selectedMemberCount = ref(null)
-const customMemberCount = ref(null)
+const CONTENT_PLACEHOLDER =
+  '[라이딩 모집 내용 예시]\n\n라이딩 날짜 : 2025-01-01\n예상 코스 : 서울 홍대 - 경기 양주\n예상 모집인원 : 3명\n라이딩 목표 : 초보자도 쉽게 참여 가능\n라이딩 관련 주의사항 : 안전장비 착용 필수'
 
 const locations = [
   '서울',
@@ -38,21 +38,108 @@ const memberCounts = [
   { value: 5, label: '5명 이상' },
 ]
 
+const router = useRouter()
+
+// 폼 데이터
+const title = ref('')
+const content = ref('')
+const selectedLocation = ref('')
+const selectedMemberCount = ref(null)
+const customMemberCount = ref(null)
+const thumbnailFile = ref(null)
+const thumbnailPreview = ref(null)
+const isSubmitting = ref(false)
+const errorMessage = ref('')
+
+const userStore = useUserStore()
+
 const handleThumbnailUpload = (e) => {
   const file = e.target.files[0]
   if (file) {
+    thumbnailFile.value = file
     const reader = new FileReader()
     reader.onload = (e) => {
       thumbnailPreview.value = e.target.result
     }
     reader.readAsDataURL(file)
   } else {
+    thumbnailFile.value = null
     thumbnailPreview.value = null
   }
 }
 
-const CONTENT_PLACEHOLDER =
-  '[라이딩 모집 내용 예시]\n\n라이딩 날짜 : 2025-01-01\n예상 코스 : 서울 홍대 - 경기 양주\n예상 모집인원 : 3명\n라이딩 목표 : 초보자도 쉽게 참여 가능\n라이딩 관련 주의사항 : 안전장비 착용 필수'
+const validateForm = () => {
+  if (!title.value.trim()) {
+    errorMessage.value = '제목을 입력해주세요.'
+    return false
+  }
+
+  if (!content.value.trim()) {
+    errorMessage.value = '내용을 입력해주세요.'
+    return false
+  }
+
+  if (!selectedLocation.value) {
+    errorMessage.value = '지역을 선택해주세요.'
+    return false
+  }
+
+  if (selectedMemberCount.value === null) {
+    errorMessage.value = '모집 인원을 선택해주세요.'
+    return false
+  }
+
+  if (
+    selectedMemberCount.value === 5 &&
+    (!customMemberCount.value || customMemberCount.value < 5)
+  ) {
+    errorMessage.value = '5명 이상 선택 시 정확한 인원을 입력해주세요.'
+    return false
+  }
+
+  return true
+}
+
+const handleSubmit = async () => {
+  if (!validateForm()) return
+
+  isSubmitting.value = true
+  errorMessage.value = ''
+
+  try {
+    const memberCount =
+      selectedMemberCount.value === 5 ? customMemberCount.value : selectedMemberCount.value
+
+    const user = {
+      _id: userStore.user._id,
+      name: userStore.user.name,
+      email: userStore.user.email,
+    }
+
+    const memberInfo = {
+      members: [user],
+      current: 1,
+      max: memberCount,
+    }
+
+    const postData = {
+      title: title.value,
+      content: content.value,
+      location: selectedLocation.value,
+      channelId: RIDEON_RIDERCREW_CHANNEL_ID,
+      image: thumbnailFile.value,
+      memberInfo,
+    }
+    await createRiderCrewPost(postData)
+    alert('모집글이 작성되었습니다.')
+    router.push('/riderCrewBoard')
+  } catch (error) {
+    console.error('라이더 크루 게시글 생성 실패:', error)
+    errorMessage.value = '게시글 작성에 실패했습니다. 다시 시도해주세요.'
+  } finally {
+    isSubmitting.value = false
+  }
+}
 </script>
 
 <template>
@@ -61,7 +148,13 @@ const CONTENT_PLACEHOLDER =
     <main class="w-[1440px] px-[93px] mx-auto pt-10 gap-4 mb-24 grid grid-cols-12">
       <section class="col-start-3 col-end-11">
         <h2 class="text-title font-bold text-black9 dark:text-black1 mb-6">라이더 모집글 작성</h2>
-        <form class="grid grid-cols-8 gap-4">
+
+        <!-- 에러 메시지 표시 -->
+        <div v-if="errorMessage" class="mb-4 p-3 bg-red-100 text-red-700 rounded-lg">
+          {{ errorMessage }}
+        </div>
+
+        <form class="grid grid-cols-8 gap-4" @submit.prevent="handleSubmit">
           <article class="col-span-5 flex flex-col gap-8 h-fit">
             <!-- 제목 입력 -->
             <div class="flex flex-col gap-3">
@@ -71,7 +164,8 @@ const CONTENT_PLACEHOLDER =
               <input
                 type="text"
                 id="title"
-                class="w-full border border-black4 rounded-lg py-3 px-4 dark:bg-black8 dark:caret-black1"
+                v-model="title"
+                class="w-full border border-black4 rounded-lg py-3 px-4 dark:bg-black8 dark:caret-black1 dark:text-black1"
                 placeholder="제목을 입력해주세요."
               />
             </div>
@@ -83,7 +177,8 @@ const CONTENT_PLACEHOLDER =
               >
               <textarea
                 id="content"
-                class="w-full border border-black4 rounded-lg py-3 px-4 dark:bg-black8 dark:caret-black1"
+                v-model="content"
+                class="w-full border border-black4 rounded-lg py-3 px-4 dark:bg-black8 dark:caret-black1 dark:text-black1"
                 rows="20"
                 :placeholder="CONTENT_PLACEHOLDER"
               ></textarea>
@@ -92,7 +187,9 @@ const CONTENT_PLACEHOLDER =
           <article class="col-span-3 flex flex-col gap-8 self-start">
             <!-- 지역 선택 -->
             <div class="flex flex-col gap-3">
-              <label class="text-body1 font-light dark:text-black1">지역 (택 1)</label>
+              <label class="text-body1 font-light dark:text-black1"
+                >지역 (택 1) <strong class="text-primaryRed">*</strong></label
+              >
               <div class="flex flex-wrap gap-2">
                 <div v-for="location in locations" :key="location">
                   <input
@@ -119,7 +216,9 @@ const CONTENT_PLACEHOLDER =
 
             <!-- 인원 선택 -->
             <div class="flex flex-col gap-3">
-              <label class="text-body1 font-light dark:text-black1">인원 (택 1)</label>
+              <label class="text-body1 font-light dark:text-black1"
+                >인원 (택 1) <strong class="text-primaryRed">*</strong></label
+              >
               <div class="flex flex-wrap gap-2">
                 <div v-for="count in memberCounts" :key="count.value">
                   <input
@@ -149,7 +248,7 @@ const CONTENT_PLACEHOLDER =
                   v-model="customMemberCount"
                   min="5"
                   placeholder="모집 인원을 입력해주세요"
-                  class="w-full border border-black4 rounded-lg py-2 px-4 dark:bg-black8 dark:caret-black1"
+                  class="w-full border border-black4 rounded-lg py-2 px-4 dark:bg-black8 dark:caret-black1 dark:text-black1"
                 />
               </div>
             </div>
@@ -180,13 +279,18 @@ const CONTENT_PLACEHOLDER =
 
             <!-- 저장 & 취소 버튼 -->
             <div class="flex flex-col gap-4">
-              <button type="submit" class="px-6 py-2 rounded text-black1 bg-primaryRed">
-                저장
+              <button
+                type="submit"
+                class="px-6 py-2 rounded text-black1 bg-primaryRed"
+                :disabled="isSubmitting"
+              >
+                {{ isSubmitting ? '저장 중...' : '저장' }}
               </button>
               <button
                 type="button"
                 class="px-6 py-2 rounded text-black10 bg-black2 dark:text-black1 dark:bg-black6"
                 @click="$router.go(-1)"
+                :disabled="isSubmitting"
               >
                 취소
               </button>
