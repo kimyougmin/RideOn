@@ -14,7 +14,7 @@ export const fetchLikeCreateApi = async ({ _id, title, name, price, image, brand
     const response = await devAPI.post('/like/toggle', params)
     return response.data
   } catch (error) {
-    console.error('fetchLikeCreateApi', error.response?.data || error.message)
+    console.error('fetchToggleLikeApi', error.response?.data || error.message)
     throw error
   }
 }
