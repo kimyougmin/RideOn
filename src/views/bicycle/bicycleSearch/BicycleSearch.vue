@@ -266,7 +266,7 @@ const likeRemoveHandler = async (item) => {
           </div>
           <div v-if="!seeMore" class="grid grid-cols-2 gap-4">
             <div  v-for="item in groupList" :key="item.id" class="flex">
-              <router-link :to="{ name: `bicycleDetail`, params: {id: item.id}, query: { id: item.id, rating: item.rating, category: item.category, name: item.name, price: item.price, image: item.image }}">
+              <router-link :to="{ name: `bicycleDetail`, params: {id: item.id}, query: { id: item.id, rating: item.rating, brand: item.brand, category: item.category, name: item.name, price: item.price, image: item.image }}">
                 <img :src="item.image" class="border rounded-lg w-[200px] h-[200px] mr-4">
               </router-link>
               <div>
