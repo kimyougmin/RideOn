@@ -4,8 +4,9 @@ export function usePostStore(options = {}) {
     updatePostApi,
     likePostApi,
     unlikePostApi,
+    createCommentApi,
+    deleteCommentApi,
     channelId,
-    // hasImageUpload = true,
     hasStatus = false,
   } = options
 
@@ -162,6 +163,28 @@ export function usePostStore(options = {}) {
           return updatedPost
         } catch (error) {
           console.error('게시글 좋아요 취소 실패:', error)
+          throw error
+        }
+      },
+
+      async createComment(postId, comment, postData) {
+        try {
+          await createCommentApi(postId, comment)
+          const updatedPost = await this.updatePost(postData)
+          return updatedPost
+        } catch (error) {
+          console.error('게시글 댓글 생성 실패:', error)
+          throw error
+        }
+      },
+
+      async deleteComment(commentId, postData) {
+        try {
+          await deleteCommentApi(commentId)
+          const updatedPost = await this.updatePost(postData)
+          return updatedPost
+        } catch (error) {
+          console.error('게시글 댓글 삭제 실패:', error)
           throw error
         }
       },
