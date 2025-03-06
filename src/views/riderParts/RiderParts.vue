@@ -39,10 +39,24 @@ const cleanedItems = computed(() => {
   });
 });
 
-const goToDetailPage = (item) => {
-  itemStore.setSelectedItem(item);
-  localStorage.setItem('selectedItem', JSON.stringify(item));
-  router.push('/riderPartsDetail');
+const goToDetail = (item) => {
+  console.log('📌 선택한 아이템:', item); // 디버깅 로그
+  console.log("🔍 item.productId의 타입:", typeof item.productId);
+  console.log("🔍 item.productId 값:", item.productId);
+
+  // ✅ `productId`를 강제로 문자열로 변환하여 검증
+  const productId = item.productId ? String(item.productId).trim() : null;
+
+  if (!productId || productId === "null" || productId === "undefined") {
+    console.warn("⚠️ productId가 잘못되었습니다!", item);
+    return;
+  }
+
+  itemStore.setSelectedItem(item); // Pinia에 아이템 저장
+  localStorage.setItem("selectedItem", JSON.stringify(item)); // ✅ 로컬 스토리지에도 저장
+
+  console.log("🚀 이동할 URL:", `/riderPartsDetail/${productId}`);
+  router.push(`/riderPartsDetail/${productId}`);
 };
 
 onMounted(() => {
@@ -223,7 +237,7 @@ onMounted(() => {
           class="mySwiper px-11 dark:bg-black9 pb-1"
         >
           <swiper-slide v-for="(item, index) in cleanedItems" :key="index">
-            <div class="p-4" @click="goToDetailPage(item)">
+            <div class="p-4" @click="goToDetail(item)">
               <img :src="item.image" alt="Bike Image" class="w-[302px] h-[302px] object-cover border mx-auto">
               <p class="text-sm font-sans mb-1 mt-1 text-left">{{ item.mallName }}</p>
               <p class="font-impact text-left mb-2 ellipsis-multiline">{{ item.cleanTitle }}</p>
