@@ -3,7 +3,7 @@
 <template>
   <section class="w-full h-[600px] bg-black2 relative">
     <img
-      src="/riderPageImage/ridersPageHero.svg"
+      src="/riderPageImage/riderParts_hero.png"
       alt="banner text"
       class="w-full h-full object-cover"
     />
