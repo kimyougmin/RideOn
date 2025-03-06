@@ -1,16 +1,33 @@
 <script setup>
 import getRelativeTime from '@/utils/getRelativeTime'
 
-const { post } = defineProps({
+defineProps({
   post: {
     type: Object,
     required: true,
+    default: () => ({
+      _id: '',
+      title: '',
+      content: '',
+      image: '',
+      author: {
+        fullName: '',
+        coverImage: '',
+      },
+      likes: [],
+      tags: [],
+      createdAt: new Date(),
+    }),
   },
 })
 </script>
+
 <template>
   <router-link
-    :to="`/freeBoardDetail/${post.id}`"
+    :to="{
+      name: 'FreeBoardDetail',
+      params: { id: post._id },
+    }"
     class="min-h-64 col-span-3 flex flex-col bg-black1 drop-shadow-custom2 rounded-xl overflow-hidden dark:bg-black7 dark:text-black1 relative"
   >
     <div
@@ -28,19 +45,19 @@ const { post } = defineProps({
           fill="#DC3644"
         />
       </svg>
-      <span class="text-body1 text-primaryRed">{{ post.likes }}</span>
+      <span class="text-body1 text-primaryRed">{{ post.likes?.length || 0 }}</span>
     </div>
     <div
-      class="flex items-center gap-2 rounded-t-lg overflow-hidden border-b-[0.5px] border-black4"
+      class="flex h-52 items-center gap-2 rounded-t-lg overflow-hidden border-b-[0.5px] border-black4"
     >
       <img
         :src="post.image || 'https://placehold.co/300x200?text=RideOn'"
         alt="placeholder"
-        class="w-full h-52 object-cover"
+        class="w-full h-full object-cover"
       />
     </div>
     <div class="flex flex-col gap-2 p-4">
-      <h3 class="text-sub-title font-bold">{{ post.title }}</h3>
+      <h3 class="text-sub-title font-bold truncate">{{ post.title }}</h3>
       <p class="text-body1 line-clamp-3 font-light">
         {{ post.content }}
       </p>
@@ -81,7 +98,7 @@ const { post } = defineProps({
             stroke-linecap="round"
           />
         </svg>
-        <span class="text-body1 text-black4">{{ post.tags.join(' • ') }}</span>
+        <span class="text-body1 text-black4 truncate">{{ post.tags?.join(' • ') || '' }}</span>
       </div>
       <div class="flex justify-between items-center">
         <div class="flex items-center gap-2">
@@ -92,7 +109,7 @@ const { post } = defineProps({
               class="w-full h-full object-cover"
             />
           </div>
-          <span class="text-body1">{{ post.author?.fullName }}</span>
+          <span class="text-body1">{{ post.author?.fullName.split('|')[0] }}</span>
         </div>
         <div>
           <span class="text-body1">{{ getRelativeTime(post.createdAt) }}</span>

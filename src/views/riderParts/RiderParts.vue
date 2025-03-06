@@ -3,15 +3,18 @@ import BasicHeader from '@/components/BasicHeader.vue';
 import BasicFooter from '@/components/BasicFooter.vue';
 import { ref, onMounted, computed } from 'vue';
 import { Swiper, SwiperSlide } from 'swiper/vue';
-import { Pagination, Navigation } from 'swiper/modules';
 import { getNaverItems } from '../../apis/naverSearchApi';
+import { useRouter } from 'vue-router';
+import { useItemStore } from '@/stores/riderItemStore.js';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import  './swiperCss.css';
 
-const query = ref('자전거부품');
+const query = ref('자전거용품');
 const items = ref([]);
+const router = useRouter();
+const itemStore = useItemStore();
 
 const fetchNaverDatas = async () => {
   console.log(query.value);
@@ -23,24 +26,26 @@ const fetchNaverDatas = async () => {
   }
 }
 
-const cleanedItems = computed(() =>
-  items.value.map((item) => {
-    let title = item.title;
-    const match = title.match(/<b>(.*?)<\/b>/);
+const cleanedItems = computed(() => {
+  return items.value.map(item => {
+    if (typeof item.title !== 'string') return { ...item, cleanTitle: '제목 없음' };
 
-    if (match) {
-      title = title.replace(/<b>.*?<\/b>/, "").trim();
-      title = match[1] + " " + title;
+    const parts = item.title.split('<b>');
+    let cleanTitle = parts[0].trim();
+    if (!cleanTitle && parts.length > 1) {
+      cleanTitle = parts[1].split('</b>')[1]?.trim() || parts[1].replace('</b>', '').trim();
     }
 
-    return {
-      ...item,
-      cleanTitle: title,
-      lprice: item.lprice ? Number(item.lprice).toLocaleString("ko-KR") + "원" : "가격 없음",
-    };
-  })
-);
+    return { ...item, cleanTitle };
+  });
+});
 
+const goToDetailPage = (item) => {
+  console.log("✅ 저장되는 아이템:", item); // 콘솔에서 확인
+  itemStore.setSelectedItem(item);
+  localStorage.setItem('selectedItem', JSON.stringify(item));
+  router.push('/riderPartsDetail');
+};
 onMounted(() => {
   fetchNaverDatas();
 });
@@ -208,21 +213,21 @@ onMounted(() => {
           </router-link>
         </div>
         <swiper
-          v-if="cleanedItems.length > 0"
+          v-if="items.length > 0"
           :slidesPerView="4"
-          :slidesPerGroup="4"
           :spaceBetween="30"
           :loop="true"
+          :pagination="{ clickable: true }"
           :navigation="true"
-          :modules="[Navigation]"
+          :modules="modules"
           class="mySwiper px-11 dark:bg-black9 pb-1"
         >
           <swiper-slide v-for="(item, index) in cleanedItems" :key="index">
-            <div class="p-4">
+            <div class="p-4" @click="goToDetailPage(item)">
               <img :src="item.image" alt="Bike Image" class="w-[302px] h-[302px] object-cover border mx-auto">
               <p class="text-sm font-sans mb-1 mt-1 text-left">{{ item.mallName }}</p>
               <p class="font-impact text-left mb-2 ellipsis-multiline">{{ item.cleanTitle }}</p>
-              <p class="font-impact text-left">{{ item.lprice }}</p>
+              <p class="font-impact text-left">{{ item.lprice ? Number(item.lprice).toLocaleString("ko-KR") + "원" : "가격 없음" }}</p>
             </div>
           </swiper-slide>
         </swiper>
