@@ -14,7 +14,7 @@ import BaseFooter from '@/components/BasicFooter.vue'
       class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative gap-2 px-4 py-3 rounded-[50px] bg-[#fffffe] border border-[#e8e8e8]"
     >
       <img
-        src=""
+        src="../../../../public/riderPageImage/gear.svg"
         class="flex-grow-0 flex-shrink-0 w-[30px] h-[30px] rounded-[50px] object-cover"
       />
       <p class="flex-grow-0 flex-shrink-0 text-xl text-left text-black">자전거기어</p>
@@ -23,64 +23,10 @@ import BaseFooter from '@/components/BasicFooter.vue'
       class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative gap-2 px-4 py-3 rounded-[50px] bg-[#fffffe] border border-[#e8e8e8]"
     >
       <img
-        src="image-4.png"
+        src="../../../../public/riderPageImage/pedal.svg"
         class="flex-grow-0 flex-shrink-0 w-[30px] h-[30px] rounded-[50px] object-cover"
       />
       <p class="flex-grow-0 flex-shrink-0 text-xl text-left text-black">자전거페달</p>
-    </div>
-    <div
-      class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative gap-2 px-4 py-3 rounded-[50px] bg-[#fffffe] border border-[#e8e8e8]"
-    >
-      <img
-        src="image-5.png"
-        class="flex-grow-0 flex-shrink-0 w-[30px] h-[30px] rounded-[50px] object-cover"
-      />
-      <p class="flex-grow-0 flex-shrink-0 text-xl text-left text-black">자전거스템</p>
-    </div>
-    <div
-      class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative gap-2 px-4 py-3 rounded-[50px] bg-[#fffffe] border border-[#e8e8e8]"
-    >
-      <img
-        src="image-6.png"
-        class="flex-grow-0 flex-shrink-0 w-[30px] h-[30px] rounded-[50px] object-cover"
-      />
-      <p class="flex-grow-0 flex-shrink-0 text-xl text-left text-black">드롭바</p>
-    </div>
-    <div
-      class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative gap-2 px-4 py-3 rounded-[50px] bg-[#fffffe] border border-[#e8e8e8]"
-    >
-      <img
-        src="image-7.png"
-        class="flex-grow-0 flex-shrink-0 w-[30px] h-[30px] rounded-[50px] object-cover"
-      />
-      <p class="flex-grow-0 flex-shrink-0 text-xl text-left text-black">픽시크랭크</p>
-    </div>
-    <div
-      class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative gap-2 px-4 py-3 rounded-[50px] bg-[#fffffe] border border-[#e8e8e8]"
-    >
-      <img
-        src="image-8.png"
-        class="flex-grow-0 flex-shrink-0 w-[30px] h-[30px] rounded-[50px] object-cover"
-      />
-      <p class="flex-grow-0 flex-shrink-0 text-xl text-left text-black">트랙바</p>
-    </div>
-    <div
-      class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative gap-2 px-4 py-3 rounded-[50px] bg-[#fffffe] border border-[#e8e8e8]"
-    >
-      <img
-        src="image-9.png"
-        class="flex-grow-0 flex-shrink-0 w-[30px] h-[30px] rounded-[50px] object-cover"
-      />
-      <p class="flex-grow-0 flex-shrink-0 text-xl text-left text-black">자전거핸들</p>
-    </div>
-    <div
-      class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative gap-2 px-4 py-3 rounded-[50px] bg-[#fffffe] border border-[#e8e8e8]"
-    >
-      <img
-        src="image-10.png"
-        class="flex-grow-0 flex-shrink-0 w-[30px] h-[30px] rounded-[50px] object-cover"
-      />
-      <p class="flex-grow-0 flex-shrink-0 text-xl text-left text-black">자전거브레이크</p>
     </div>
   </div>
     <div class="flex flex-col justify-start items-start w-[1256px] relative gap-8">
@@ -92,13 +38,13 @@ import BaseFooter from '@/components/BasicFooter.vue'
   </div>
   <div class="self-stretch flex-grow-0 flex-shrink-0 h-[400px] relative">
     <img
-      src="image-2.png"
+      src="../../../../public/riderPageImage/chain.svg"
       class="w-[620px] h-[400px] absolute left-[-1.5px] top-[-1.5px] object-cover border-2 border-[#979797]"
     /><img
-      src="image.png"
+      src="../../../../public/riderPageImage/seat.svg"
       class="w-[620px] h-[200px] absolute left-[634.5px] top-[198.5px] object-none border-2 border-[#979797]"
     /><img
-      src="image-3.png"
+      src="../../../../public/riderPageImage/chain2.svg"
       class="w-[620px] h-[180px] absolute left-[634.5px] top-[-1.5px] object-none border-2 border-[#979797]"
     />
   </div>
