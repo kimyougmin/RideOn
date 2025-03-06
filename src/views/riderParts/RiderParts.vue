@@ -49,12 +49,6 @@ const fetchNaverDatas = async () => {
 //   })
 // })
 
-// const goToDetailPage = (item) => {
-//   itemStore.setSelectedItem(item)
-//   localStorage.setItem('selectedItem', JSON.stringify(item))
-//   router.push('/riderPartsDetail')
-// }
-
 onMounted(() => {
   fetchNaverDatas()
 })
