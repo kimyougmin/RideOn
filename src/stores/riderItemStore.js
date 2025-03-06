@@ -4,6 +4,15 @@ export const useItemStore = defineStore('itemStore', {
   state: () => ({
     selectedItem: null, // ✅ 기본값을 null로 설정
   }),
+  getters: {
+    getSelectedItem(state) {
+      if (!state.selectedItem) {
+        console.warn("🔄 Pinia에서 selectedItem이 없음 → LocalStorage에서 복구 시도");
+        this.restoreItem();
+      }
+      return state.selectedItem;
+    },
+  },
   actions: {
     setSelectedItem(item) {
       if (!item || !item.productId) {
@@ -12,6 +21,7 @@ export const useItemStore = defineStore('itemStore', {
       }
       this.selectedItem = item;
       localStorage.setItem('selectedItem', JSON.stringify(item));
+      console.log("✅ Pinia & LocalStorage에 저장 완료:", this.selectedItem);
     },
     restoreItem() {
       const savedItem = localStorage.getItem('selectedItem');

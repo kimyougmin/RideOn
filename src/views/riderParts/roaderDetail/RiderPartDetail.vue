@@ -1,47 +1,27 @@
 <script setup>
 import ShopHeader from '@/components/ShopHeader.vue';
 import BasicFooter from '@/components/BasicFooter.vue';
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted} from 'vue';
 import { useItemStore } from '@/stores/riderItemStore';
 import { useRoute } from 'vue-router';
 
-const itemStore = useItemStore();
+
 const route = useRoute();
+const itemStore = useItemStore();
 const item = ref(null);
 
 onMounted(() => {
   const productId = route.params.productId;
-  console.log("📌 디테일 페이지 - 현재 productId:", productId);
-  console.log("📌 현재 URL에서 받은 productId:", route.params.productId);
+  console.log("📌 현재 productId:", productId);
 
-  if (!productId || productId === "null" || productId === "undefined") {
-    console.warn("⚠️ 디테일 페이지에서 productId가 올바르지 않음!", productId);
+  if (!productId) {
+    console.warn("⚠️ productId가 없습니다!");
     return;
   }
 
-  // ✅ Pinia에서 productId가 일치하는 데이터 가져오기
-  if (itemStore.selectedItem && String(itemStore.selectedItem.productId) === productId) {
-    item.value = itemStore.selectedItem;
-    console.log("✅ Pinia에서 불러온 아이템:", item.value);
-  } else {
-    console.log("🔄 Pinia에 데이터 없음 → LocalStorage에서 복원 시도");
-    itemStore.restoreItem();
-    item.value = itemStore.selectedItem;
-    console.log("✅ 복원된 아이템:", item.value);
-  }
-});
-
-// ✅ URL이 변경될 때 `productId`를 다시 확인하고 데이터 로드
-watch(() => route.params.productId, (newProductId) => {
-  console.log("🔄 productId 변경 감지:", newProductId);
-  if (!newProductId || newProductId === "null" || newProductId === "undefined") return;
-
-  if (item.value && String(item.value.productId) === newProductId) {
-    return;
-  }
-
-  itemStore.restoreItem();
-  item.value = itemStore.selectedItem;
+  // ✅ 자동 복구 기능을 추가한 getSelectedItem 사용
+  item.value = itemStore.getSelectedItem;
+  console.log("✅ 불러온 아이템:", item.value);
 });
 </script>
 

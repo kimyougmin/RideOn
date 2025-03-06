@@ -56,23 +56,16 @@ watch(searchQuery, async () => {
 
 const goToDetail = (item) => {
   console.log("📌 선택한 아이템:", item);
-  console.log("🔍 item의 모든 속성:", Object.keys(item));
-
-  // ✅ Proxy 객체인지 확인 후 변환
-  if (typeof item === 'object' && item !== null && item.__v_raw) {
-    console.warn("⚠️ Proxy 객체 감지됨 → toRaw() 변환 수행");
-    item = toRaw(item);
-  }
-
-  // ✅ JSON 변환 후 확인
-  console.log("🛠 변환 후 item:", JSON.stringify(item));
 
   if (!item || !item.productId) {
     console.warn("⚠️ productId가 없습니다!", item);
     return;
   }
 
-  console.log("🚀 이동할 URL:", `/riderPartsDetail/${item.productId}`);
+  // ✅ Pinia에 데이터 저장
+  itemStore.setSelectedItem(item);
+  console.log("✅ Pinia에 저장 완료:", item);
+
   router.push(`/riderPartsDetail/${item.productId}`);
 };
 
@@ -185,7 +178,7 @@ onMounted(async () => {
             v-for="(item, index) in visibleItems"
             :key="index"
             class="flex flex-col justify-start items-start flex-grow-0 flex-shrink-0 w-[408px] relative cursor-pointer"
-            @click="goToDetail(item.productId)"
+            @click="goToDetail(item)"
           >
             <img
               :src="item.image"
