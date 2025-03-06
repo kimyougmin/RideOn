@@ -73,6 +73,8 @@ const isLiked = ref(false)
 
 const qna = ref(DUMMY_QNA)
 const isLoading = ref(false)
+const isAuthor = ref(false)
+const isSolved = ref(false)
 
 const handleShare = () => {
   navigator.clipboard
@@ -166,6 +168,30 @@ const handleDeleteComment = async (commentId) => {
   }
 }
 
+const handleSolve = async () => {
+  try {
+    isLoading.value = true
+
+    const qnaData = {
+      id: qna.value._id,
+      title: qna.value.title,
+      content: qna.value.content,
+      tags: qna.value.tags,
+      channelId: RIDEON_QNA_CHANNEL_ID,
+      image: qna.value.image,
+      status: 'SOLVED',
+    }
+
+    await qnaStore.updatePost(qnaData)
+    qna.value = qnaStore.currentPost
+    isSolved.value = true
+  } catch (error) {
+    console.error('게시글 해결 중 오류가 발생했습니다:', error)
+  } finally {
+    isLoading.value = false
+  }
+}
+
 onMounted(async () => {
   try {
     isLoading.value = true
@@ -176,6 +202,10 @@ onMounted(async () => {
 
     const hasLiked = qnaStore.currentPost.likes.some((like) => like.user === userStore.user._id)
     isLiked.value = hasLiked
+
+    isAuthor.value = userStore.user._id === qnaStore.currentPost.author._id
+
+    isSolved.value = qnaStore.currentPost.status === 'SOLVED'
   } catch (error) {
     console.error('게시글을 불러오는데 실패했습니다:', error)
     router.push('/qnaBoard')
@@ -211,6 +241,15 @@ onMounted(async () => {
       </article>
       <article class="col-span-2 flex flex-col gap-4">
         <AuthorInfo :author="qna.author" />
+        <button
+          v-if="isAuthor"
+          class="w-full text-white rounded-lg p-4 text-center"
+          :class="{ 'bg-black7': isSolved, 'bg-green-600': !isSolved }"
+          @click="handleSolve"
+          :disabled="isLoading || isSolved"
+        >
+          {{ isSolved ? '해결완료' : '해결' }}
+        </button>
         <router-link
           to="/qnaBoard/write"
           class="w-full bg-black6 text-white rounded-lg p-4 text-center"
