@@ -153,7 +153,7 @@ onMounted(() => {
               라이딩에 필요한 모든 장비
             </span>
             <br/>
-            <span class="flex-grow-0 flex-shrink-0 w-[641px] text-xl font-medium text-center text-black">
+            <span class="flex-grow-0 flex-shrink-0 w-[641px] text-xl font-medium text-center dark:text-black1">
               내구성 높은 부품, 편안한 라이딩을 위한 용품, 그리고 스타일을 더할 액세서리까지
             </span>
           </p>
