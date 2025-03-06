@@ -7,14 +7,22 @@ const devAPI = axios.create({
   },
 })
 
-export const fetchLikeCreateApi = async ({ _id, title, name, price, image, brand, category }) => {
+
+//  찜 삭제 API
+export const fetchLikeRemoveApi = async ({ title, id }) => {
   try {
 
-    const params = JSON.stringify({title, id: _id, name, price, image, brand, category})
-    const response = await devAPI.post('/like/toggle', params)
-    return response.data
+    const response = await devAPI.delete('/like/remove', {
+      data: { title, id }, 
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      }
+    });
+
+    return response.data;
   } catch (error) {
-    console.error('fetchToggleLikeApi', error.response?.data || error.message)
-    throw error
+    console.error(' 찜 삭제 오류:', error.response?.data || error.message);
+    throw error;
   }
-}
+};

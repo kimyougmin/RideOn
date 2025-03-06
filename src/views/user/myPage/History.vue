@@ -99,7 +99,7 @@ const loadUserPosts = async () => {
         try {
           parsedTitle = JSON.parse(post.title)
         } catch (e) {
-          console.log(e)
+          console.error(e)
           parsedTitle = { title: post.title, content: post.content || '' }
         }
         return {

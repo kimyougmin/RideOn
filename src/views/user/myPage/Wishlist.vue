@@ -1,117 +1,17 @@
 <script setup>
-import { ref, computed } from 'vue'
-
+import { ref, computed, onMounted } from 'vue'
+import { fetchUserLikesApi } from '@/apis/userLikesApi'
+import { fetchLikeRemoveApi } from '@/apis/fetchLikeRemoveApi'
 // 기본 이미지 URL
 const defaultImage =
   'https://img.danawa.com/prod_img/500000/437/092/img/28092437_1.jpg?shrink=330:*&_v=20240108170952'
 
-// 찜 목록 데이터 임시
-const wishlist = ref([
-  {
-    id: 1,
-    name: 'K2바이크 블랙타이판 펜서 R1.4D',
-    price: 511000,
-    image: '',
-    brand: 'K2바이크',
-    category: 'bike',
-  },
-  {
-    id: 2,
-    name: '자전거 타이어 700C',
-    price: 45000,
-    image: '',
-    brand: 'SCHWALBE',
-    category: 'parts',
-  },
-  { id: 3, name: '라이더 헬멧 고급형', price: 120000, image: '', brand: 'GIRO', category: 'gear' },
-  {
-    id: 4,
-    name: 'K2바이크 블랙타이판 펜서 R1.4D',
-    price: 511000,
-    image: '',
-    brand: 'K2바이크',
-    category: 'bike',
-  },
-  {
-    id: 5,
-    name: '변속기 SHIMANO 105',
-    price: 89000,
-    image: '',
-    brand: 'SHIMANO',
-    category: 'parts',
-  },
-  {
-    id: 6,
-    name: '라이더 고글 UV 차단',
-    price: 68000,
-    image: '',
-    brand: 'OAKLEY',
-    category: 'gear',
-  },
-  { id: 7, name: 'TREK 도마니 SL6', price: 3500000, image: '', brand: 'TREK', category: 'bike' },
-  {
-    id: 8,
-    name: 'GIANT TCR ADVANCED',
-    price: 3200000,
-    image: '',
-    brand: 'GIANT',
-    category: 'bike',
-  },
-  { id: 9, name: '스램 RED 12단 체인', price: 55000, image: '', brand: 'SRAM', category: 'parts' },
-  {
-    id: 10,
-    name: '메리다 SCULTURA 5000',
-    price: 2700000,
-    image: '',
-    brand: 'MERIDA',
-    category: 'bike',
-  },
-  { id: 11, name: '라이더 장갑 풀핑거', price: 35000, image: '', brand: 'FOX', category: 'gear' },
-  { id: 12, name: '스캇 ADDICT RC', price: 4200000, image: '', brand: 'SCOTT', category: 'bike' },
-  {
-    id: 13,
-    name: '자전거 라이트 전조등',
-    price: 24000,
-    image: '',
-    brand: 'CAT EYE',
-    category: 'parts',
-  },
-  {
-    id: 14,
-    name: '스페셜라이즈드 ROUBAIX',
-    price: 5100000,
-    image: '',
-    brand: 'SPECIALIZED',
-    category: 'bike',
-  },
-  { id: 15, name: '카본 물통 케이지', price: 15000, image: '', brand: 'ELITE', category: 'parts' },
-  { id: 16, name: 'BMC 팀머신 SLR02', price: 4800000, image: '', brand: 'BMC', category: 'bike' },
-  {
-    id: 17,
-    name: '자전거 안장 젤패드',
-    price: 32000,
-    image: '',
-    brand: 'SELLE',
-    category: 'parts',
-  },
-  {
-    id: 18,
-    name: '라이더 백팩 방수형',
-    price: 98000,
-    image: '',
-    brand: 'DEUTER',
-    category: 'gear',
-  },
-  { id: 19, name: '윌리어 ZERO SLR', price: 6400000, image: '', brand: 'WILIER', category: 'bike' },
-  {
-    id: 20,
-    name: '리들리 FENIX SL DISC',
-    price: 4600000,
-    image: '',
-    brand: 'RIDLEY',
-    category: 'bike',
-  },
-])
+// 로컬스토리지에서 `_id` 가져오기
+const userData = JSON.parse(localStorage.getItem('user'))
+const userId = userData?._id || null
+
+// 찜 목록 데이터
+const wishlist = ref([])
 
 // 필터 옵션
 const filters = ref([
@@ -122,6 +22,55 @@ const filters = ref([
 
 // 현재 선택된 필터 (기본값: 자전거)
 const activeFilter = ref('bike')
+
+// API 호출 후 데이터 세팅
+const fetchWishlist = async () => {
+  if (!userId) {
+    console.error('사용자 ID가 없음 - 없으면 안됨')
+    return
+  }
+
+  try {
+    const data = await fetchUserLikesApi(userId)
+
+    wishlist.value = data.map((item) => ({
+      id: item.like_key,
+      title: item.title,
+      name: item.name,
+      price: Number(item.price),
+      image: item.image || defaultImage,
+      brand: item.brand,
+      category: ['MTB', 'KID', '로드', 'HYBRID', 'EBIKE', 'PIXIE'].includes(item.category)
+        ? 'bike'
+        : item.category,
+    }))
+  } catch (error) {
+    console.error('찜 목록 불러오기 실패:', error)
+  }
+}
+
+// 찜 목록에서 제거하는 함수 (API 호출)
+const removeFromWishlist = async (item) => {
+  if (!userId || !item.title) {
+    console.error('실패')
+    return
+  }
+
+  try {
+    const response = await fetchLikeRemoveApi({ title: item.title, id: userId })
+
+    if (response?.status === 200) {
+      wishlist.value = wishlist.value.filter((w) => w.id !== item.id)
+    } else {
+      console.error(' 찜 삭제 실패:', response.message || response)
+    }
+  } catch (error) {
+    console.error(' 찜 삭제 중 오류 발생:', error)
+  }
+}
+
+// 컴포넌트가 마운트되면 찜 목록 불러오기
+onMounted(fetchWishlist)
 
 // 필터링된 찜 목록
 const filteredWishlist = computed(() => {
@@ -144,11 +93,6 @@ const loadMore = () => {
 const setActiveFilter = (filter) => {
   activeFilter.value = filter
   itemsPerPage.value = 9 // 필터 변경 시 처음 9개만 보이도록 리셋
-}
-
-// 찜 목록에서 제거하는 함수
-const removeFromWishlist = (id) => {
-  wishlist.value = wishlist.value.filter((item) => item.id !== id)
 }
 </script>
 
@@ -175,6 +119,10 @@ const removeFromWishlist = (id) => {
       </button>
     </div>
 
+    <p v-if="wishlist.length === 0" class="text-center text-black5 dark:text-black3 mt-[250px]">
+      찜 목록이 없습니다.
+    </p>
+
     <!-- 찜 목록 -->
     <div class="grid grid-cols-3 gap-x-[14px] gap-y-[35px]">
       <div
@@ -184,7 +132,7 @@ const removeFromWishlist = (id) => {
       >
         <!-- 이미지 박스 -->
         <div
-          class="w-full h-[191px] border-b dark:b flex items-center justify-center bg-black1 dark:bg-black1 rounded-t-lg"
+          class="w-full h-[191px] border-b flex items-center justify-center bg-black1 dark:bg-black1 rounded-t-lg"
         >
           <img
             :src="item.image || defaultImage"
@@ -214,7 +162,7 @@ const removeFromWishlist = (id) => {
               src="./images/heart.svg"
               alt="찜 삭제"
               class="w-[16px] h-[15px] cursor-pointer transition-transform hover:scale-110"
-              @click="removeFromWishlist(item.id)"
+              @click="removeFromWishlist(item)"
             />
           </div>
         </div>
