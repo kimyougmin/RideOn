@@ -7,7 +7,6 @@ const devAPI = axios.create({
   },
 })
 
-
 //  찜 삭제 API
 export const fetchLikeRemoveApi = async ({ title, id }) => {
   try {

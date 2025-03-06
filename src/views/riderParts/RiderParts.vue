@@ -7,6 +7,7 @@ import { ref, onMounted } from 'vue'
 import { getNaverItems } from '../../apis/naverSearchApi'
 import BikePartsSection from './components/BikePartsSection.vue'
 import BestProductSection from './components/BestProductSection.vue'
+
 const query = ref('자전거부품')
 const items = ref([])
 const groupedItems = ref([])
@@ -36,18 +37,6 @@ const fetchNaverDatas = async () => {
     console.error('검색 오류 : ', error)
   }
 }
-
-// const cleanedItems = computed(() => {
-//   return items.value.map((item) => {
-//     if (typeof item.title !== 'string') return { ...item, cleanTitle: '제목 없음' }
-//     const parts = item.title.split('<b>')
-//     let cleanTitle = parts[0].trim()
-//     if (!cleanTitle && parts.length > 1) {
-//       cleanTitle = parts[1].split('</b>')[1]?.trim() || parts[1].replace('</b>', '').trim()
-//     }
-//     return { ...item, cleanTitle }
-//   })
-// })
 
 onMounted(() => {
   fetchNaverDatas()

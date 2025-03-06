@@ -22,6 +22,7 @@ const isBeginning = ref(true)
 const isEnd = ref(false)
 const modules = [Pagination, Navigation]
 
+
 const handleNext = () => {
   if (swiperRef.value) {
     swiperRef.value.slideNext()
@@ -39,14 +40,7 @@ const handleSlideChange = (swiper) => {
   isEnd.value = swiper.isEnd
 }
 
-const goToDetail = (item) => {
-  if (!item || !item.productId) {
-    console.warn("⚠️ productId가 없습니다!", item);
-    return;
-  }
-  itemStore.setSelectedItem(item);
-  router.push(`/riderPartsDetail/${item.productId}`);
-};
+
 </script>
 
 <template>
@@ -132,7 +126,7 @@ const goToDetail = (item) => {
         :navigation="false"
       >
         <swiper-slide v-for="(group, index) in groupedItems" :key="index">
-          <div class="grid grid-cols-4 gap-4 dark:bg-black9">
+          <div class="grid grid-cols-4 gap-4 dark:bg-black9" @click="goToDetail(item)">
             <div v-for="(item, i) in group" :key="i" class="flex flex-col">
               <div class="flex flex-col gap-1">
                 <div class="w-full h-[280px] border mb-1">
