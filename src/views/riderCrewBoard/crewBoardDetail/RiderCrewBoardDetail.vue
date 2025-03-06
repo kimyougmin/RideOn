@@ -52,7 +52,7 @@ const DUMMY_RIDER_CREW = {
       </article>
       <article class="col-span-2 flex flex-col gap-4">
         <AuthorInfo :author="DUMMY_RIDER_CREW.author" />
-        <button class="w-full bg-black6 text-white rounded-lg p-4 text-center">함께하기</button>
+        <button class="w-full bg-blue-500 text-white rounded-lg p-4 text-center">함께하기</button>
       </article>
     </section>
     <BasicFooter />
