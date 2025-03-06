@@ -72,17 +72,17 @@ const likeRemoveHandler = async () => {
               <p class="text-black1 mb-0 font-bold text-center">구매하러 가기</p>
             </div>
             <div class="grid grid-cols-2 gap-4">
-              <div v-if="union.length > 0 && !union.includes(`${id}`)" @click="likeCreateHandler" class="flex border border-black7 bg-black1 rounded-lg justify-center align-center py-2">
+              <div v-if="union.includes(`${id}`)" @click="likeRemoveHandler" class="flex border border-black7 bg-black1 rounded-lg justify-center align-center py-2">
                 <!-- 찜 -->
-                <svg  width="18" height="17" viewBox="0 0 18 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M17 5.09091C17 2.83156 15.1345 1 12.8333 1C11.1128 1 9.63581 2.02389 9 3.48493C8.3642 2.02389 6.88722 1 5.16667 1C2.86548 1 1 2.83156 1 5.09091C1 11.6551 9 16 9 16C9 16 17 11.6551 17 5.09091Z" class="dark:stroke-black1" stroke="#2A2A2A" stroke-linecap="round" stroke-linejoin="round"/>
+                <svg width="16" height="15" viewBox="0 0 16 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M16 4.09091C16 1.83156 14.1345 0 11.8333 0C10.1128 0 8.63581 1.02389 8 2.48493C7.3642 1.02389 5.88722 0 4.16667 0C1.86548 0 0 1.83156 0 4.09091C0 10.6551 8 15 8 15C8 15 16 10.6551 16 4.09091Z" fill="#DC3644"/>
                 </svg>
                 <p class="mb-0 ml-2 font-impact">찜하기</p>
               </div>
-              <div v-else @click="likeRemoveHandler" class="flex border border-black7 bg-black1 rounded-lg justify-center align-center py-2">
+              <div v-else @click="likeCreateHandler" class="flex border border-black7 bg-black1 rounded-lg justify-center align-center py-2">
                 <!-- 채워진찜 -->
-                <svg width="16" height="15" viewBox="0 0 16 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M16 4.09091C16 1.83156 14.1345 0 11.8333 0C10.1128 0 8.63581 1.02389 8 2.48493C7.3642 1.02389 5.88722 0 4.16667 0C1.86548 0 0 1.83156 0 4.09091C0 10.6551 8 15 8 15C8 15 16 10.6551 16 4.09091Z" fill="#DC3644"/>
+                <svg  width="18" height="17" viewBox="0 0 18 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M17 5.09091C17 2.83156 15.1345 1 12.8333 1C11.1128 1 9.63581 2.02389 9 3.48493C8.3642 2.02389 6.88722 1 5.16667 1C2.86548 1 1 2.83156 1 5.09091C1 11.6551 9 16 9 16C9 16 17 11.6551 17 5.09091Z" class="dark:stroke-black1" stroke="#2A2A2A" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
                 <p class="mb-0 ml-2 font-impact">찜하기</p>
               </div>
