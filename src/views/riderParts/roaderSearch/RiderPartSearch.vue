@@ -31,7 +31,7 @@ const cleanedItems = computed(() => {
 
 const searchItems = async () => {
   if (!searchQuery.value.trim()) return;
-  const results = await getNaverItems(searchQuery.value, 81, selectedSort.value);
+  const results = await getNaverItems(searchQuery.value, 100, selectedSort.value);
   items.value = results;
   visibleItems.value = cleanedItems.value.slice(0, itemsPerPage);
 };
@@ -102,31 +102,15 @@ onMounted(async () => {
       <div class="flex flex-col justify-start items-start w-[1256px] gap-8 mt-10 dark:bg-black9">
         <div class="flex justify-start items-center flex-grow-0 flex-shrink-0 relative gap-4">
           <div class="flex flex-col justify-start items-start w-[1256px] gap-8 mt-[35px]">
-            <!-- <div class="flex justify-start items-center flex-grow-0 flex-shrink-0 relative gap-4">
-              <p
-                v-for="sort in sortOptions"
-                :key="sort.value"
-                class="flex-grow-0 flex-shrink-0 text-xl text-left cursor-pointer transition-colors duration-200 text-black6"
-                :class="{
-                  'w-14': sort.value === '추천순', // 추천순이면 w-14 적용
-                  'w-[97px]': sort.value !== '추천순', // 나머지는 기본 w-[97px]
-                  'text-black font-bold dark:text-black1': selectedSort === sort.value, // 선택된 항목이면 강조 + 다크모드에서 black1
-                  'text-black6 dark:text-black4': selectedSort !== sort.value // 선택되지 않은 항목 스타일
-                }"
-                @click="selectedSort = sort.value"
-              >
-                {{ sort.label }}
-              </p>
-            </div> -->
             <div class="flex justify-start items-center flex-grow-0 flex-shrink-0 relative gap-4">
               <p
                 v-for="sort in sortOptions"
                 :key="sort.value"
                 class="flex-grow-0 flex-shrink-0 text-xl text-left cursor-pointer transition-colors duration-200 text-black6"
                 :class="{
-                  'w-14': sort.value === 'sim', // 네이버 API 기준 추천순
+                  'w-14': sort.value === 'sim',
                   'w-[97px]': sort.value !== 'sim',
-                  'text-black font-bold dark:text-black1': selectedSort === sort.value, // 선택된 항목 스타일
+                  'text-black font-bold dark:text-black1': selectedSort === sort.value,
                   'text-black6 dark:text-black4': selectedSort !== sort.value
                 }"
                 @click="selectedSort = sort.value"
