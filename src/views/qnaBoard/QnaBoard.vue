@@ -100,7 +100,7 @@ const handleWriteClick = () => {
         </section>
 
         <!-- 질문 게시판 목록 -->
-        <section class="flex flex-col items-start">
+        <section class="flex flex-col min-h-[512px]">
           <QnaListItem v-for="qna in filteredQnas" :key="qna.id" :qna="qna" />
         </section>
       </article>
