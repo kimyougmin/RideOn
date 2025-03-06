@@ -39,17 +39,15 @@ const toggleBikeStations = async () => {
   isLoadingMarkers.value = true;
 
   if (isToggled.value.bikeStations) {
-    // ✅ 기존 마커들을 지도에서 삭제
     bikeMarkers.value.forEach(marker => {
       if (map.value.hasLayer(marker)) {
         map.value.removeLayer(marker);
       }
     });
 
-    // ✅ 배열 비우기
+
     bikeMarkers.value = [];
   } else {
-    // ✅ 새 마커 추가
     const newMarkers = await fetchPlaces(map.value, userLatLng.value, (stationData) => {
       selectedFacility.value = {
         type: "bikeStation",
@@ -64,7 +62,6 @@ const toggleBikeStations = async () => {
     bikeMarkers.value = newMarkers || [];
   }
 
-  // ✅ 토글 상태 변경
   isToggled.value.bikeStations = !isToggled.value.bikeStations;
   isLoadingMarkers.value = false;
 };
