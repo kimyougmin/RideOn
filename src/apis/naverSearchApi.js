@@ -14,14 +14,13 @@ export async function getNaverItems(targetWord) {
     const response = await naverShoppingApi.get('/v1/search/shop.json', {
       params: {
         query: targetWord,
-        display: 20,
+        display: 32,
       },
       headers: {
         'X-Naver-Client-Id': naverID,
         'X-Naver-Client-Secret': naverSecret,
       },
     });
-    console.log('API 응답 데이터:', response.data);
     if (response.data && response.data.items) {
       return response.data.items;
     } else {

@@ -11,17 +11,13 @@ const route = useRoute();
 
 onMounted(() => {
   if (!item.value) {
-    console.log("🔄 Pinia 상태 없음 → localStorage에서 복구...");
     itemStore.restoreItem();
     item.value = itemStore.selectedItem;
   }
-
-  console.log("✅ 복구된 아이템:", item.value);
 });
 
 watch(() => route.path, (newPath) => {
   if (newPath === "/detail" && !item.value) {
-    console.log("🔄 Vue Router 감지: localStorage에서 복구 중...");
     const savedItem = localStorage.getItem('selectedItem');
     if (savedItem) {
       item.value = JSON.parse(savedItem);

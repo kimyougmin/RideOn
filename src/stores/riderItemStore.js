@@ -9,11 +9,10 @@ export const useItemStore = defineStore('itemStore', {
     setSelectedItem(item) {
       this.selectedItem = item;
       this.selectedLink = item.link;
-      localStorage.setItem('selectedItem', JSON.stringify(item)); // 🔥 상태를 강제 저장
-      localStorage.setItem('selectedLink', item.link); // 🔥 링크도 저장
+      localStorage.setItem('selectedItem', JSON.stringify(item));
+      localStorage.setItem('selectedLink', item.link);
     },
     restoreItem() {
-      // 🔄 외부 사이트 방문 후 돌아왔을 때 자동 복구
       const savedItem = localStorage.getItem('selectedItem');
       const savedLink = localStorage.getItem('selectedLink');
 
