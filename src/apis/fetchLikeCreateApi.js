@@ -10,8 +10,8 @@ const devAPI = axios.create({
 export const fetchLikeCreateApi = async ({ _id, title, name, price, image, brand, category }) => {
   try {
 
-    const params = JSON.stringify({title, id: _id, name, price, image, brand, category})
-    const response = await devAPI.post('/like/toggle', params)
+    const params = JSON.stringify({title: _id, id: title, name, price, image, brand, category})
+    const response = await devAPI.post('/like/create', params)
     return response.data
   } catch (error) {
     console.error('fetchLikeCreateApi', error.response?.data || error.message)
