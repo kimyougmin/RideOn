@@ -1,9 +1,14 @@
 <script setup>
+import { useRoute, useRouter } from 'vue-router'
 import BasicHeader from '@/components/BasicHeader.vue'
 import BasicFooter from '@/components/BasicFooter.vue'
 import CommentForm from '@/components/comment/CommentForm.vue'
 import CommentList from '@/components/comment/CommentList.vue'
-import getRelativeTime from '@/utils/getRelativeTime'
+import { useFreeBoardStore } from '@/stores/freeBoard'
+import { useUserStore } from '@/stores/user'
+import { onMounted, ref } from 'vue'
+import ActionButtons from './components/ActionButtons.vue'
+import PostContent from './components/PostContent.vue'
 
 const DUMMY_POST = {
   id: 1,
@@ -61,6 +66,102 @@ const DUMMY_POST = {
     },
   ],
 }
+
+const route = useRoute()
+const router = useRouter()
+const freeBoardStore = useFreeBoardStore()
+const userStore = useUserStore()
+
+const isLiked = ref(false)
+
+const postId = route.params.id
+const post = ref(DUMMY_POST)
+const isLoading = ref(false)
+
+const handleShare = () => {
+  navigator.clipboard
+    .writeText(window.location.href)
+    .then(() => {
+      alert('링크가 클립보드에 복사되었습니다.')
+    })
+    .catch((err) => {
+      console.error('클립보드 복사 실패:', err)
+      alert('링크 복사에 실패했습니다.')
+    })
+}
+
+const handleLike = async () => {
+  if (!userStore.isLoggedIn) {
+    alert('로그인 후 이용해주세요.')
+    router.push('/login')
+    return
+  }
+
+  try {
+    isLoading.value = true
+    const newLikeStatus = !isLiked.value
+
+    let updatedPost
+
+    if (!newLikeStatus) {
+      const likeId = post.value.likes.find((like) => like.user === userStore.user._id)._id
+      updatedPost = await freeBoardStore.unlikePost(likeId, postId)
+    } else {
+      updatedPost = await freeBoardStore.likePost(postId)
+    }
+
+    post.value = updatedPost
+    isLiked.value = newLikeStatus
+  } catch (error) {
+    console.error('좋아요 처리 중 오류가 발생했습니다:', error)
+  } finally {
+    isLoading.value = false
+  }
+}
+
+const handleCommentSubmit = async (newComment) => {
+  try {
+    isLoading.value = true
+    await freeBoardStore.createComment(postId, newComment)
+    post.value = freeBoardStore.currentPost
+  } catch (error) {
+    console.error('댓글 생성 중 오류가 발생했습니다:', error)
+  } finally {
+    isLoading.value = false
+  }
+}
+
+const handleDeleteComment = async (commentId) => {
+  try {
+    isLoading.value = true
+    await freeBoardStore.deleteComment(commentId, postId)
+    post.value = freeBoardStore.currentPost
+  } catch (error) {
+    console.error('댓글 삭제 중 오류가 발생했습니다:', error)
+  } finally {
+    isLoading.value = false
+  }
+}
+
+onMounted(async () => {
+  try {
+    isLoading.value = true
+    await freeBoardStore.fetchPostById(postId)
+    post.value = freeBoardStore.currentPost
+
+    userStore.loadUser()
+
+    const hasLiked = freeBoardStore.currentPost.likes.some(
+      (like) => like.user === userStore.user._id,
+    )
+    isLiked.value = hasLiked
+  } catch (error) {
+    console.error('게시글을 불러오는데 실패했습니다:', error)
+    router.push('/freeBoard')
+  } finally {
+    isLoading.value = false
+  }
+})
 </script>
 
 <template>
@@ -68,111 +169,14 @@ const DUMMY_POST = {
     <BasicHeader />
     <main class="w-[1440px] px-[93px] mx-auto pt-10 flex flex-col gap-8 mb-12">
       <section class="mx-auto flex gap-4">
-        <article class="flex flex-col gap-2">
-          <button
-            class="max-h-10 px-3 py-2 border rounded flex items-center justify-center bg-black1"
-          >
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 20 20"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M17.5 10.0003H2.5M2.5 10.0003L9.58333 2.91699M2.5 10.0003L9.58333 17.0837"
-                stroke="#202020"
-                stroke-width="2.08333"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
-          </button>
-          <button
-            class="max-h-10 px-3 py-2 border rounded flex items-center justify-center bg-black1"
-          >
-            <svg
-              width="26"
-              height="26"
-              viewBox="0 0 26 26"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M19.25 23.417C20.9759 23.417 22.375 22.0179 22.375 20.292C22.375 18.5661 20.9759 17.167 19.25 17.167C17.5241 17.167 16.125 18.5661 16.125 20.292C16.125 22.0179 17.5241 23.417 19.25 23.417Z"
-                stroke="#202020"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-              <path
-                d="M19.25 8.83301C20.9759 8.83301 22.375 7.43389 22.375 5.70801C22.375 3.98212 20.9759 2.58301 19.25 2.58301C17.5241 2.58301 16.125 3.98212 16.125 5.70801C16.125 7.43389 17.5241 8.83301 19.25 8.83301Z"
-                stroke="#202020"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-              <path
-                d="M6.75 16.125C8.47589 16.125 9.875 14.7259 9.875 13C9.875 11.2741 8.47589 9.875 6.75 9.875C5.02411 9.875 3.625 11.2741 3.625 13C3.625 14.7259 5.02411 16.125 6.75 16.125Z"
-                stroke="#202020"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-              <path d="M16.6462 7.27051L9.35449 11.4372" stroke="#202020" stroke-width="2" />
-              <path d="M9.35449 14.5625L16.6462 18.7292" stroke="#202020" stroke-width="2" />
-            </svg>
-          </button>
-          <button
-            class="max-h-10 px-3 py-2 border border-primaryRed rounded flex items-center justify-center bg-black1"
-          >
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 18 18"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M17 5.59091C17 3.33156 15.1345 1.5 12.8333 1.5C11.1128 1.5 9.63581 2.52389 9 3.98493C8.3642 2.52389 6.88722 1.5 5.16667 1.5C2.86548 1.5 1 3.33156 1 5.59091C1 12.1551 9 16.5 9 16.5C9 16.5 17 12.1551 17 5.59091Z"
-                stroke="#DC3644"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
-          </button>
-        </article>
-        <article class="w-[620px] flex flex-col gap-8">
-          <div class="w-full h-[400px] overflow-hidden rounded-lg">
-            <img :src="DUMMY_POST.image" alt="placeholder" />
-          </div>
-          <div class="flex flex-col gap-4">
-            <h2 class="text-title font-bold dark:text-black1">{{ DUMMY_POST.title }}</h2>
-            <div class="flex items-center gap-3">
-              <span class="text-body1 text-black4">{{ DUMMY_POST.author.fullName }}</span>
-              <span class="text-body1 text-black4">|</span>
-              <span class="text-body1 text-black4">{{
-                getRelativeTime(DUMMY_POST.createdAt)
-              }}</span>
-            </div>
-          </div>
-          <hr />
-          <p
-            class="text-body1 font-light leading-8 dark:text-black1"
-            v-html="DUMMY_POST.content"
-          ></p>
-          <div class="flex items-center gap-3 px-4 py-3 bg-black2 rounded dark:bg-black8">
-            <span class="text-body1 font-bold dark:text-black1">Tags</span>
-            <span
-              v-for="tag in DUMMY_POST.tags"
-              :key="tag"
-              class="text-body2 bg-black1 text-black10 px-4 py-1 rounded dark:bg-black7 dark:text-black1"
-            >
-              {{ tag }}
-            </span>
-          </div>
-        </article>
+        <ActionButtons
+          :onShare="handleShare"
+          :onLike="handleLike"
+          :likes="post.likes"
+          :isLiked="isLiked"
+          :isLoading="isLoading"
+        />
+        <PostContent :post="post" />
       </section>
     </main>
 
@@ -181,8 +185,13 @@ const DUMMY_POST = {
       <article class="w-[1440px] mx-auto flex gap-4 items-center justify-center">
         <div class="w-10 h-10"></div>
         <section class="max-w-[620px] flex flex-col gap-8">
-          <CommentForm />
-          <CommentList :comments="DUMMY_POST.comments" />
+          <CommentForm @submit="handleCommentSubmit" :isLoading="isLoading" />
+          <CommentList
+            :authorId="userStore.user._id"
+            :comments="post.comments"
+            :onDelete="handleDeleteComment"
+            :isLoading="isLoading"
+          />
         </section>
       </article>
     </section>

@@ -11,21 +11,30 @@ defineProps({
 
 <template>
   <router-link
-    :to="`/qnaBoard/detail/${qna.id}`"
+    :to="{
+      name: 'QnaBoardDetail',
+      params: { id: qna._id },
+    }"
     class="w-full flex flex-col gap-6 items-start py-8 border-t border-black3 dark:border-black6"
   >
     <!-- 질문 정보 상단 -->
     <div class="flex flex-col gap-4">
       <div class="flex gap-4 items-center">
-        <span class="text-body1 px-4 py-1 rounded-full bg-black2 dark:bg-black7 dark:text-black1">{{
-          qna.isSolved ? '해결' : '미해결'
-        }}</span>
+        <span
+          class="text-body1 px-4 py-1 rounded-full"
+          :class="{
+            'bg-green-600 text-black1': qna.status === 'SOLVED',
+            'bg-black2 text-black10': qna.status !== 'SOLVED',
+          }"
+        >
+          {{ qna.status === 'SOLVED' ? '해결' : '미해결' }}
+        </span>
         <span class="text-sub-title font-bold dark:text-black1">{{ qna.title }}</span>
       </div>
-      <p class="text-body1 font-light m-0 dark:text-black3">
+      <p class="text-body1 font-light m-0 dark:text-black3 line-clamp-2">
         {{ qna.content }}
       </p>
-      <div class="flex items-center gap-3">
+      <div class="flex flex-wrap items-center gap-3">
         <span
           v-for="tag in qna.tags"
           :key="tag"
@@ -40,7 +49,7 @@ defineProps({
       <!-- 작성자 정보 & 작성일 -->
       <div class="flex items-center gap-3">
         <span class="text-body2 text-black5 font-light dark:text-black4">{{
-          qna.author.fullName
+          qna.author.fullName.split('|')[0]
         }}</span>
         <span class="text-body2 text-black5 font-light dark:text-black4">|</span>
         <span class="text-body2 text-black5 font-light dark:text-black4">{{
@@ -71,7 +80,7 @@ defineProps({
               class="stroke-black5 dark:stroke-black1"
             />
           </svg>
-          {{ qna.like }}</span
+          {{ qna.likes?.length || 0 }}</span
         >
         <span class="text-body2 dark:text-black3 font-light flex items-center gap-1">
           <svg
@@ -117,33 +126,7 @@ defineProps({
               class="stroke-black5 dark:stroke-black1"
             />
           </svg>
-          {{ qna.comments.length }}</span
-        >
-        <span class="text-body2 dark:text-black3 font-light flex items-center gap-1">
-          <svg
-            width="19"
-            height="19"
-            viewBox="0 0 19 19"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M1.61226 9.75492C1.55763 9.59072 1.55763 9.41324 1.61226 9.24904C2.71031 5.94542 5.8271 3.5625 9.50043 3.5625C13.1722 3.5625 16.2874 5.94304 17.3878 9.24508C17.4432 9.40896 17.4432 9.58629 17.3878 9.75096C16.2906 13.0546 13.1738 15.4375 9.50043 15.4375C5.82868 15.4375 2.71268 13.057 1.61226 9.75492Z"
-              stroke="black"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class="stroke-black5 dark:stroke-black1"
-            />
-            <path
-              d="M11.875 9.5C11.875 10.1299 11.6248 10.734 11.1794 11.1794C10.734 11.6248 10.1299 11.875 9.5 11.875C8.87011 11.875 8.26602 11.6248 7.82062 11.1794C7.37522 10.734 7.125 10.1299 7.125 9.5C7.125 8.87011 7.37522 8.26602 7.82062 7.82062C8.26602 7.37522 8.87011 7.125 9.5 7.125C10.1299 7.125 10.734 7.37522 11.1794 7.82062C11.6248 8.26602 11.875 8.87011 11.875 9.5Z"
-              stroke="black"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class="stroke-black5 dark:stroke-black1"
-            />
-          </svg>
-
-          {{ qna.views }}</span
+          {{ qna.comments?.length || 0 }}</span
         >
       </div>
     </div>
