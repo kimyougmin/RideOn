@@ -31,7 +31,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="w-full block h-full dark:bg-black9">
+  <div class="w-full dark:bg-black9">
     <BasicHeader />
     <BicycleBanner />
     <section class="w-[1440px] mx-auto my-[120px] px-[93px] flex flex-col gap-[120px]">

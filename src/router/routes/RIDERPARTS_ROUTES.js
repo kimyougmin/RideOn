@@ -15,8 +15,14 @@ const RIDERPARTS_ROUTES = [
   },
   {
     path: '/riderPartsDetail',
+    path: '/riderPartsDetail',
     name: 'RiderPartsDetail',
     component: RiderPartDetail,
-  },
+    props: (route) => ({
+      keyword: route.query.keyword,
+      productId: route.query.productId,
+    }),
+  }
 ]
-export default RIDERPARTS_ROUTES
+export default RIDERPARTS_ROUTES;
+

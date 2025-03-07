@@ -2,22 +2,36 @@ import { defineStore } from 'pinia';
 
 export const useItemStore = defineStore('itemStore', {
   state: () => ({
-    selectedItem: JSON.parse(localStorage.getItem('selectedItem')) || null,
-    selectedLink: localStorage.getItem('selectedLink') || null,
+    selectedItem: null,
   }),
+  getters: {
+    getSelectedItem(state) {
+      if (!state.selectedItem) {
+        console.warn("🔄 Pinia에서 selectedItem이 없음 → LocalStorage에서 복구 시도");
+        this.restoreItem();
+      }
+      return state.selectedItem;
+    },
+  },
   actions: {
     setSelectedItem(item) {
+      if (!item || !item.productId) {
+        console.warn("⚠️ setSelectedItem: 잘못된 데이터가 전달됨", item);
+        return;
+      }
       this.selectedItem = item;
-      this.selectedLink = item.link;
       localStorage.setItem('selectedItem', JSON.stringify(item));
-      localStorage.setItem('selectedLink', item.link);
     },
     restoreItem() {
       const savedItem = localStorage.getItem('selectedItem');
-      const savedLink = localStorage.getItem('selectedLink');
-
-      if (savedItem) this.selectedItem = JSON.parse(savedItem);
-      if (savedLink) this.selectedLink = savedLink;
+      if (savedItem) {
+        try {
+          this.selectedItem = JSON.parse(savedItem);
+        } catch (error) {
+          console.error("❌ LocalStorage 데이터 파싱 오류:", error);
+          this.selectedItem = null;
+        }
+      }
     },
   },
 });

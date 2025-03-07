@@ -3,12 +3,16 @@ import ShopHeader from "@/components/ShopHeader.vue";
 import BasicFooter from "@/components/BasicFooter.vue";
 import { ref, onMounted, watch, computed } from "vue";
 import { getNaverItems } from "@/apis/naverSearchApi";
+import { useRouter } from 'vue-router';
+import { useItemStore } from "@/stores/riderItemStore";
 
 const selectedSort = ref("sim");
 const items = ref([]);
 const visibleItems = ref([]);
 const itemsPerPage = 9;
 const searchQuery = ref("");
+const router = useRouter();
+const itemStore = useItemStore();
 
 const sortOptions = [
   { label: "추천순", value: "sim" },
@@ -49,9 +53,18 @@ watch(searchQuery, async () => {
   await searchItems();
 });
 
+const goToDetail = (item) => {
+  if (!item || !item.productId) {
+    return;
+  }
+  itemStore.setSelectedItem(item);
+  router.push(`/riderPartsDetail/${item.productId}`);
+};
+
 onMounted(async () => {
   searchQuery.value = "자전거부품";
   await searchItems();
+  console.log('🔍 API 응답 데이터:', visibleItems.value);
 });
 </script>
 
@@ -100,24 +113,50 @@ onMounted(async () => {
       </div>
       <!-- 상품 목록 -->
       <div class="mt-[32px] dark:bg-black9">
+        <!-- 상품 목록 -->
         <div class="grid grid-cols-3 gap-6">
-          <div v-for="(item, index) in visibleItems" :key="index" class="flex flex-col w-[408px]">
-            <img :src="item.image" :alt="item.cleanTitle" class="w-full h-[300px] object-cover border border-[#979797]"/>
-            <div class="flex items-start gap-3 px-8 py-6 bg-[#fefefe] border border-[#979797]">
-              <div class="flex flex-col gap-3 w-[316px]">
-                <p class="text-base text-black m-0">{{ item.mallName }}</p>
-                <p class="text-xl font-bold text-black ellipsis-multiline m-0">{{ item.cleanTitle }}</p>
-                <p class="text-2xl font-bold text-black m-0">{{ item.lprice ? Number(item.lprice).toLocaleString("ko-KR") + "원" : "가격 없음" }}</p>
+          <div
+            v-for="(item, index) in visibleItems"
+            :key="index"
+            class="flex flex-col justify-start items-start flex-grow-0 flex-shrink-0 w-[408px] relative cursor-pointer"
+            @click="goToDetail(item)"
+          >
+            <img
+              :src="item.image"
+              :alt="item.cleanTitle"
+              class="w-full h-[300px] object-cover border border-[#979797]"
+            />
+            <div class="flex justify-start items-start flex-grow-0 flex-shrink-0 relative gap-3 px-8 py-6 bg-[#fefefe] border border-[#979797]">
+              <div class="flex flex-col justify-start items-start flex-grow-0 flex-shrink-0 w-[316px] relative gap-3">
+                <p class="self-stretch flex-grow-0 flex-shrink-0 w-[316px] text-base text-left text-black">
+                  {{ item.mallName }}
+                </p>
+                <p class="self-stretch flex-grow-0 flex-shrink-0 w-[316px] text-xl font-bold text-left text-black ellipsis-multiline">
+                  {{ item.cleanTitle }}
+                </p>
+                <p class="self-stretch flex-grow-0 flex-shrink-0 w-[316px] text-2xl font-bold text-left text-black">
+                  {{ item.lprice ? Number(item.lprice).toLocaleString('ko-KR') + '원' : '가격 없음' }}
+                </p>
               </div>
-              <img :src="isLiked ? '/riderPageImage/fullHeart.svg' : '/riderPageImage/emptyHeart.svg'" alt="하트" class="w-[18px] h-[17px] transition-all duration-200"/>
+              <img
+                :src="isLiked ? '/riderPageImage/fullHeart.svg' : '/riderPageImage/emptyHeart.svg'"
+                alt="하트"
+                class="w-[18px] h-[17px] transition-all duration-200"
+              />
             </div>
           </div>
         </div>
       </div>
-      <!-- 더보기 버튼 -->
-      <div class="p-[40px] flex justify-center">
-        <div v-if="visibleItems.length < items.length" @click="loadMore" class="w-[300px] h-[56px] flex justify-center items-center gap-8 p-4 rounded-[4px] bg-black9 mt-[32px] cursor-pointer hover:bg-[#303030] transition-all dark:bg-black1">
-          <p class="text-xl font-bold text-white dark:text-black10 pt-3 m-0">더보기</p>
+      <!-- 더보기 -->
+      <div class="p-[40px] flex items-center justify-center">
+        <div
+        v-if="visibleItems.length < items.length"
+        @click="loadMore"
+        class="flex justify-center items-center flex-grow-0 flex-shrink-0 w-[300px] h-[56px] relative gap-8 p-4 rounded-[4px] bg-black9 mt-[32px] mx-[478px] cursor-pointer hover:bg-[#303030] transition-all dark:bg-black1"
+        >
+          <p class="flex-grow-0 flex-shrink-0 text-xl font-bold text-center text-white dark:text-black10 pt-3">
+            더보기
+          </p>
         </div>
       </div>
     </div>

@@ -10,10 +10,16 @@ defineProps({
 <template>
   <div class="flex justify-center items-center gap-4 border border-black4 rounded-lg p-4 grow-0">
     <div class="w-12 h-12 rounded-full overflow-hidden">
-      <img :src="author.profileImage" alt="profile image" class="w-full h-full object-cover" />
+      <img
+        :src="author.profileImage || 'https://placehold.co/40x40?text=RideOn'"
+        alt="profile image"
+        class="w-full h-full object-cover"
+      />
     </div>
     <div class="flex flex-col">
-      <span class="text-sub-title font-bold dark:text-black3">{{ author.fullName }}</span>
+      <span class="text-sub-title font-bold dark:text-black3">{{
+        author.fullName.split('|')[0]
+      }}</span>
     </div>
   </div>
 </template>

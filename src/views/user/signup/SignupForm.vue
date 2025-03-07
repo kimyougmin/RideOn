@@ -94,6 +94,7 @@ const { birthYear, birthMonth, birthDay, yearList, monthList, dayList } = useDat
 
 
 <template>
+  <div>
   <form @submit.prevent="handleSignup" class="w-full flex flex-col items-center">
     <div class="w-[428px] space-y-[32px]">
       <div>
@@ -224,4 +225,5 @@ const { birthYear, birthMonth, birthDay, yearList, monthList, dayList } = useDat
       :visible="showAlert" 
       @close="handleAlertClose"
     />
+  </div>
 </template>

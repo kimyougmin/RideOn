@@ -8,6 +8,7 @@ import bikeBrand from '../../../../public/bike_brand_data.json'
 import { fetchUserLikesApi } from '@/apis/userLikesApi.js'
 import { fetchLikeCreateApi } from '@/apis/fetchLikeCreateApi.js'
 import { fetchLikeRemoveApi } from '@/apis/fetchLikeRemoveApi.js'
+import { useRoute } from 'vue-router'
 
 const groupList = ref([]);
 const groupListShot = ref([]);
@@ -15,6 +16,8 @@ const union = ref([]);
 const searchValue = ref("");
 const seeMore = ref(true);
 const selectOption = ref([]);
+const route = useRoute();
+const { brand } = route.query;
 
 const receiveHandler = (newValue) => {
   searchValue.value = newValue;
@@ -33,6 +36,9 @@ const onSelectDeleteHandler = (e) => {
 };
 
 onMounted(async () => {
+  if(brand !== undefined) {
+    selectOption.value = [...selectOption.value, brand.toUpperCase()]
+  }
   const user = JSON.parse(localStorage.getItem('user'));
   if(user._id !== undefined){
     const date = await fetchUserLikesApi(user._id);
