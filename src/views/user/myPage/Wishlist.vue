@@ -168,6 +168,11 @@ const goToDetailPage = async (item) => {
   const fallbackId = item.productId || item.id
   if (!fallbackId) return
 
+  // HTML 태그를 제거하는 함수
+  const removeHtmlTags = (str) => {
+    return str.replace(/<[^>]*>/g, '').replace(/&[^;]+;/g, '')
+  }
+
   // 부품 계열 카테고리: parts, gear, 부품
   if (item.category === 'parts' || item.category === 'gear' || item.category === '부품') {
     try {
@@ -184,14 +189,14 @@ const goToDetailPage = async (item) => {
       if (!naverTitle) {
         naverTitle = item.name
       }
-      // HTML 태그 제거
-      const cleanTitle = naverTitle.replace(/<\/?[^>]+(>|$)/g, '')
-      const cleanMallName = (item.mallName || '').replace(/<\/?[^>]+(>|$)/g, '')
+      
+      // HTML 태그와 HTML 엔티티를 모두 제거
+      const cleanTitle = removeHtmlTags(naverTitle)
+      const cleanMallName = removeHtmlTags(item.mallName || '')
 
       router.push({
         path: '/riderPartsDetail',
         query: {
-          // 세 번 인코딩 적용
           keyword: tripleEncode(cleanTitle),
           productId: naverProductId,
           title: tripleEncode(cleanTitle),
@@ -207,12 +212,12 @@ const goToDetailPage = async (item) => {
       router.push({
         path: '/riderPartsDetail',
         query: {
-          keyword: tripleEncode(item.name.replace(/<\/?[^>]+(>|$)/g, '')),
+          keyword: tripleEncode(removeHtmlTags(item.name)),
           productId: fallbackId,
-          title: tripleEncode(item.name.replace(/<\/?[^>]+(>|$)/g, '')),
+          title: tripleEncode(removeHtmlTags(item.name)),
           image: tripleEncode(item.image),
           price: item.lprice || item.hprice || '0',
-          mallName: tripleEncode(item.mallName || ''),
+          mallName: tripleEncode(removeHtmlTags(item.mallName || '')),
           link: tripleEncode(item.link || ''),
         },
       })
@@ -240,7 +245,9 @@ const goToDetailPage = async (item) => {
 // truncatedName 함수만 남기고 removeHtmlTags 함수 제거
 const truncatedName = (name) => {
   const maxLength = 22
-  return name.length > maxLength ? name.slice(0, maxLength) + '...' : name
+  // HTML 태그 제거
+  const cleanName = name.replace(/<[^>]*>/g, '').replace(/&[^;]+;/g, '')
+  return cleanName.length > maxLength ? cleanName.slice(0, maxLength) + '...' : cleanName
 }
 </script>
 
