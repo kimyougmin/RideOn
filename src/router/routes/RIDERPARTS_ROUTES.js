@@ -14,10 +14,13 @@ const RIDERPARTS_ROUTES = [
     component: RiderPartSearch,
   },
   {
-    path: '/riderPartsDetail/:productId',
+    path: '/riderPartsDetail',
     name: 'RiderPartsDetail',
     component: RiderPartDetail,
-    props: true,
+    props: (route) => ({
+      keyword: route.query.keyword,
+      productId: route.query.productId,
+    }),
   },
 ]
 export default RIDERPARTS_ROUTES;
