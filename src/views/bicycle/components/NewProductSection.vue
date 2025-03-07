@@ -127,7 +127,9 @@ const handleSlideChange = (swiper) => {
             <div v-for="(item, i) in group" :key="i" class="flex flex-col">
               <div class="flex flex-col gap-1">
                 <div class="w-full h-[280px] border mb-1">
-                  <img :src="item.image" alt="Bike Image" class="size-full object-cover" />
+                  <router-link :to="{ name: `bicycleDetail`, params: {id: item.id}, query: { id: item.id, rating: item.rating, brand: item.brand, category: item.category, name: item.name, price: item.price, image: item.image }}">
+                    <img :src="item.image" alt="Bike Image" class="size-full object-cover" />
+                  </router-link>
                 </div>
                 <p class="text-body1 text-left dark:text-black3 m-0">
                   {{ item.brand }}
