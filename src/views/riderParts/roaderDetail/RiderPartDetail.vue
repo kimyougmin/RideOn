@@ -16,12 +16,12 @@ const productData = ref({
   price: "",
   mallName: "",
   link: "",
+  category: "",
   rating: 0,
 });
 const relevantProducts = ref([]);
 const productId = ref("");
-const item = ref(null);
-const union = ref([]);
+const item = ref([]);
 const isLiked = ref(false);
 const user = JSON.parse(localStorage.getItem('user'));
 
@@ -51,75 +51,64 @@ watch(
       price: query.price,
       mallName: decodeURIComponent(query.mallName),
       link: decodeURIComponent(query.link),
+      category: decodeURIComponent(query.category),
     };
     fetchRelevantProducts(productData.value.title);
+    item.value = {
+      productId: productId.value,
+      cleanTitle: productData.value.title,
+      lprice: productData.value.price,
+      image: productData.value.image,
+      mallName: productData.value.mallName,
+      category4: productData.value.category,
+    };
   },
   { immediate: true }
 );
 
-// onMounted( async () => {
-//   if (user && user._id !== undefined) {
-//     try {
-//       const likeData = await fetchUserLikesApi(user._id);
-//       union.value = likeData.map((e) => e.title);
+onMounted(async () => {
+  if (user && user._id !== undefined) {
+    try {
+      const likeData = await fetchUserLikesApi(user._id);
+      isLiked.value = likeData.some((e) => e.title === productId.value);
+    } catch (error) {
+      console.error("❌ 찜한 상품 불러오기 실패:", error);
+    }
+  }
+});
 
-//       // 2️⃣ 현재 상품이 찜한 목록에 있는지 확인
-//       isLiked.value = union.value.includes(productId);
-//       console.log("✅ 현재 상품 찜 상태:", isLiked.value);
-//     } catch (error) {
-//       console.error("❌ 찜한 상품 불러오기 실패:", error);
-//     }
-//   }
+const likeCreateHandler = async () => {
+  if (user && user._id !== undefined && item.value) {
+    try {
+      await fetchLikeCreateApi({
+        _id: item.value.productId,
+        title: user._id,
+        name: item.value.cleanTitle,
+        price: item.value.lprice,
+        image: item.value.image,
+        brand: item.value.mallName,
+        category: item.value.category4
+      });
+      isLiked.value = true;
+    } catch (error) {
+      console.error("❌ 찜하기 실패:", error);
+    }
+  }
+};
 
-// });
-
-// const likeCreateHandler = async () => {
-//   if (user && user._id !== undefined && item.value) {
-//     const requestData = {
-//       _id: item.value.productId,
-//       title: user._id,
-//       name: item.value.cleanTitle,
-//       price: item.value.lprice,
-//       image: item.value.image,
-//       brand: item.value.mallName,
-//       category: item.value.category4
-//     };
-
-//     console.log("📡 API 요청 데이터:", requestData); // 요청 데이터 출력
-
-//     try {
-//       const response = await fetchLikeCreateApi(requestData);
-//       console.log("✅ API 응답 데이터:", response); // 응답 데이터 출력
-//       alert("✅ 찜하기 성공!");
-//     } catch (error) {
-//       console.error("❌ API 요청 실패:", error);
-//       alert("⚠️ 찜하기 중 오류 발생!");
-//     }
-//   }
-// };
-// const likeRemoveHandler = async () => {
-//   if (user && user._id !== undefined && item.value) {
-//     console.log("💔 찜하기 취소 버튼 클릭됨!");  // ✅ 실행 확인 로그
-//     try {
-//       const { productId } = item.value;
-
-//       await fetchLikeRemoveApi({
-//         id: user._id,   // ✅ API 요청 ID 확인
-//         title: productId
-//       });
-
-//       console.log("💔 찜하기 취소 성공!", productId);  // ✅ 성공 로그
-
-//       // 상태 변경
-//       union.value = union.value.filter((e) => e !== productId);
-//       isLiked.value = false; // ✅ UI 업데이트
-//     } catch (error) {
-//       console.error("❌ 찜하기 취소 실패:", error);
-//     }
-//   } else {
-//     console.warn("⚠️ User ID 또는 item이 없습니다!");
-//   }
-// };
+const likeRemoveHandler = async () => {
+  if (user && user._id !== undefined && item.value) {
+    try {
+      await fetchLikeRemoveApi({
+        id: user._id,
+        title: item.value.productId
+      });
+      isLiked.value = false;
+    } catch (error) {
+      console.error("❌ 찜하기 취소 실패:", error);
+    }
+  }
+};
 
 </script>
 
@@ -144,7 +133,7 @@ watch(
                 <a :href="productData?.link" target="_blank" class="text-black1 mb-0 font-bold text-center block">구매하러 가기</a>
               </div>
               <div class="grid grid-cols-2 gap-4">
-                <div v-if="union.includes(`${productData?.productId}`)" @click="likeRemoveHandler" class="flex border border-black7 bg-black1 rounded-lg justify-center align-center py-2">
+                <div v-if="isLiked" @click="likeRemoveHandler" class="flex border border-black7 bg-black1 rounded-lg justify-center align-center py-2">
                   <svg width="16" height="15" viewBox="0 0 16 15" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M16 4.09091C16 1.83156 14.1345 0 11.8333 0C10.1128 0 8.63581 1.02389 8 2.48493C7.3642 1.02389 5.88722 0 4.16667 0C1.86548 0 0 1.83156 0 4.09091C0 10.6551 8 15 8 15C8 15 16 10.6551 16 4.09091Z" fill="#DC3644"/>
                   </svg>

@@ -1,3 +1,18 @@
+<script setup>
+import { computed } from 'vue'
+
+const props = defineProps({
+  item: Object,
+  isLiked: Boolean,
+  goToDetail: Function,
+})
+
+const formattedPrice = computed(() => {
+  return Intl.NumberFormat('ko-KR').format(Number(props.item?.lprice || 0))
+})
+
+</script>
+
 <template>
   <div class="flex flex-col cursor-pointer" @click="goToDetail(item)">
     <div class="w-full h-[350px]">
@@ -24,16 +39,3 @@
   </div>
 </template>
 
-<script setup>
-import { computed } from 'vue'
-
-const props = defineProps({
-  item: Object,
-  isLiked: Boolean,
-  goToDetail: Function,
-})
-
-const formattedPrice = computed(() => {
-  return Intl.NumberFormat('ko-KR').format(Number(props.item?.lprice || 0))
-})
-</script>
