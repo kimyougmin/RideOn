@@ -1,3 +1,4 @@
+import { RIDEON_RIDERCREW_CHANNEL_ID } from '@/constants/channelId'
 import axiosApi from '@/utils/axiosConfig'
 
 const formOption = {
@@ -19,7 +20,7 @@ export const createRiderCrewPost = async (postData) => {
     })
 
     formData.append('title', crewData)
-    formData.append('channelId', postData.channelId)
+    formData.append('channelId', RIDEON_RIDERCREW_CHANNEL_ID)
 
     // 썸네일 이미지가 있는 경우 추가
     if (postData.image) {
@@ -73,11 +74,15 @@ export const updateRiderCrewPost = async (updatePost) => {
 
     formData.append('postId', updatePost.id)
     formData.append('title', crewData)
-    formData.append('channelId', updatePost.channelId)
+    formData.append('channelId', RIDEON_RIDERCREW_CHANNEL_ID)
 
     // 썸네일 이미지가 있는 경우 추가
     if (updatePost.image) {
       formData.append('image', updatePost.image)
+    }
+
+    if (updatePost.imageToDeletePublicId.trim() !== '') {
+      formData.append('imageToDeletePublicId', updatePost.imageToDeletePublicId)
     }
 
     const response = await axiosApi.put('/posts/update', formData, formOption)
