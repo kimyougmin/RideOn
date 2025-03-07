@@ -19,21 +19,31 @@ const handleAlertClose = () => {
   showAlert.value = false
 }
 
+// HTML 태그 제거 함수 추가
+const removeHtmlTags = (text) => {
+  if (!text) return ''
+  return text.replace(/<\/?[^>]+(>|$)/g, '')
+}
+
+// truncateText 함수 수정
 const truncateText = (text, limit) => {
   if (!text) return ''
-  return text.length > limit ? text.slice(0, limit) + '...' : text
+  const cleanText = removeHtmlTags(text)
+  return cleanText.length > limit ? cleanText.slice(0, limit) + '...' : cleanText
 }
 
 // 게시판 ID와 게시판 이름 고정 (채널 _id 기준)
 const channelIdToPathMap = {
   '67c69541086c304511bcb6f7': 'freeBoardDetail',
   '67c6954d086c304511bcb6fb': 'qnaBoard/detail',
+  '67c69538086c304511bcb6f3': 'riderCrewBoardDetail',
 }
 
 const posts = ref([])
 const questions = ref([])
 const postDetail = ref(null)
 const userId = ref(null)
+const crewPosts = ref([])
 
 const loadUserId = () => {
   const storedUser = localStorage.getItem('user')
@@ -61,11 +71,9 @@ const loadUserPosts = async () => {
     const userData = response.data
     userData.posts = userData.posts || []
 
-    // 자유 게시판 처리: 채널이 객체인 경우 _id 사용
     posts.value = userData.posts
       .filter((post) => {
-        const channelId =
-          typeof post.channel === 'object' ? post.channel._id : post.channel
+        const channelId = typeof post.channel === 'object' ? post.channel._id : post.channel
         return channelId in channelIdToPathMap && channelIdToPathMap[channelId] === 'freeBoardDetail'
       })
       .map((post) => {
@@ -88,12 +96,35 @@ const loadUserPosts = async () => {
       })
       .filter(Boolean)
 
-    // Q&A 게시판 처리: 채널이 객체인 경우 _id 사용
     questions.value = userData.posts
       .filter((post) => {
-        const channelId =
-          typeof post.channel === 'object' ? post.channel._id : post.channel
+        const channelId = typeof post.channel === 'object' ? post.channel._id : post.channel
         return channelId in channelIdToPathMap && channelIdToPathMap[channelId] === 'qnaBoard/detail'
+      })
+      .map((post) => {
+        let parsedTitle = {}
+        try {
+          parsedTitle = JSON.parse(post.title)
+        } catch (e) {
+          console.error(e)
+          parsedTitle = { title: post.title, content: post.content || '' }
+        }
+        return {
+          id: post._id,
+          title: parsedTitle.title,
+          content: parsedTitle.content,
+          likes: post.likes?.length || 0,
+          image: post.image || '',
+          createdAt: post.createdAt,
+          channel: typeof post.channel === 'object' ? post.channel._id : post.channel,
+        }
+      })
+      .filter(Boolean)
+
+    crewPosts.value = userData.posts
+      .filter((post) => {
+        const channelId = typeof post.channel === 'object' ? post.channel._id : post.channel
+        return channelId in channelIdToPathMap && channelIdToPathMap[channelId] === 'riderCrewBoardDetail'
       })
       .map((post) => {
         let parsedTitle = {}
@@ -169,9 +200,19 @@ const goToPostDetail = (postId, channel) => {
   router.push(`/${boardPath}/${postId}`)
 }
 
-// EditIcon 클릭 시 이동할 경로 (/freeBoard/edit/:id)
+// 자유게시판 수정
 const goToEdit = (postId) => {
   router.push(`/freeBoard/edit/${postId}`)
+}
+
+// 질문게시판 수정
+const goToQnaEdit = (postId) => {
+  router.push(`/qnaBoard/edit/${postId}`)
+}
+
+// 모집글 수정
+const goToCrewEdit = (postId) => {
+  router.push(`/riderCrewBoard/edit/${postId}`)
 }
 
 onMounted(() => {
@@ -192,19 +233,25 @@ watch(() => route.params.postId, (newPostId, oldPostId) => {
 
 const itemsPerPagePosts = ref(2)
 const itemsPerPageQuestions = ref(2)
+const itemsPerPageCrewPosts = ref(2)
 
 const displayedPosts = computed(() => posts.value.slice(0, itemsPerPagePosts.value))
 const displayedQuestions = computed(() => questions.value.slice(0, itemsPerPageQuestions.value))
+const displayedCrewPosts = computed(() => crewPosts.value.slice(0, itemsPerPageCrewPosts.value))
 
 const hasMorePosts = computed(() => itemsPerPagePosts.value < posts.value.length)
 const hasMoreQuestions = computed(() => itemsPerPageQuestions.value < questions.value.length)
-
+const hasMoreCrewPosts = computed(() => itemsPerPageCrewPosts.value < crewPosts.value.length)
 const loadMorePosts = () => {
   itemsPerPagePosts.value += 2
 }
 
 const loadMoreQuestions = () => {
   itemsPerPageQuestions.value += 2
+}
+
+const loadMoreCrewPosts = () => {
+  itemsPerPageCrewPosts.value += 2
 }
 
 // 게시글 삭제 기능 
@@ -265,7 +312,43 @@ const deleteQuestion = async (id) => {
     showAlert.value = true
   }
 }
+
+// 모집글 삭제 기능 
+
+const deleteCrewPost = async (id) => {
+  if (!confirm('모집글을 정말 삭제하시겠습니까?')) return
+  try {
+    const userString = localStorage.getItem('user')
+    if (!userString) {
+      throw new Error('로컬 스토리지에 user 정보가 없습니다.')
+    }
+    const userObj = JSON.parse(userString)
+    const rawToken = userObj.token
+    if (!rawToken) {
+      throw new Error('user 객체에 token이 없습니다.')
+    }
+    const token = rawToken.startsWith('Bearer ') ? rawToken : `Bearer ${rawToken}`
+    
+    await deletePostApi(id, token)
+    crewPosts.value = crewPosts.value.filter(post => post.id !== id)
+    alertType.value = 'success'
+    alertMessage.value = '모집글이 삭제되었습니다.'
+    showAlert.value = true
+  } catch (error) {
+    console.error('모집글 삭제 실패:', error)
+    alertType.value = 'error'
+    alertMessage.value = '모집글 삭제에 실패했습니다.'
+    showAlert.value = true
+  }
+}
+
+
+onMounted(() => {
+  loadUserId()
+  loadUserPosts()
+})
 </script>
+
 
 <template>
   <section class="p-6 flex-grow">
@@ -320,7 +403,7 @@ const deleteQuestion = async (id) => {
           <div class="flex items-baseline">
             <span class="text-lg font-bold text-[#F85900] mr-2">자유</span>
             <p class="text-lg font-bold text-black9 dark:text-black1 mr-2">
-              {{ post.title }}
+              {{ removeHtmlTags(post.title) }}
             </p>
             <span class="flex items-center">
               <HeartIcon class="w-4 h-4 cursor-pointer mr-1 dark:text-black1" />
@@ -359,6 +442,9 @@ const deleteQuestion = async (id) => {
           :key="question.id"
           class="w-[800px] h-[165px] border p-5 rounded-lg shadow-sm bg-black1 dark:bg-black8 mt-4 relative"
         >
+          <button @click.stop="goToQnaEdit(question.id)" class="absolute top-5 right-14">
+            <EditIcon class="w-5 h-5 cursor-pointer dark:text-black1" />
+          </button>
           <button @click.stop="deleteQuestion(question.id)" class="absolute top-5 right-5">
             <TrashIcon class="w-5 h-5 cursor-pointer dark:text-black1" />
           </button>
@@ -366,7 +452,7 @@ const deleteQuestion = async (id) => {
           <div class="flex items-baseline mb-2" @click="goToPostDetail(question.id, question.channel)">
             <span class="text-lg font-bold mr-2 text-[#1A9EFE]">질문</span>
             <p class="text-lg font-bold text-black9 dark:text-black1 mr-2">
-              {{ question.title }}
+              {{ removeHtmlTags(question.title) }}
             </p>
             <span class="flex items-center">
               <HeartIcon class="w-4 h-4 cursor-pointer mr-1 dark:text-black1" />
@@ -381,6 +467,55 @@ const deleteQuestion = async (id) => {
         <div v-if="hasMoreQuestions" class="flex justify-center mt-4">
           <button
             @click="loadMoreQuestions"
+            class="w-[300px] h-[56px] mt-[40px] border rounded-lg font-semibold bg-black10 text-black1 dark:bg-black1 dark:text-black7 dark:border-black4 hover:bg-primaryRed hover:text-black1"
+          >
+            더보기
+          </button>
+        </div>
+      </div>
+
+      <!-- 작성한 모집글 -->
+      <div class="mt-6">
+        <p class="text-lg font-bold text-black9 dark:text-black1 flex items-center gap-2 mb-4" :class="{ 'mt-[150px]': displayedCrewPosts.length === 0 }">
+          작성한 모집글 🚲
+          <span class="text-lg">({{ displayedCrewPosts.length }})</span>
+        </p>
+
+        <div v-if="displayedCrewPosts.length === 0" class="text-black6 dark:text-black3 text-center mt-[100px]">
+          작성한 모집글이 없습니다.
+        </div>
+
+        <div
+          v-for="crewPost in displayedCrewPosts"
+          :key="crewPost.id"
+          class="w-[800px] h-[165px] border p-5 rounded-lg shadow-sm bg-black1 dark:bg-black8 mt-4 relative"
+        >
+          <button @click.stop="goToCrewEdit(crewPost.id)" class="absolute top-5 right-14">
+            <EditIcon class="w-5 h-5 cursor-pointer dark:text-black1" />
+          </button>
+          <button @click.stop="deleteCrewPost(crewPost.id)" class="absolute top-5 right-5">
+            <TrashIcon class="w-5 h-5 cursor-pointer dark:text-black1" />
+          </button>
+
+          <div class="flex items-baseline mb-2" @click="goToPostDetail(crewPost.id, crewPost.channel)">
+            <span class="text-lg font-bold mr-2 text-[#00B207]">모집</span>
+            <p class="text-lg font-bold text-black9 dark:text-black1 mr-2">
+              {{ removeHtmlTags(crewPost.title) }}
+            </p>
+            <span class="flex items-center">
+              <HeartIcon class="w-4 h-4 cursor-pointer mr-1 dark:text-black1" />
+              <span class="text-sm text-black7 dark:text-black1">{{ crewPost.likes || 0 }}</span>
+            </span>
+          </div>
+
+          <p class="text-sm text-black7 dark:text-black3 mb-4 break-all">
+            {{ truncateText(crewPost.content, 250) }}
+          </p>
+        </div>
+
+        <div v-if="hasMoreCrewPosts" class="flex justify-center mt-4">
+          <button
+            @click="loadMoreCrewPosts"
             class="w-[300px] h-[56px] mt-[40px] border rounded-lg font-semibold bg-black10 text-black1 dark:bg-black1 dark:text-black7 dark:border-black4 hover:bg-primaryRed hover:text-black1"
           >
             더보기
