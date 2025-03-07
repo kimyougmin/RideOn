@@ -1,10 +1,11 @@
 <script setup>
-import { ref } from 'vue'
-import { Swiper, SwiperSlide } from 'swiper/vue'
-import 'swiper/css'
-import 'swiper/css/pagination'
-import 'swiper/css/navigation'
-import { Pagination, Navigation } from 'swiper/modules'
+import { ref } from 'vue';
+import { Swiper, SwiperSlide } from 'swiper/vue';
+import 'swiper/css';
+import 'swiper/css/pagination';
+import 'swiper/css/navigation';
+import { Pagination, Navigation } from 'swiper/modules';
+import { useRouter } from 'vue-router';
 
 defineProps({
   groupedItems: {
@@ -17,6 +18,7 @@ defineProps({
   },
 })
 
+const router = useRouter();
 const swiperRef = ref(null)
 const isBeginning = ref(true)
 const isEnd = ref(false)
@@ -40,6 +42,22 @@ const handleSlideChange = (swiper) => {
   isEnd.value = swiper.isEnd
 }
 
+const goToDetail = (item) => {
+  if (!item || !item.productId) return;
+
+  router.push({
+    path: `/riderPartsDetail`,
+    query: {
+      keyword: encodeURIComponent(item.title.replace(/<\/?[^>]+(>|$)/g, "")), // 🔹 제목을 keyword로 설정
+      productId: item.productId,
+      title: encodeURIComponent(item.title.replace(/<\/?[^>]+(>|$)/g, "")),
+      image: encodeURIComponent(item.image),
+      price: item.lprice|| item.hprice || "0",
+      mallName: encodeURIComponent(item.mallName || ""),
+      link: encodeURIComponent(item.link || ""),
+    },
+  });
+};
 
 </script>
 
@@ -127,7 +145,7 @@ const handleSlideChange = (swiper) => {
       >
         <swiper-slide v-for="(group, index) in groupedItems" :key="index">
           <div class="grid grid-cols-4 gap-4 dark:bg-black9">
-            <div v-for="(item, i) in group" :key="i" class="flex flex-col">
+            <div v-for="(item, i) in group" :key="i" class="flex flex-col" @click="goToDetail(item)">
               <div class="flex flex-col gap-1">
                 <div class="w-full h-[280px] border mb-1">
                   <img :src="item.image" alt="Bike Image" class="size-full object-cover" />

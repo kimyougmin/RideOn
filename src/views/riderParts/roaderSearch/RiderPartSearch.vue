@@ -92,9 +92,9 @@ onMounted(async () => {
           <p class="text-[40px] dark:text-black1 m-0">Find Your Perfect Part</p>
           <p class="text-2xl dark:text-black1 m-0">소모품부터 부품까지 쉽고 빠르게 검색하세요.</p>
         <div class="relative h-[400px]">
-          <img src="../../../../public/riderPageImage/chain.svg" class="w-[620px] h-[400px] absolute left-0 top-0 object-cover border-2 border-black1"/>
-          <img src="../../../../public/riderPageImage/chain2.svg" class="w-[620px] h-[200px] absolute left-[634.5px] top-[198.5px] object-none border-2 border-black1"/>
-          <img src="../../../../public/riderPageImage/seat.svg" class="w-[620px] h-[180px] absolute left-[634.5px] top-0 object-none border-2 border-black1"/>
+          <img src="/riderPageImage/chain.svg" class="w-[620px] h-[400px] absolute left-0 top-0 object-cover border-2 border-black1"/>
+          <img src="/riderPageImage/chain2.svg" class="w-[620px] h-[200px] absolute left-[634.5px] top-[198.5px] object-none border-2 border-black1"/>
+          <img src="/riderPageImage/seat.svg" class="w-[620px] h-[180px] absolute left-[634.5px] top-0 object-none border-2 border-black1"/>
         </div>
       </div>
       <!-- 정렬 옵션 -->
