@@ -11,7 +11,7 @@ defineProps({
   <div class="flex justify-center items-center gap-4 border border-black4 rounded-lg p-4 grow-0">
     <div class="w-12 h-12 rounded-full overflow-hidden">
       <img
-        :src="author.profileImage || 'https://placehold.co/40x40?text=RideOn'"
+        :src="author.image || 'https://placehold.co/40x40?text=RideOn'"
         alt="profile image"
         class="w-full h-full object-cover"
       />

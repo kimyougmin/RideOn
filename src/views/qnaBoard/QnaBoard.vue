@@ -18,19 +18,22 @@ const DUMMY_WRITERS = [
   {
     id: 1,
     fullName: '신짱구',
-    profileImage: 'https://placehold.co/50x50',
+    image:
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSyPkxMuo6NOHcNx-aO-wOo3eyVnB2oTq-ZwA&s',
     postCount: 20,
   },
   {
     id: 2,
     fullName: '김철수',
-    profileImage: 'https://placehold.co/50x50',
+    image:
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTVVZ5ZGPv2j4Hx6TQS_bgtru8h9uLILWIV_Q&s',
     postCount: 15,
   },
   {
     id: 3,
     fullName: '한유리',
-    profileImage: 'https://placehold.co/50x50',
+    image:
+      'https://i.namu.wiki/i/0JjlI_9wCDNraYTmXvCDVllnHFfskv45Els2jaT3DLCEeAP-ZUPBkpIEZTK6CXhtP3VlZj5_RzLzembsZxoAcA.webp',
     postCount: 10,
   },
 ]

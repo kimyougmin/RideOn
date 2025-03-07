@@ -104,7 +104,7 @@ defineProps({
         <div class="flex items-center gap-2">
           <div class="w-5 h-5 rounded-full overflow-hidden">
             <img
-              :src="post.author?.coverImage || 'https://placehold.co/20x20?text=RideOn'"
+              :src="post.author?.image || 'https://placehold.co/20x20?text=RideOn'"
               alt="placeholder"
               class="w-full h-full object-cover"
             />
