@@ -18,7 +18,7 @@ const seeMore = ref(true);
 const selectOption = ref([]);
 const route = useRoute();
 const { brand } = route.query;
-console.log(brand)
+
 const receiveHandler = (newValue) => {
   searchValue.value = newValue;
 }
@@ -36,6 +36,9 @@ const onSelectDeleteHandler = (e) => {
 };
 
 onMounted(async () => {
+  if(brand !== undefined) {
+    selectOption.value = [...selectOption.value, brand.toUpperCase()]
+  }
   const user = JSON.parse(localStorage.getItem('user'));
   if(user._id !== undefined){
     const date = await fetchUserLikesApi(user._id);
