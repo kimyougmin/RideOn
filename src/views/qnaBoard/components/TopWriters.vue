@@ -6,11 +6,7 @@
         <li v-for="writer in writers" :key="writer.id" class="flex gap-2 items-center">
           <div class="flex gap-2 items-center">
             <div class="w-5 h-5 rounded-full overflow-hidden">
-              <img
-                :src="writer.profileImage"
-                :alt="writer.fullName"
-                class="w-full h-full object-cover"
-              />
+              <img :src="writer.image" :alt="writer.fullName" class="w-full h-full object-cover" />
             </div>
             <span class="text-body1 font-light dark:text-black3">{{ writer.fullName }}</span>
           </div>
