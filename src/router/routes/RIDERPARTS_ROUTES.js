@@ -15,7 +15,6 @@ const RIDERPARTS_ROUTES = [
   },
   {
     path: '/riderPartsDetail',
-    path: '/riderPartsDetail',
     name: 'RiderPartsDetail',
     component: RiderPartDetail,
     props: (route) => ({
