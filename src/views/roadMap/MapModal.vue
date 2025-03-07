@@ -10,6 +10,8 @@ const props = defineProps({
 
 const emit = defineEmits(["update:modelValue"]);
 
+const isButtonVisible = ref(false);
+
 const facilityImage = computed(() => {
   if (!props.facility) return "/roadMapImage/default.jpg";
   const images = {
@@ -25,6 +27,7 @@ watch(() => props.modelValue, (newVal) => {
   if (newVal) {
     isLoading.value = true;
     setTimeout(() => isLoading.value = false, 1000);
+    isButtonVisible.value = true;
   }
 });
 
@@ -35,19 +38,24 @@ const toggleModal = () => {
 
 <template>
   <div>
-    <button @click="toggleModal" 
-        class="relative w-12 h-12 shadow-[2px_4px_0_rgba(0,0,0,0.2)] left-14 top-10 bg-black1 dark:bg-black10 text-black rounded-full flex items-center justify-center hover:scale-110 transition-transform duration-200">
-      <span v-if="props.modelValue">
-        <svg width="30" height="30" xmlns="http://www.w3.org/2000/svg">
-          <path d="M20,5 L10,15 L20,25" class="stroke-black10 dark:stroke-white" stroke-width="2" fill="none"/>
-        </svg>
-      </span>
-      <span v-else>
-        <svg width="30" height="30" xmlns="http://www.w3.org/2000/svg">
-          <path d="M10,5 L20,15 L10,25" class="stroke-black10 dark:stroke-white" stroke-width="2" fill="none"/>
-        </svg>
-      </span>
-    </button>
+    <button 
+    v-if="isButtonVisible"  
+  @click="toggleModal"
+  class="relative w-12 h-12 shadow-[2px_4px_0_rgba(0,0,0,0.2)] left-14 top-10 bg-black1 dark:bg-black10 text-black rounded-full flex items-center justify-center hover:scale-110 transition-transform duration-200">
+  
+  <span v-if="props.modelValue">
+    <svg width="30" height="30" xmlns="http://www.w3.org/2000/svg">
+      <path d="M20,5 L10,15 L20,25" class="stroke-black10 dark:stroke-white" stroke-width="2" fill="none"/>
+    </svg>
+  </span>
+  <span v-else>
+    <svg width="30" height="30" xmlns="http://www.w3.org/2000/svg">
+      <path d="M10,5 L20,15 L10,25" class="stroke-black10 dark:stroke-white" stroke-width="2" fill="none"/>
+    </svg>
+  </span>
+
+</button>
+
 
     <div v-if="props.modelValue" class="absolute w-[500px] h-[700px] bg-black1 rounded-3xl dark:bg-black9 left-12 top-44 shadow-[15px_15px_7px_rgba(0,0,0,0.3)] overflow-y-auto">
       <div v-if="isLoading" class="flex items-center justify-center h-full text-lg font-medium text-black10 dark:text-black1">⏳ 정보 불러오는 중...</div>
