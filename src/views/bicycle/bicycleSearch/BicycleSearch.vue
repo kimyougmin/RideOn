@@ -8,6 +8,7 @@ import bikeBrand from '../../../../public/bike_brand_data.json'
 import { fetchUserLikesApi } from '@/apis/userLikesApi.js'
 import { fetchLikeCreateApi } from '@/apis/fetchLikeCreateApi.js'
 import { fetchLikeRemoveApi } from '@/apis/fetchLikeRemoveApi.js'
+import { useRoute } from 'vue-router'
 
 const groupList = ref([]);
 const groupListShot = ref([]);
@@ -15,7 +16,9 @@ const union = ref([]);
 const searchValue = ref("");
 const seeMore = ref(true);
 const selectOption = ref([]);
-
+const route = useRoute();
+const { brand } = route.query;
+console.log(brand)
 const receiveHandler = (newValue) => {
   searchValue.value = newValue;
 }
