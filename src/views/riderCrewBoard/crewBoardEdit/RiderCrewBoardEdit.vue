@@ -157,7 +157,16 @@ const handleSubmit = async () => {
 
 onMounted(async () => {
   try {
+    userStore.loadUser()
+
     const post = await riderCrewStore.fetchPostById(postId)
+
+    if (userStore.user._id !== post.author._id) {
+      alert('작성자만 수정할 수 있습니다.')
+      router.push('/riderCrewBoard')
+      return
+    }
+
     title.value = post.title
     content.value = post.content
     selectedLocation.value = post.location
