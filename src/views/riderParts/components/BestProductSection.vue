@@ -126,7 +126,7 @@ const handleSlideChange = (swiper) => {
         :navigation="false"
       >
         <swiper-slide v-for="(group, index) in groupedItems" :key="index">
-          <div class="grid grid-cols-4 gap-4 dark:bg-black9" @click="goToDetail(item)">
+          <div class="grid grid-cols-4 gap-4 dark:bg-black9">
             <div v-for="(item, i) in group" :key="i" class="flex flex-col">
               <div class="flex flex-col gap-1">
                 <div class="w-full h-[280px] border mb-1">
