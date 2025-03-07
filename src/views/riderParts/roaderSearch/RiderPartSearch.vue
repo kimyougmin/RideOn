@@ -1,15 +1,16 @@
 <script setup>
 import ShopHeader from "@/components/ShopHeader.vue";
 import BasicFooter from "@/components/BasicFooter.vue";
-import { ref, onMounted, watch, computed } from "vue";
+import { ref, onMounted, watch } from "vue";
 import { getNaverItems } from "@/apis/naverSearchApi";
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 
+const route = useRoute();
 const selectedSort = ref("sim");
 const items = ref([]);
 const visibleItems = ref([]);
 const itemsPerPage = 9;
-const searchQuery = ref("자전거부품");
+const searchQuery = ref(route.query.keyword || "자전거부품");
 const router = useRouter();
 
 
@@ -25,18 +26,27 @@ const searchItems = async () => {
 
   try {
     const results = await getNaverItems(searchQuery.value, 100, selectedSort.value);
-    if(results.length > 0){
+    if (results.length > 0) {
       items.value = results;
       visibleItems.value = items.value.slice(0, itemsPerPage);
     } else {
-      console.warn('검색 결과 없음');
+      console.warn("검색 결과 없음");
       items.value = [];
       visibleItems.value = [];
     }
   } catch (error) {
-    console.error('네이버 API 검색 오류 ', error);
+    console.error("네이버 API 검색 오류", error);
   }
 };
+
+watch(() => route.query.keyword, async (newKeyword) => {
+  searchQuery.value = newKeyword ? decodeURIComponent(newKeyword) : "자전거부품";
+  await searchItems();
+}, { immediate: true });
+
+watch(selectedSort, async () => {
+  await searchItems();
+});
 
 const loadMore = () => {
   const nextItems = items.value.slice(visibleItems.value.length, visibleItems.value.length + itemsPerPage);
@@ -57,7 +67,7 @@ const goToDetail = (item) => {
   router.push({
     path: `/riderPartsDetail`,
     query: {
-      keyword: encodeURIComponent(item.title.replace(/<\/?[^>]+(>|$)/g, "")), // 🔹 제목을 keyword로 설정
+      keyword: encodeURIComponent(item.title.replace(/<\/?[^>]+(>|$)/g, "")),
       productId: item.productId,
       title: encodeURIComponent(item.title.replace(/<\/?[^>]+(>|$)/g, "")),
       image: encodeURIComponent(item.image),
