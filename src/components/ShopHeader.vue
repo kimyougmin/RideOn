@@ -157,7 +157,7 @@ watchEffect(() => {
             class="flex ml-6 w-[540px] justify-between h-full border !border-primaryRed rounded-lg p-2 pl-4 pr-4"
           >
             <input
-              class="focus:outline-none dark:text-black1"
+              class="w-full focus:outline-none dark:text-black1"
               placeholder="Search"
               v-model="value"
               @change="emits('update:receiveHandler', value)"

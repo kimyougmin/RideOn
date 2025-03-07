@@ -1,10 +1,10 @@
 <script setup>
 import { ref, onMounted, watchEffect } from 'vue'
-import { useRouter } from 'vue-router';
+import { useRouter } from 'vue-router'
 
 // 검색 부분
-const router = useRouter();
-const searchQuery = ref("");
+const router = useRouter()
+const searchQuery = ref('')
 
 // 현재 테마 상태
 
@@ -24,14 +24,14 @@ const toggleDarkMode = () => {
 
 // ✅ 검색 실행 함수
 const searchHandler = () => {
-  if (!searchQuery.value.trim()) return;
+  if (!searchQuery.value.trim()) return
 
   // ✅ 검색어를 쿼리로 전달하고 검색 페이지로 이동
   router.push({
     path: '/riderPartsSearch',
     query: { keyword: searchQuery.value },
-  });
-};
+  })
+}
 
 // 페이지가 로드될 때 설정 확인
 onMounted(() => {
@@ -171,7 +171,7 @@ watchEffect(() => {
             class="flex ml-6 w-[540px] justify-between h-full border !border-primaryRed rounded-lg p-2 pl-4 pr-4"
           >
             <input
-              class="focus:outline-none dark:text-black1"
+              class="w-full focus:outline-none dark:text-black1"
               placeholder="Search"
               v-model="searchQuery"
               @keyup.enter="searchHandler"
