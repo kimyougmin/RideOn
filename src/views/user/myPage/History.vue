@@ -19,9 +19,17 @@ const handleAlertClose = () => {
   showAlert.value = false
 }
 
+// HTML 태그 제거 함수 추가
+const removeHtmlTags = (text) => {
+  if (!text) return ''
+  return text.replace(/<\/?[^>]+(>|$)/g, '')
+}
+
+// truncateText 함수 수정
 const truncateText = (text, limit) => {
   if (!text) return ''
-  return text.length > limit ? text.slice(0, limit) + '...' : text
+  const cleanText = removeHtmlTags(text)
+  return cleanText.length > limit ? cleanText.slice(0, limit) + '...' : cleanText
 }
 
 // 게시판 ID와 게시판 이름 고정 (채널 _id 기준)
@@ -192,9 +200,19 @@ const goToPostDetail = (postId, channel) => {
   router.push(`/${boardPath}/${postId}`)
 }
 
-// EditIcon 클릭 시 이동할 경로 (/freeBoard/edit/:id)
+// 자유게시판 수정
 const goToEdit = (postId) => {
   router.push(`/freeBoard/edit/${postId}`)
+}
+
+// 질문게시판 수정
+const goToQnaEdit = (postId) => {
+  router.push(`/qnaBoard/edit/${postId}`)
+}
+
+// 모집글 수정
+const goToCrewEdit = (postId) => {
+  router.push(`/riderCrewBoard/edit/${postId}`)
 }
 
 onMounted(() => {
@@ -385,7 +403,7 @@ onMounted(() => {
           <div class="flex items-baseline">
             <span class="text-lg font-bold text-[#F85900] mr-2">자유</span>
             <p class="text-lg font-bold text-black9 dark:text-black1 mr-2">
-              {{ post.title }}
+              {{ removeHtmlTags(post.title) }}
             </p>
             <span class="flex items-center">
               <HeartIcon class="w-4 h-4 cursor-pointer mr-1 dark:text-black1" />
@@ -424,6 +442,9 @@ onMounted(() => {
           :key="question.id"
           class="w-[800px] h-[165px] border p-5 rounded-lg shadow-sm bg-black1 dark:bg-black8 mt-4 relative"
         >
+          <button @click.stop="goToQnaEdit(question.id)" class="absolute top-5 right-14">
+            <EditIcon class="w-5 h-5 cursor-pointer dark:text-black1" />
+          </button>
           <button @click.stop="deleteQuestion(question.id)" class="absolute top-5 right-5">
             <TrashIcon class="w-5 h-5 cursor-pointer dark:text-black1" />
           </button>
@@ -431,7 +452,7 @@ onMounted(() => {
           <div class="flex items-baseline mb-2" @click="goToPostDetail(question.id, question.channel)">
             <span class="text-lg font-bold mr-2 text-[#1A9EFE]">질문</span>
             <p class="text-lg font-bold text-black9 dark:text-black1 mr-2">
-              {{ question.title }}
+              {{ removeHtmlTags(question.title) }}
             </p>
             <span class="flex items-center">
               <HeartIcon class="w-4 h-4 cursor-pointer mr-1 dark:text-black1" />
@@ -469,6 +490,9 @@ onMounted(() => {
           :key="crewPost.id"
           class="w-[800px] h-[165px] border p-5 rounded-lg shadow-sm bg-black1 dark:bg-black8 mt-4 relative"
         >
+          <button @click.stop="goToCrewEdit(crewPost.id)" class="absolute top-5 right-14">
+            <EditIcon class="w-5 h-5 cursor-pointer dark:text-black1" />
+          </button>
           <button @click.stop="deleteCrewPost(crewPost.id)" class="absolute top-5 right-5">
             <TrashIcon class="w-5 h-5 cursor-pointer dark:text-black1" />
           </button>
@@ -476,7 +500,7 @@ onMounted(() => {
           <div class="flex items-baseline mb-2" @click="goToPostDetail(crewPost.id, crewPost.channel)">
             <span class="text-lg font-bold mr-2 text-[#00B207]">모집</span>
             <p class="text-lg font-bold text-black9 dark:text-black1 mr-2">
-              {{ crewPost.title }}
+              {{ removeHtmlTags(crewPost.title) }}
             </p>
             <span class="flex items-center">
               <HeartIcon class="w-4 h-4 cursor-pointer mr-1 dark:text-black1" />

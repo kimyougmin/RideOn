@@ -237,6 +237,7 @@ const goToDetailPage = async (item) => {
   }
 }
 
+// truncatedName 함수만 남기고 removeHtmlTags 함수 제거
 const truncatedName = (name) => {
   const maxLength = 22
   return name.length > maxLength ? name.slice(0, maxLength) + '...' : name
