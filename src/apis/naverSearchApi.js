@@ -27,7 +27,7 @@ export async function getNaverItems(targetWord, displayCount = 32, sortOption = 
       return response.data.items
     } else {
       console.warn('⚠️ API 응답에 items가 없습니다:', response.data)
-      return []
+      return [];
     }
   } catch (error) {
     console.error('API 호출 중 에러 발생:', error)
@@ -39,6 +39,23 @@ export async function getNaverItems(targetWord, displayCount = 32, sortOption = 
     } else {
       console.error('설정 오류:', error.message)
     }
-    return []
+    return [];
+  }
+}
+
+export async function getNaverItemById(targetWord, productId) {
+  try {
+    const items = await getNaverItems(targetWord, 10);
+    const matchedItem = items.find(item => item.productId === productId);
+
+    if(!matchedItem) {
+      console.warn(`productId에 맞는 ${productId}가 없습니다.`);
+      return null;
+    }
+
+    return matchedItem;
+  } catch (error) {
+    console.error('Error 발생', error);
+    return null;
   }
 }
