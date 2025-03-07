@@ -11,7 +11,7 @@
       <p class="text-black1 text-title font-light m-0">Embrace the journey, unleash your spirit.</p>
       <p class="text-black1 text-[60px] font-impact mb-4">Wherever you want, RideOn</p>
       <router-link
-        to="bicycleSearch"
+        to="bicycleSearch/1"
         class="text-black1 text-sub-title px-6 py-2 border border-black1 rounded-full"
       >
         See More

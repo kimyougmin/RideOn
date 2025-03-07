@@ -10,10 +10,10 @@
       </p>
     </div>
     <div class="grid grid-cols-12 gap-8">
-      <router-link to="/bicycle" class="col-span-6">
+      <router-link to="bicycleSearch/1" class="col-span-6">
         <img src="/main/main_bike_brand.png" alt="bike facility" class="mb-4" />
       </router-link>
-      <router-link to="/bicycle" class="col-span-6">
+      <router-link to="bicycleSearch/2" class="col-span-6">
         <img src="/main/main_bike_category.png" alt="bike facility" class="mb-4" />
       </router-link>
     </div>
