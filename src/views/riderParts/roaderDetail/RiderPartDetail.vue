@@ -37,7 +37,6 @@ const fetchProductData = async () => {
     const item = await getNaverItemById(keyword, productId);
 
     if (item) {
-      console.log('✅ 상품 데이터:', item);
       productData.value = item;
       await fetchRelevantProducts(keyword, productId);
     } else {
@@ -47,20 +46,18 @@ const fetchProductData = async () => {
     console.error('API 호출 오류', err);
     error.value = 'API 호출 중 에러 발생';
   } finally {
-    loading.value = false; // ✅ 로딩 상태 해제
+    loading.value = false;
   }
 };
 
 const fetchRelevantProducts = async (keyword, productId) => {
   try {
-    const items = await getNaverItems(keyword, 10); // 최대 10개 가져오기
+    const items = await getNaverItems(keyword, 10);
     relevantProducts.value = items
-      .filter(item => item.productId !== productId) // 현재 상품 제외
-      .slice(0, 3); // 상위 3개만 선택
-
-    console.log('✅ 관련 상품:', relevantProducts.value);
+      .filter(item => item.productId !== productId)
+      .slice(0, 3);
   } catch (err) {
-    console.error('❌ 관련 상품 불러오기 실패:', err);
+    console.error('관련 상품 불러오기 실패:', err);
   }
 };
 
