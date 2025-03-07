@@ -1,18 +1,24 @@
 <script setup>
-import RiderShopHeader from '@/components/RiderShopHeader.vue'
-import BasicFooter from '@/components/BasicFooter.vue'
-import { ref, onMounted, watch } from 'vue'
-import { getNaverItems } from '@/apis/naverSearchApi'
-import { useRouter, useRoute } from 'vue-router'
-import ProductItem from './components/ProductItem.vue'
+import RiderShopHeader from '@/components/RiderShopHeader.vue';
+import BasicFooter from '@/components/BasicFooter.vue';
+import { ref, onMounted, watch } from 'vue';
+import { getNaverItems } from '@/apis/naverSearchApi';
+import { useRouter, useRoute } from 'vue-router';
+import ProductItem from './components/ProductItem.vue';
+import { fetchUserLikesApi } from '@/apis/userLikesApi.js';
+import { fetchLikeCreateApi } from '@/apis/fetchLikeCreateApi.js';
+import { fetchLikeRemoveApi } from '@/apis/fetchLikeRemoveApi.js';
 
-const route = useRoute()
-const selectedSort = ref('sim')
-const items = ref([])
-const visibleItems = ref([])
-const itemsPerPage = 9
-const searchQuery = ref(route.query.keyword || '자전거부품')
-const router = useRouter()
+const route = useRoute();
+const selectedSort = ref('sim');
+const items = ref([]);
+const visibleItems = ref([]);
+const itemsPerPage = 9;
+const searchQuery = ref(route.query.keyword || '자전거부품');
+const router = useRouter();
+const user = JSON.parse(localStorage.getItem('user'));
+const likedItems = ref([]);
+const relatedItems = ref([]);
 
 const sortOptions = [
   { label: '추천순', value: 'sim' },
@@ -22,31 +28,33 @@ const sortOptions = [
 ]
 
 const searchItems = async () => {
-  if (!searchQuery.value.trim()) return
-
+  if (!searchQuery.value.trim()) {
+    console.warn("⚠️ 검색어가 비어있음");
+    return;
+  }
   try {
-    const results = await getNaverItems(searchQuery.value, 100, selectedSort.value)
+    const results = await getNaverItems(searchQuery.value, 100, selectedSort.value);
     if (results.length > 0) {
-      items.value = results
-      visibleItems.value = items.value.slice(0, itemsPerPage)
+      items.value = results;
+      visibleItems.value = items.value.slice(0, itemsPerPage);
     } else {
-      console.warn('검색 결과 없음')
-      items.value = []
-      visibleItems.value = []
+      console.warn("⚠️ 검색 결과 없음");
+      items.value = [];
+      visibleItems.value = [];
     }
   } catch (error) {
-    console.error('네이버 API 검색 오류', error)
+    console.error("❌ 네이버 API 검색 오류:", error);
   }
-}
+};
 
 watch(
   () => route.query.keyword,
   async (newKeyword) => {
-    searchQuery.value = newKeyword ? decodeURIComponent(newKeyword) : '자전거부품'
-    await searchItems()
+    searchQuery.value = newKeyword ? decodeURIComponent(newKeyword) : '자전거부품';
+    await searchItems();
   },
-  { immediate: true },
-)
+  { immediate: true }
+);
 
 watch(selectedSort, async () => {
   await searchItems()
@@ -68,6 +76,37 @@ watch(searchQuery, async () => {
   await searchItems()
 })
 
+const toggleLike = async (product) => {
+  if (!user || !user._id) return;
+
+  const isLiked = likedItems.value.includes(product.productId);
+
+  if (isLiked) {
+    try {
+      await fetchLikeRemoveApi({ id: user._id, title: product.productId });
+      likedItems.value = likedItems.value.filter((id) => id !== product.productId);
+    } catch (error) {
+      console.error('❌ 찜하기 취소 실패:', error);
+    }
+  } else {
+    try {
+      await fetchLikeCreateApi({
+        _id: product.productId,
+        title: user._id,
+        name: product.title,
+        price: product.lprice,
+        image: product.image,
+        brand: product.mallName,
+        category: product.category4 || '자전거부품',
+      });
+
+      likedItems.value.push(product.productId);
+    } catch (error) {
+      console.error('❌ 찜하기 실패:', error);
+    }
+  }
+};
+
 const goToDetail = (item) => {
   if (!item || !item.productId) return
 
@@ -87,8 +126,16 @@ const goToDetail = (item) => {
 }
 
 onMounted(async () => {
-  await searchItems()
-})
+  await searchItems();
+  if (user && user._id) {
+    try {
+      const likeData = await fetchUserLikesApi(user._id);
+      likedItems.value = likeData.map((e) => e.title);
+    } catch (error) {
+      console.error("❌ 찜한 상품 불러오기 실패:", error);
+    }
+  }
+});
 </script>
 
 <template>
@@ -188,8 +235,9 @@ onMounted(async () => {
           v-for="(item, index) in visibleItems"
           :key="index"
           :item="item"
-          :isLiked="isLiked"
+          :isLiked="likedItems.includes(item.productId)"
           :goToDetail="goToDetail"
+          @toggle-like="toggleLike"
         />
       </div>
 
