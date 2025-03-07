@@ -1,9 +1,10 @@
 <script setup>
-import ShopHeader from "@/components/ShopHeader.vue";
+import RiderShopHeader from "@/components/RiderShopHeader.vue";
 import BasicFooter from "@/components/BasicFooter.vue";
 import { ref, onMounted, watch } from "vue";
 import { getNaverItems } from "@/apis/naverSearchApi";
 import { useRouter, useRoute } from 'vue-router';
+
 
 const route = useRoute();
 const selectedSort = ref("sim");
@@ -84,8 +85,8 @@ onMounted(async () => {
 </script>
 
 <template>
- <div class="w-full min-h-screen flex flex-col dark:bg-black9">
-    <ShopHeader :searchValue="searchValue" @update:receiveHandler="receiveHandler($event)"/>
+  <div class="w-full min-h-screen flex flex-col dark:bg-black9">
+    <RiderShopHeader/>
     <div class="h-full max-w-[1256px] mx-auto dark:bg-black9">
       <!-- 연관 검색어 부분 -->
       <div class="flex items-center w-[1261px] gap-4 mt-[35px] relative overflow-hidden dark:bg-black9">

@@ -1,12 +1,11 @@
 <script setup>
-import ShopHeader from '@/components/ShopHeader.vue';
+import RiderShopHeader from '@/components/RiderShopHeader.vue';
 import BasicFooter from '@/components/BasicFooter.vue';
 import { ref, onMounted, watch} from 'vue';
 import { useRoute } from 'vue-router';
 import { fetchLikeCreateApi } from '@/apis/fetchLikeCreateApi.js';
 import { fetchLikeRemoveApi } from '@/apis/fetchLikeRemoveApi.js';
 import { fetchUserLikesApi } from '@/apis/userLikesApi.js';
-import { getNaverItemById } from '@/apis/naverSearchApi';
 import { getNaverItems } from '@/apis/naverSearchApi';
 
 const route = useRoute();
@@ -21,8 +20,6 @@ const productData = ref({
 });
 const relevantProducts = ref([]);
 const productId = ref("");
-const loading = ref(true);
-const error = ref(null);
 const item = ref(null);
 const union = ref([]);
 const isLiked = ref(false);
@@ -128,7 +125,7 @@ watch(
 
 <template>
   <div class="w-full block h-full dark:bg-black9">
-    <ShopHeader/>
+    <RiderShopHeader/>
     <div class="bg-black2 pt-[37px] pb-[100px] dark:bg-black8">
       <div class="w-[1044px] mx-auto">
         <div class="flex pb-[100px]">
