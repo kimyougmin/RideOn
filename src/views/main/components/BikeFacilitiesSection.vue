@@ -7,22 +7,22 @@
       </h2>
     </div>
     <div class="grid grid-cols-12 gap-8">
-      <div class="col-span-3">
+      <router-link to="/roadMap" class="col-span-3">
         <img src="/main/main_bike_facility_1.png" alt="bike facility" class="mb-4" />
         <h4 class="text-2xl font-semibold text-center dark:text-black1">공공자전거</h4>
-      </div>
-      <div class="col-span-3">
+      </router-link>
+      <router-link to="/roadMap" class="col-span-3">
         <img src="/main/main_bike_facility_2.png" alt="bike facility" class="mb-4" />
         <h4 class="text-2xl font-semibold text-center dark:text-black1">수리 시설</h4>
-      </div>
-      <div class="col-span-3">
+      </router-link>
+      <router-link to="/roadMap" class="col-span-3">
         <img src="/main/main_bike_facility_3.png" alt="bike facility" class="mb-4" />
         <h4 class="text-2xl font-semibold text-center dark:text-black1">공기주입기</h4>
-      </div>
-      <div class="col-span-3">
+      </router-link>
+      <router-link to="/roadMap" class="col-span-3">
         <img src="/main/main_bike_facility_4.png" alt="bike facility" class="mb-4" />
         <h4 class="text-2xl font-semibold text-center dark:text-black1">보관소</h4>
-      </div>
+      </router-link>
     </div>
   </article>
 </template>
