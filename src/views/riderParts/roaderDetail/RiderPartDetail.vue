@@ -10,58 +10,55 @@ import { getNaverItemById } from '@/apis/naverSearchApi';
 import { getNaverItems } from '@/apis/naverSearchApi';
 
 const route = useRoute();
-const productData = ref(null);
+const productData = ref({
+  productId: "",
+  title: "",
+  image: "",
+  price: "",
+  mallName: "",
+  link: "",
+  rating: 0,
+});
+const relevantProducts = ref([]);
+const productId = ref("");
 const loading = ref(true);
 const error = ref(null);
-const relevantProducts = ref([]);
 const item = ref(null);
 const union = ref([]);
 const isLiked = ref(false);
 const user = JSON.parse(localStorage.getItem('user'));
 
-const fetchProductData = async () => {
-  const keyword = route.query.keyword;
-  const productId = route.query.productId;
 
-  if (!keyword || !productId) {
-    error.value = '잘못된 접근, (키워드 또는 상품ID 누락)';
-    loading.value = false; // 로딩 상태 해제
-    return;
-  }
-
-  loading.value = true;
-  error.value = null;
-
+const fetchRelevantProducts = async (searchKeyword) => {
+  if (!searchKeyword) return;
   try {
-    console.log(`🔍 검색 요청: keyword=${keyword}, productId=${productId}`);
-    const item = await getNaverItemById(keyword, productId);
+    const items = await getNaverItems(searchKeyword, 10);
+    relevantProducts.value = items.filter((item) => item.productId !== productId.value).slice(0, 3);
+  } catch (err) {
+    console.error("❌ 관련 상품 가져오기 실패:", err);
+  }
+};
 
-    if (item) {
-      productData.value = item;
-      await fetchRelevantProducts(keyword, productId);
-    } else {
-      error.value = '해당 제품 없음';
+watch(
+  () => route.query,
+  (query) => {
+    if (!query || !query.productId || !query.title) {
+      console.error("❌ 잘못된 접근: 데이터가 부족합니다.");
+      return;
     }
-  } catch (err) {
-    console.error('API 호출 오류', err);
-    error.value = 'API 호출 중 에러 발생';
-  } finally {
-    loading.value = false;
-  }
-};
-
-const fetchRelevantProducts = async (keyword, productId) => {
-  try {
-    const items = await getNaverItems(keyword, 10);
-    relevantProducts.value = items
-      .filter(item => item.productId !== productId)
-      .slice(0, 3);
-  } catch (err) {
-    console.error('관련 상품 불러오기 실패:', err);
-  }
-};
-
-watch(() => [route.query.keyword, route.query.productId], fetchProductData, {immediate: true});
+    productId.value = query.productId || "";
+    productData.value = {
+      productId: query.productId,
+      title: decodeURIComponent(query.title).replace(/<\/?[^>]+(>|$)/g, ""),
+      image: decodeURIComponent(query.image),
+      price: query.price,
+      mallName: decodeURIComponent(query.mallName),
+      link: decodeURIComponent(query.link),
+    };
+    fetchRelevantProducts(productData.value.title);
+  },
+  { immediate: true }
+);
 
 // onMounted( async () => {
 //   if (user && user._id !== undefined) {
@@ -138,13 +135,13 @@ watch(() => [route.query.keyword, route.query.productId], fetchProductData, {imm
           <img :src="productData?.image" class="border rounded-lg w-[514px] h-[514px]"/>
           <div class="p-4 grid grid-cols-1 content-between">
             <div>
-              <p class="font-sans dark:text-black1">{{ productData?.brand }}</p>
+              <p class="font-sans dark:text-black1">{{ productData?.mallName }}</p>
               <p class="font-impact text-3xl w-[440px] h-[72px] dark:text-black1">{{ productData?.title.replace(/<\/?[^>]+(>|$)/g, '') }}</p>
-              <v-rating hover :length="5" :size="20" :model-value="rating" active-color="#DC3644" class="dark:text-black1"/>
+              <v-rating hover :length="5" :size="20" :model-value="rating" active-color="#DC3644" class="dark:text-black1 mt-[30px]"/>
             </div>
             <div>
               <p class="font-impact text-right text-3xl dark:text-black1">
-                {{ Intl.NumberFormat('ko-KR').format(Number(productData?.lprice || 0)) }}원
+                {{ Intl.NumberFormat('ko-KR').format(Number(productData?.price || 0)) }}원
               </p>
               <div class="bg-primaryRed p-2 rounded-lg mb-2">
                 <a :href="productData?.link" target="_blank" class="text-black1 mb-0 font-bold text-center block">구매하러 가기</a>
