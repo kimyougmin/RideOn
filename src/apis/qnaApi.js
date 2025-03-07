@@ -1,4 +1,5 @@
 import axiosApi from '@/utils/axiosConfig'
+import { RIDEON_QNA_CHANNEL_ID } from '@/constants/channelId'
 
 const formOption = {
   headers: {
@@ -18,7 +19,7 @@ export const createQnaPost = async (postData) => {
     })
 
     formData.append('title', titleAndContent)
-    formData.append('channelId', postData.channelId)
+    formData.append('channelId', RIDEON_QNA_CHANNEL_ID)
 
     const response = await axiosApi.post('/posts/create', formData, formOption)
     const parsedTitle = JSON.parse(response.data.title)
@@ -62,7 +63,7 @@ export const updateQnaPost = async (updatePost) => {
 
     formData.append('postId', updatePost.id)
     formData.append('title', titleAndContent)
-    formData.append('channelId', updatePost.channelId)
+    formData.append('channelId', RIDEON_QNA_CHANNEL_ID)
 
     const response = await axiosApi.put('/posts/update', formData, formOption)
     const parsedTitle = JSON.parse(response.data.title)
