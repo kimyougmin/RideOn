@@ -1,9 +1,13 @@
 <script setup>
 import { ref, onMounted, watchEffect } from 'vue'
-const props = defineProps(['searchValue'])
-const emits = defineEmits(['update:receiveHandler'])
-const value = ref('')
+import { useRouter } from 'vue-router'
+
+// 검색 부분
+const router = useRouter()
+const searchQuery = ref('')
+
 // 현재 테마 상태
+
 const isDarkMode = ref(localStorage.getItem('theme') === 'dark')
 
 // 다크 모드 토글 함수
@@ -18,9 +22,19 @@ const toggleDarkMode = () => {
   }
 }
 
+// ✅ 검색 실행 함수
+const searchHandler = () => {
+  if (!searchQuery.value.trim()) return
+
+  // ✅ 검색어를 쿼리로 전달하고 검색 페이지로 이동
+  router.push({
+    path: '/riderPartsSearch',
+    query: { keyword: searchQuery.value },
+  })
+}
+
 // 페이지가 로드될 때 설정 확인
 onMounted(() => {
-  value.value = props.searchValue
   if (localStorage.getItem('theme') === 'dark') {
     document.documentElement.classList.add('dark')
     isDarkMode.value = true
@@ -159,8 +173,8 @@ watchEffect(() => {
             <input
               class="w-full focus:outline-none dark:text-black1"
               placeholder="Search"
-              v-model="value"
-              @change="emits('update:receiveHandler', value)"
+              v-model="searchQuery"
+              @keyup.enter="searchHandler"
             />
             <!--  검색 아이콘   -->
             <svg

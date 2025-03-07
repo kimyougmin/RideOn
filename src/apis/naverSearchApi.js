@@ -9,7 +9,7 @@ const naverShoppingApi = axios.create({
   timeout: 5000,
 })
 
-export async function getNaverItems(targetWord, displayCount = 32, sortOption = 'sim') {
+export async function getNaverItems(targetWord, displayCount = 100, sortOption = 'sim') {
   try {
     const response = await naverShoppingApi.get('/v1/search/shop.json', {
       params: {
@@ -27,7 +27,7 @@ export async function getNaverItems(targetWord, displayCount = 32, sortOption = 
       return response.data.items
     } else {
       console.warn('⚠️ API 응답에 items가 없습니다:', response.data)
-      return []
+      return [];
     }
   } catch (error) {
     console.error('API 호출 중 에러 발생:', error)
@@ -39,6 +39,28 @@ export async function getNaverItems(targetWord, displayCount = 32, sortOption = 
     } else {
       console.error('설정 오류:', error.message)
     }
-    return []
+    return [];
+  }
+}
+
+export async function getNaverItemById(targetWord, productId) {
+  try {
+    const items = await getNaverItems(targetWord, 100);
+
+    console.log("🔍 검색된 상품 목록:", items);
+    console.log("🔍 비교할 Product ID:", String(productId));
+
+    // 🔥 productId를 문자열로 변환하여 비교
+    const matchedItem = items.find(item => String(item.productId) === String(productId));
+
+    if (!matchedItem) {
+      console.warn(`❌ productId ${productId}에 맞는 상품이 없습니다.`);
+      return null;
+    }
+
+    return matchedItem;
+  } catch (error) {
+    console.error("❌ 네이버 API 검색 오류:", error);
+    return null;
   }
 }

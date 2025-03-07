@@ -1,4 +1,5 @@
 import axiosApi from '@/utils/axiosConfig'
+import { RIDEON_FREEBOARD_CHANNEL_ID } from '@/constants/channelId'
 
 const formOption = {
   headers: {
@@ -64,9 +65,9 @@ export const updateFreeboardPost = async (updatePost) => {
 
     formData.append('postId', updatePost.id)
     formData.append('title', titleAndContent)
-    formData.append('image', updatePost.image) // 기존 이미지 유지
-    formData.append('imageToDeletePublicId', '') // 이미지 삭제 없음
-    formData.append('channelId', updatePost.channelId)
+    formData.append('image', updatePost.image)
+    formData.append('imageToDeletePublicId', updatePost.imageToDeletePublicId)
+    formData.append('channelId', RIDEON_FREEBOARD_CHANNEL_ID)
 
     const response = await axiosApi.put('/posts/update', formData, formOption)
 
