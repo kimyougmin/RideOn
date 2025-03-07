@@ -28,7 +28,7 @@ const formattedPrice = computed(() => {
     <div class="flex gap-4 px-8 py-6 bg-white border border-gray-400">
       <div class="w-3/4 flex flex-col gap-2">
         <p class="m-0 text-body1 text-black">{{ item.mallName }}</p>
-        <p class="m-0 text-sub-title font-bold text-black truncate">
+        <p class="m-0 text-sub-title font-bold text-black truncate" @click="goToDetail(item)">
           {{ item.title.replace(/<\/?[^>]+(>|$)/g, '') }}
         </p>
         <p class="m-0 text-2xl font-bold text-black">{{ formattedPrice }}원</p>
