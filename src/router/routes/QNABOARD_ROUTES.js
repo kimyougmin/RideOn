@@ -9,7 +9,7 @@ const QNABOARD_ROUTES = [
     component: QnaBoard,
   },
   {
-    path: '/qnaBoard/detail/:id',
+    path: '/riderCrewBoardDetail/:id',
     name: 'QnaBoardDetail',
     component: QnaBoardDetail,
   },
