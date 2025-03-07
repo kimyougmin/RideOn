@@ -5,6 +5,9 @@ import { fetchLikeRemoveApi } from '@/apis/fetchLikeRemoveApi'
 import AlertMessage from './components/Alert.vue'
 import bikeCategoryData from '@/../public/bike_category_data.json'
 import { getNaverItems } from '@/apis/naverSearchApi'
+import { useRouter } from 'vue-router'
+const router = useRouter()
+
 
 // 알림창 상태
 const showAlert = ref(false)
@@ -46,7 +49,7 @@ const mapCategory = (category) => {
 
 const findRatingForItem = (wishlistItem) => {
   for (const category in bikeCategoryData) {
-    const product = bikeCategoryData[category].find(prod => {
+    const product = bikeCategoryData[category].find((prod) => {
       const prodName = prod.name.trim().toLowerCase()
       const wishName = wishlistItem.name.trim().toLowerCase()
       return prodName.includes(wishName) || wishName.includes(prodName)
@@ -60,7 +63,7 @@ const findRatingForItem = (wishlistItem) => {
 
 const findProductDetails = (wishlistItem) => {
   for (const cat in bikeCategoryData) {
-    const product = bikeCategoryData[cat].find(prod => {
+    const product = bikeCategoryData[cat].find((prod) => {
       const prodName = prod.name.trim().toLowerCase()
       const wishName = wishlistItem.name.trim().toLowerCase()
       return prodName.includes(wishName) || wishName.includes(prodName)
@@ -83,14 +86,14 @@ const fetchWishlist = async () => {
 
     wishlist.value = data.map((item) => {
       const mappedItem = {
-        id: item.like_key, 
+        id: item.like_key,
         title: item.title,
         name: item.name,
         price: Number(item.price),
         image: item.image || defaultImage,
         brand: item.brand,
         category: mapCategory(item.category),
-        rating: item.rating !== undefined ? item.rating : ''
+        rating: item.rating !== undefined ? item.rating : '',
       }
       if (mappedItem.rating === '' || mappedItem.rating === 0) {
         mappedItem.rating = findRatingForItem(mappedItem) || ''
@@ -152,46 +155,70 @@ const loadMore = () => {
 // 필터 변경
 const setActiveFilter = (filter) => {
   activeFilter.value = filter
-  itemsPerPage.value = 9 
+  itemsPerPage.value = 9
 }
 
 
-import { useRouter } from 'vue-router'
-const router = useRouter()
+function tripleEncode(value) {
+  return encodeURIComponent(String(value))
+}
 
 const goToDetailPage = async (item) => {
-  if (item.category === 'parts' || item.category === 'gear') {
+  if (!item) return
+  const fallbackId = item.productId || item.id
+  if (!fallbackId) return
+
+  // 부품 계열 카테고리: parts, gear, 부품
+  if (item.category === 'parts' || item.category === 'gear' || item.category === '부품') {
     try {
       const results = await getNaverItems(item.name, 1)
       let naverProductId = ''
+      let naverTitle = ''
       if (results && results.length > 0) {
         naverProductId = results[0].productId || results[0].itemId
+        naverTitle = results[0].title || item.name
       }
-      // fallback: 네이버 API에서 productId를 받지 못하면 fallback으로 item.id 사용
       if (!naverProductId) {
-        naverProductId = item.id
+        naverProductId = fallbackId
       }
+      if (!naverTitle) {
+        naverTitle = item.name
+      }
+      // HTML 태그 제거
+      const cleanTitle = naverTitle.replace(/<\/?[^>]+(>|$)/g, '')
+      const cleanMallName = (item.mallName || '').replace(/<\/?[^>]+(>|$)/g, '')
+
       router.push({
         path: '/riderPartsDetail',
         query: {
-          keyword: item.name,
+          // 세 번 인코딩 적용
+          keyword: tripleEncode(cleanTitle),
           productId: naverProductId,
-        }
+          title: tripleEncode(cleanTitle),
+          image: tripleEncode(item.image),
+          price: item.lprice || item.hprice || '0',
+          mallName: tripleEncode(cleanMallName),
+          link: tripleEncode(item.link || ''),
+        },
       })
       return
     } catch (error) {
-      console.error("네이버 API 호출 에러:", error)
+      console.error('네이버 API 호출 에러:', error)
       router.push({
         path: '/riderPartsDetail',
         query: {
-          keyword: item.name,
-          productId: item.id,
-        }
+          keyword: tripleEncode(item.name.replace(/<\/?[^>]+(>|$)/g, '')),
+          productId: fallbackId,
+          title: tripleEncode(item.name.replace(/<\/?[^>]+(>|$)/g, '')),
+          image: tripleEncode(item.image),
+          price: item.lprice || item.hprice || '0',
+          mallName: tripleEncode(item.mallName || ''),
+          link: tripleEncode(item.link || ''),
+        },
       })
       return
     }
   }
-  
   // parts/gear가 아닌 경우 기존 로직 사용
   const productDetails = findProductDetails(item)
   if (productDetails) {
@@ -205,33 +232,16 @@ const goToDetailPage = async (item) => {
         name: productDetails.name,
         price: productDetails.price,
         image: productDetails.image,
-      }
-    })
-  } else {
-    router.push({
-      path: `/bicycleDetail/${item.id}`,
-      query: {
-        id: item.id,
-        rating: item.rating || '',
-        brand: item.brand,
-        category: item.category,
-        name: item.name,
-        price: item.price,
-        image: item.image,
-      }
+      },
     })
   }
 }
-
-
-
 
 const truncatedName = (name) => {
   const maxLength = 22
   return name.length > maxLength ? name.slice(0, maxLength) + '...' : name
 }
 </script>
-
 
 <template>
   <section class="w-full ml-[10px]">
