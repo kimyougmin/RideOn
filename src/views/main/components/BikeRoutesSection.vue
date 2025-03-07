@@ -1,3 +1,11 @@
+<script setup>
+import { ref } from 'vue'
+
+const images = ['/main/main_bike_route_2.png', '/main/main_bike_route.png']
+
+const randomImage = ref(images[Math.floor(Math.random() * images.length)])
+</script>
+
 <template>
   <article class="grid grid-cols-12 gap-4">
     <div class="col-span-4 flex flex-col gap-[50px]">
@@ -17,9 +25,7 @@
       </button>
     </div>
     <div class="col-start-6 col-span-7 overflow-hidden">
-      <img src="/main/main_bike_route.png" alt="banner text" class="w-full h-full object-cover" />
+      <img :src="randomImage" alt="banner text" class="w-full h-full" />
     </div>
   </article>
 </template>
-
-<script setup></script>
