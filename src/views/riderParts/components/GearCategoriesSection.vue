@@ -25,11 +25,11 @@ const goToSearch = (query) => {
         <img src="/riderPageImage/category_light.png" />
         <p class="text-sub-title font-bold m-0 dark:text-black1">라이트</p>
       </div>
-      <div class="flex flex-col items-center gap-5" @click="goToSearch('물통 + 물통케이지')">
+      <div class="flex flex-col items-center gap-5" @click="goToSearch('물통 물통케이지')">
         <img src="/riderPageImage/category_waterBottle.png" />
         <p class="text-sub-title font-bold m-0 dark:text-black1">물통 & 물통케이지</p>
       </div>
-      <div class="flex flex-col items-center gap-5" @click="goToSearch('자물쇠')">
+      <div class="flex flex-col items-center gap-5" @click="goToSearch('자전거자물쇠')">
         <img src="/riderPageImage/category_lock.png" />
         <p class="text-sub-title font-bold m-0 dark:text-black1">자물쇠</p>
       </div>

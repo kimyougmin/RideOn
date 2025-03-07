@@ -21,7 +21,6 @@ const sortOptions = [
   { label: "신상품순", value: "date" },
 ];
 
-// ✅ 네이버 API를 호출하여 검색 실행
 const searchItems = async () => {
   if (!searchQuery.value.trim()) return;
 
@@ -40,7 +39,6 @@ const searchItems = async () => {
   }
 };
 
-// ✅ URL에서 검색어가 변경될 때마다 검색 실행
 watch(() => route.query.keyword, async (newKeyword) => {
   searchQuery.value = newKeyword ? decodeURIComponent(newKeyword) : "자전거부품";
   await searchItems();
@@ -69,7 +67,7 @@ const goToDetail = (item) => {
   router.push({
     path: `/riderPartsDetail`,
     query: {
-      keyword: encodeURIComponent(item.title.replace(/<\/?[^>]+(>|$)/g, "")), // 🔹 제목을 keyword로 설정
+      keyword: encodeURIComponent(item.title.replace(/<\/?[^>]+(>|$)/g, "")),
       productId: item.productId,
       title: encodeURIComponent(item.title.replace(/<\/?[^>]+(>|$)/g, "")),
       image: encodeURIComponent(item.image),
