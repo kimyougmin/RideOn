@@ -378,7 +378,7 @@ onMounted(() => {
       <div class="mb-12">
         <p class="text-lg font-bold text-black9 dark:text-black1 flex items-center gap-2 mb-4" @click="goToPostDetail(posts._id)">
           작성한 게시글 ✍️
-          <span class="text-lg">({{ displayedPosts.length }})</span>
+          <span class="text-lg">({{ posts.length }})</span>
         </p>
 
         <div v-if="displayedPosts.length === 0" class="text-black6 dark:text-black3 text-center mt-[100px]">
@@ -430,7 +430,7 @@ onMounted(() => {
       <div class="mt-6">
         <p class="text-lg font-bold text-black9 dark:text-black1 flex items-center gap-2 mb-4" :class="{ 'mt-[150px]': displayedQuestions.length === 0 }">
           작성한 질문 ❓
-          <span class="text-lg">({{ displayedQuestions.length }})</span>
+          <span class="text-lg">({{ questions.length }})</span>
         </p>
 
         <div v-if="displayedQuestions.length === 0" class="text-black6 dark:text-black3 text-center mt-[100px]">
@@ -478,7 +478,7 @@ onMounted(() => {
       <div class="mt-6">
         <p class="text-lg font-bold text-black9 dark:text-black1 flex items-center gap-2 mb-4" :class="{ 'mt-[150px]': displayedCrewPosts.length === 0 }">
           작성한 모집글 🚲
-          <span class="text-lg">({{ displayedCrewPosts.length }})</span>
+          <span class="text-lg">({{ crewPosts.length }})</span>
         </p>
 
         <div v-if="displayedCrewPosts.length === 0" class="text-black6 dark:text-black3 text-center mt-[100px]">
