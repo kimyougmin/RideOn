@@ -10,6 +10,7 @@ const mapContainer = ref(null);
 const map = ref(null);
 const userLatLng = ref(null);
 const selectedFacility = ref(null);
+const previousFacility = ref(null);
 const bikeMarkers = ref([]);
 const airPumpMarkers = ref([]);
 const rackMarkers = ref([]);
@@ -21,7 +22,7 @@ const isToggled = ref({
   repairShops: false
 });
 const isModalOpen = ref(false);
-const isLoadingMarkers = ref(false); 
+const isLoadingMarkers = ref(false);
 
 onMounted(() => {
   if (mapContainer.value) {
@@ -32,6 +33,18 @@ onMounted(() => {
     map.value = mapInstance;
   }
 });
+
+const updateSelectedFacility = (facility) => {
+  previousFacility.value = window.previousFacility || null;
+
+  if (!isModalOpen.value) {
+    isModalOpen.value = true;
+  }
+
+  selectedFacility.value = facility;
+  previousFacility.value = facility;
+  window.previousFacility = facility;
+};
 
 const toggleBikeStations = async () => {
   if (!map.value) return;
@@ -44,19 +57,17 @@ const toggleBikeStations = async () => {
         map.value.removeLayer(marker);
       }
     });
-
-
     bikeMarkers.value = [];
   } else {
     const newMarkers = await fetchPlaces(map.value, userLatLng.value, (stationData) => {
-      selectedFacility.value = {
+      updateSelectedFacility({
         type: "bikeStation",
         name: stationData.stationName.replace(/^\d+\.\s*/, ""),
         address: stationData.address,
         availableBikes: stationData.availableBikes,
         facilityType: stationData.facilityType,
         operatingDays: stationData.operatingDays,
-      };
+      });
     });
 
     bikeMarkers.value = newMarkers || [];
@@ -65,9 +76,10 @@ const toggleBikeStations = async () => {
   isToggled.value.bikeStations = !isToggled.value.bikeStations;
   isLoadingMarkers.value = false;
 };
+
 const toggleConvenienceFacilities = async (type) => {
   if (!map.value) return;
-  
+
   let targetMarkers = null;
   let toggleKey = null;
 
@@ -86,12 +98,12 @@ const toggleConvenienceFacilities = async (type) => {
 
   if (!isToggled.value[toggleKey]) {
     const newMarkers = await fetchConvenienceFacilities(map.value, userLatLng.value, type, (facilityData) => {
-      selectedFacility.value = {
+      updateSelectedFacility({
         type: type,
         name: facilityData.name,
         address: facilityData.address,
         useYn: facilityData.useYn
-      };
+      });
     });
 
     targetMarkers.value = newMarkers;
@@ -109,8 +121,8 @@ watch(selectedFacility, (newVal) => {
     isModalOpen.value = true;
   }
 });
-
 </script>
+
 
 <template>
   <div class="w-screen h-screen relative">
@@ -119,17 +131,17 @@ watch(selectedFacility, (newVal) => {
     <div v-if="isLoadingMarkers" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-lg font-medium dark:bg-black9 dark:text-black1 bg-black1 p-5 rounded-lg shadow-[0px_8px_25px_rgba(50,50,50,0.4)]">
       ⏳ 주변 시설 정보를 불러오는 중...
     </div>
-    <MapModal v-if="isModalOpen" :facility="selectedFacility" @close="isModalOpen = false" />
-
-    <div class="relative flex top-[2.5%] w-full h-[42px] text-lg font-medium">
-      <div class="ml-auto flex gap-4 max-w-[600px] flex-shrink-0 justify-end pr-8">
+    <MapModal v-model="isModalOpen" :facility="selectedFacility" />
+  </div>
+    <div class="absolute top-24 flex right-0 h-[42px] text-lg font-medium">
+      <div class="ml-auto flex gap-4 max-w-[600px] justify-end pr-8">
         <button @click="toggleBikeStations"
           :class="{
             'bg-white dark:text-black1 hover:text-black1 dark:bg-black9 dark:hover:bg-primaryRed hover:bg-primaryRed': !isToggled.bikeStations,
             'bg-primaryRed text-white dark:bg-primaryRed dark:text-white': isToggled.bikeStations
           }"
-          class="flex items-center justify-center rounded-3xl gap-2 
-       shadow-[2px_4px_0_rgba(0,0,0,0.2)] dark:shadow-[0_4px_0_rgba(255,255,255,0.1)] 
+          class="flex items-center justify-center rounded-3xl gap-2 w-36
+       shadow-[2px_4px_0_rgba(0,0,0,0.2)]
        hover:scale-110 transition-transform duration-200">
           <svg width="26" height="24" viewBox="0 0 26 24" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <rect width="26" height="24" fill="url(#pattern0_273_497)"/>
@@ -149,8 +161,8 @@ watch(selectedFacility, (newVal) => {
             'bg-black9 text-white dark:bg-black9 dark:text-white': isToggled.repairShops
           }"
           class="flex items-center justify-center rounded-3xl gap-2 
-       shadow-[2px_4px_0_rgba(0,0,0,0.2)] dark:shadow-[0_4px_0_rgba(255,255,255,0.1)] 
-       hover:scale-110 transition-transform duration-200">
+       shadow-[2px_4px_0_rgba(0,0,0,0.2)]
+       hover:scale-110 transition-transform duration-200 w-32">
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <rect width="20" height="20" fill="url(#pattern0_273_500)"/>
 <defs>
@@ -169,8 +181,8 @@ watch(selectedFacility, (newVal) => {
             'bg-[#1CA673] text-white dark:bg-[#1CA673] dark:text-white': isToggled.airPumps
           }"
           class="flex items-center justify-center rounded-3xl gap-2 
-       shadow-[2px_3px_0_rgba(0,0,0,0.2)] dark:shadow-[0_4px_0_rgba(255,255,255,0.1)] 
-       hover:scale-110 transition-transform duration-200">
+       shadow-[2px_3px_0_rgba(0,0,0,0.2)]
+       hover:scale-110 transition-transform duration-200 w-36">
           <svg width="20" height="22" viewBox="0 0 20 22" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <rect width="20" height="22" fill="url(#pattern0_273_503)"/>
 <defs>
@@ -189,8 +201,8 @@ watch(selectedFacility, (newVal) => {
             'bg-[#1A9EFE]  text-white dark:bg-[#1A9EFE]  dark:text-white': isToggled.racks
           }"
           class="flex items-center justify-center rounded-3xl gap-2 
-       shadow-[2px_3px_0_rgba(0,0,0,0.2)] dark:shadow-[0_4px_0_rgba(255,255,255,0.1)] 
-       hover:scale-110 transition-transform duration-200">
+       shadow-[2px_3px_0_rgba(0,0,0,0.2)]
+       hover:scale-110 transition-transform duration-200 w-28">
          
 <svg width="23" height="24" viewBox="0 0 23 24" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <rect y="0.5" width="23" height="23" fill="url(#pattern0_273_506)"/>
@@ -205,7 +217,6 @@ watch(selectedFacility, (newVal) => {
         </button>
       </div>
     </div>
-  </div>
 </template>
 
 <style>

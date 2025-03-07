@@ -156,45 +156,74 @@ const setActiveFilter = (filter) => {
 }
 
 
+import { useRouter } from 'vue-router'
+const router = useRouter()
+
 const goToDetailPage = async (item) => {
-  // parts 카테고리 상품이라면 네이버 쇼핑 API를 호출해서 productId를 가져온다.
   if (item.category === 'parts' || item.category === 'gear') {
-    const results = await getNaverItems(item.name, 1)
-    if (results && results.length > 0) {
-      const naverProductId = results[0].productId || results[0].itemId
-      if (naverProductId) {
-        window.location.href = `/riderPartsDetail/${naverProductId}`
-        return
+    try {
+      const results = await getNaverItems(item.name, 1)
+      let naverProductId = ''
+      if (results && results.length > 0) {
+        naverProductId = results[0].productId || results[0].itemId
       }
+      // fallback: 네이버 API에서 productId를 받지 못하면 fallback으로 item.id 사용
+      if (!naverProductId) {
+        naverProductId = item.id
+      }
+      router.push({
+        path: '/riderPartsDetail',
+        query: {
+          keyword: item.name,
+          productId: naverProductId,
+        }
+      })
+      return
+    } catch (error) {
+      console.error("네이버 API 호출 에러:", error)
+      router.push({
+        path: '/riderPartsDetail',
+        query: {
+          keyword: item.name,
+          productId: item.id,
+        }
+      })
+      return
     }
   }
   
-  // 네이버 API로 productId를 얻지 못했거나, parts가 아니라면 기존 JSON 매칭 로직을 사용
+  // parts/gear가 아닌 경우 기존 로직 사용
   const productDetails = findProductDetails(item)
   if (productDetails) {
-    const queryParams = new URLSearchParams({
-      id: productDetails.id,
-      rating: productDetails.rating,
-      brand: productDetails.brand,
-      category: productDetails.category,
-      name: productDetails.name,
-      price: productDetails.price,
-      image: productDetails.image,
-    }).toString()
-    window.location.href = `/bicycleDetail/${productDetails.id}?${queryParams}`
+    router.push({
+      path: `/bicycleDetail/${productDetails.id}`,
+      query: {
+        id: productDetails.id,
+        rating: productDetails.rating,
+        brand: productDetails.brand,
+        category: productDetails.category,
+        name: productDetails.name,
+        price: productDetails.price,
+        image: productDetails.image,
+      }
+    })
   } else {
-    const queryParams = new URLSearchParams({
-      id: item.id, 
-      rating: item.rating || '',
-      brand: item.brand,
-      category: item.category,
-      name: item.name,
-      price: item.price,
-      image: item.image,
-    }).toString()
-    window.location.href = `/bicycleDetail/${item.id}?${queryParams}`
+    router.push({
+      path: `/bicycleDetail/${item.id}`,
+      query: {
+        id: item.id,
+        rating: item.rating || '',
+        brand: item.brand,
+        category: item.category,
+        name: item.name,
+        price: item.price,
+        image: item.image,
+      }
+    })
   }
 }
+
+
 
 
 const truncatedName = (name) => {

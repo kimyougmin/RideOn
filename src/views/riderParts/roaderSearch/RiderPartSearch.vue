@@ -74,100 +74,49 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="w-full min-h-screen flex flex-col dark:bg-black9">
+ <div class="w-full min-h-screen flex flex-col dark:bg-black9">
     <ShopHeader :searchValue="searchValue" @update:receiveHandler="receiveHandler($event)"/>
-    <div class="h-full flex-gow max-w-[1256px] mx-auto dark:bg-black9">
+    <div class="h-full max-w-[1256px] mx-auto dark:bg-black9">
       <!-- 연관 검색어 부분 -->
-      <div class="flex justify-start items-center w-[1261px] relative overflow-hidden gap-4 mt-[35px]  dark:bg-black9">
-        <p class="flex-grow-0 flex-shrink-0 text-2xl font-bold text-left dark:text-black1 pt-4">연관</p>
-        <div class="flex justify-start items-center flex-grow-0 flex-shrink-0 w-[1196px] gap-2">
-          <div class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative gap-1 px-3 py-1.5 w-auto h-[54px] rounded-[50px] bg-[#fffffe] border border-[#e8e8e8]">
-            <img src="/riderPageImage/gear.svg" class="flex-grow-0 flex-shrink-0 w-[20px] h-[20px] rounded-[50px] object-cover"/>
-            <p class="flex-grow-0 flex-shrink-0 text-base text-left text-black pt-3">자전거기어</p>
-          </div>
-          <div class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative gap-1 px-3 py-1.5 w-auto h-[54px] rounded-[50px] bg-[#fffffe] border border-[#e8e8e8]">
-            <img src="/riderPageImage/pedal.svg" class="flex-grow-0 flex-shrink-0 w-[20px] h-[20px] rounded-[50px] object-cover"/>
-            <p class="flex-grow-0 flex-shrink-0 text-base text-left text-black pt-3">자전거페달</p>
-          </div>
-          <div class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative gap-1 px-3 py-1.5 w-auto h-[54px] rounded-[50px] bg-[#fffffe] border border-[#e8e8e8]">
-            <img src="/riderPageImage/wheel.svg" class="flex-grow-0 flex-shrink-0 w-[20px] h-[20px] rounded-[50px] object-cover"/>
-            <p class="flex-grow-0 flex-shrink-0 text-base text-left text-black pt-3">자전거스템</p>
+      <div class="flex items-center w-[1261px] gap-4 mt-[35px] relative overflow-hidden dark:bg-black9">
+        <p class="text-2xl font-bold dark:text-black1 pt-4 m-0">연관</p>
+        <div class="flex items-center gap-2">
+          <div v-for="(icon, index) in relatedItems" :key="index" class="flex items-center gap-1 px-3 py-1.5 w-auto h-[54px] rounded-[50px] bg-[#fffffe] border border-[#e8e8e8]">
+            <img :src="icon.img" class="w-[20px] h-[20px] object-cover"/>
+            <p class="text-base text-black pt-3 m-0">{{ icon.label }}</p>
           </div>
         </div>
       </div>
-      <!-- 밑에 바로 이미지 -->
-      <div class="flex flex-col justify-start items-start w-[1256px] relative gap-8 mt-[35px] dark:bg-black9">
-        <div class="flex-grow-0 flex-shrink-0 w-[628px] h-[94px] relative">
-          <p class="absolute left-0 top-16 text-2xl text-left dark:text-black1">
-            소모품부터 부품까지 쉽고 빠르게 검색하세요.
+      <!-- 검색 안내 문구 및 이미지 -->
+      <div class="flex flex-col w-[1256px] gap-2 mt-[35px] dark:bg-black9">
+          <p class="text-[40px] dark:text-black1 m-0">Find Your Perfect Part</p>
+          <p class="text-2xl dark:text-black1 m-0">소모품부터 부품까지 쉽고 빠르게 검색하세요.</p>
+        <div class="relative h-[400px]">
+          <img src="../../../../public/riderPageImage/chain.svg" class="w-[620px] h-[400px] absolute left-0 top-0 object-cover border-2 border-black1"/>
+          <img src="../../../../public/riderPageImage/chain2.svg" class="w-[620px] h-[200px] absolute left-[634.5px] top-[198.5px] object-none border-2 border-black1"/>
+          <img src="../../../../public/riderPageImage/seat.svg" class="w-[620px] h-[180px] absolute left-[634.5px] top-0 object-none border-2 border-black1"/>
+        </div>
+      </div>
+      <!-- 정렬 옵션 -->
+      <div class="flex flex-col w-[1256px] gap-8 mt-10 dark:bg-black9">
+        <div class="flex gap-4">
+          <p v-for="sort in sortOptions" :key="sort.value" class="text-xl cursor-pointer transition-colors duration-200 m-0" :class="{
+            'w-14': sort.value === 'sim',
+            'w-[97px]': sort.value !== 'sim',
+            'text-black font-bold dark:text-black1': selectedSort === sort.value,
+            'text-black6 dark:text-black4': selectedSort !== sort.value
+          }" @click="selectedSort = sort.value">
+            {{ sort.label }}
           </p>
-          <p class="absolute left-0 top-0 text-[40px] text-left dark:text-black1">Find Your Perfect Part</p>
-        </div>
-        <div class="self-stretch flex-grow-0 flex-shrink-0 h-[400px] relative">
-          <img
-            src="/riderPageImage/chain.svg"
-            class="w-[620px] h-[400px] absolute left-[-1.5px] top-[-1.5px] object-cover border-2 border-black1"
-          /><img
-            src="/riderPageImage/chain2.svg"
-            class="w-[620px] h-[200px] absolute left-[634.5px] top-[198.5px] object-none border-2 border-black1"
-          /><img
-            src="/riderPageImage/seat.svg"
-            class="w-[620px] h-[180px] absolute left-[634.5px] top-[-1.5px] object-none border-2  border-black1"
-          />
         </div>
       </div>
-      <!-- 추천순 부터 -->
-      <div class="flex flex-col justify-start items-start w-[1256px] gap-8 mt-10 dark:bg-black9">
-        <div class="flex justify-start items-center flex-grow-0 flex-shrink-0 relative gap-4">
-          <div class="flex flex-col justify-start items-start w-[1256px] gap-8 mt-[35px]">
-            <div class="flex justify-start items-center flex-grow-0 flex-shrink-0 relative gap-4">
-              <p
-                v-for="sort in sortOptions"
-                :key="sort.value"
-                class="flex-grow-0 flex-shrink-0 text-xl text-left cursor-pointer transition-colors duration-200 text-black6"
-                :class="{
-                  'w-14': sort.value === 'sim',
-                  'w-[97px]': sort.value !== 'sim',
-                  'text-black font-bold dark:text-black1': selectedSort === sort.value,
-                  'text-black6 dark:text-black4': selectedSort !== sort.value
-                }"
-                @click="selectedSort = sort.value"
-              >
-                {{ sort.label }}
-              </p>
-            </div>
-          </div>
-        </div>
+      <!-- 검색된 상품 수 -->
+      <div class="flex justify-between items-center dark:bg-black9">
+        <img src="/riderPageImage/blackLine.svg" alt="Line" class="w-[1100px] h-[2px] dark:hidden"/>
+        <img src="/riderPageImage/whiteLine.svg" alt="Line" class="w-[1100px] h-[2px] hidden dark:block"/>
+        <p class="text-base text-black pt-4 dark:text-black1 m-0">검색된 상품 {{ visibleItems.length }}개</p>
       </div>
-      <!-- 검색된 상품 필드 -->
-      <div class="flex justify-between items-center self-stretch flex-grow-0 flex-shrink-0 relative  dark:bg-black9">
-          <img
-            src="/riderPageImage/blackLine.svg"
-            alt="Line"
-            class="w-[1100px] h-[2px] flex-grow-0 flex-shrink-0 relative dark:hidden"
-          />
-          <img
-            src="/riderPageImage/whiteLine.svg"
-            alt="Line"
-            class="w-[1100px] h-[2px] flex-grow-0 flex-shrink-0 relative hidden dark:block"
-          />
-          <img
-            src="/riderPageImage/data.svg"
-            alt="dataIcon"
-            class="w-[18px] h-[18px] flex-grow-0 flex-shrink-0 relative dark:hidden"
-          />
-          <img
-            src="/riderPageImage/whiteData.svg"
-            alt="dataIcon"
-            class="w-[18px] h-[18px] flex-grow-0 flex-shrink-0 relative hidden dark:block"
-          />
-        <p class="flex-grow-0 flex-shrink-0 text-base text-left text-black pt-4  dark:bg-black9">
-          <span class="flex-grow-0 flex-shrink-0 text-base font-light text-left dark:text-black1">검색된 상품 </span>
-          <span class="flex-grow-0 flex-shrink-0 text-base font-semibold text-left dark:text-black1">{{ visibleItems.length }}</span>
-          <span class="flex-grow-0 flex-shrink-0 text-base font-light text-left dark:text-black1">개</span>
-        </p>
-      </div>
-      <!-- 글 상자 -->
+      <!-- 상품 목록 -->
       <div class="mt-[32px] dark:bg-black9">
         <!-- 상품 목록 -->
         <div class="grid grid-cols-3 gap-6">
@@ -218,6 +167,7 @@ onMounted(async () => {
     </div>
     <BasicFooter/>
   </div>
+
 </template>
 
 <style scoped>

@@ -10,8 +10,8 @@ export const useUserStore = defineStore('user', () => {
     isLoggedIn: false,
   })
 
-  const login = (email, fullName, id, token) => {
-    const name = fullName.split('|')[0] || 'Chill guy'
+  const login = (email, fullName = 'Chill guy', id, token) => {
+    const name = fullName ? fullName.split('|')[0] : 'Chill guy'  
     user.value = {
       _id: id,
       email,
@@ -21,6 +21,7 @@ export const useUserStore = defineStore('user', () => {
     }
     localStorage.setItem('user', JSON.stringify(user.value))
   }
+  
 
   const logout = () => {
     user.value = {
