@@ -1,15 +1,16 @@
 <script setup>
 import ShopHeader from "@/components/ShopHeader.vue";
 import BasicFooter from "@/components/BasicFooter.vue";
-import { ref, onMounted, watch, computed } from "vue";
+import { ref, onMounted, watch } from "vue";
 import { getNaverItems } from "@/apis/naverSearchApi";
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 
+const route = useRoute();
 const selectedSort = ref("sim");
 const items = ref([]);
 const visibleItems = ref([]);
 const itemsPerPage = 9;
-const searchQuery = ref("자전거부품");
+const searchQuery = ref(route.query.keyword || "자전거부품");
 const router = useRouter();
 
 
@@ -20,23 +21,34 @@ const sortOptions = [
   { label: "신상품순", value: "date" },
 ];
 
+// ✅ 네이버 API를 호출하여 검색 실행
 const searchItems = async () => {
   if (!searchQuery.value.trim()) return;
 
   try {
     const results = await getNaverItems(searchQuery.value, 100, selectedSort.value);
-    if(results.length > 0){
+    if (results.length > 0) {
       items.value = results;
       visibleItems.value = items.value.slice(0, itemsPerPage);
     } else {
-      console.warn('검색 결과 없음');
+      console.warn("검색 결과 없음");
       items.value = [];
       visibleItems.value = [];
     }
   } catch (error) {
-    console.error('네이버 API 검색 오류 ', error);
+    console.error("네이버 API 검색 오류", error);
   }
 };
+
+// ✅ URL에서 검색어가 변경될 때마다 검색 실행
+watch(() => route.query.keyword, async (newKeyword) => {
+  searchQuery.value = newKeyword ? decodeURIComponent(newKeyword) : "자전거부품";
+  await searchItems();
+}, { immediate: true });
+
+watch(selectedSort, async () => {
+  await searchItems();
+});
 
 const loadMore = () => {
   const nextItems = items.value.slice(visibleItems.value.length, visibleItems.value.length + itemsPerPage);
