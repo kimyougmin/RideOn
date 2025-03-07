@@ -5,6 +5,7 @@ import { getUserApi } from '@/apis/auth'
 import { deletePostApi } from '@/apis/posts'
 import TrashIcon from './components/TrashIcon.vue'
 import HeartIcon from './components/HeartIcon.vue'
+import EditIcon from './components/Edit.vue'
 import AlertComponent from './components/Alert.vue'
 
 const router = useRouter()
@@ -168,6 +169,11 @@ const goToPostDetail = (postId, channel) => {
   router.push(`/${boardPath}/${postId}`)
 }
 
+// EditIcon 클릭 시 이동할 경로 (/freeBoard/edit/:id)
+const goToEdit = (postId) => {
+  router.push(`/freeBoard/edit/${postId}`)
+}
+
 onMounted(() => {
   loadUserId()
   loadUserPosts()
@@ -200,7 +206,6 @@ const loadMorePosts = () => {
 const loadMoreQuestions = () => {
   itemsPerPageQuestions.value += 2
 }
-
 
 // 게시글 삭제 기능 
 const deletePost = async (id) => {
@@ -260,11 +265,7 @@ const deleteQuestion = async (id) => {
     showAlert.value = true
   }
 }
-
-
-
 </script>
-
 
 <template>
   <section class="p-6 flex-grow">
@@ -286,28 +287,18 @@ const deleteQuestion = async (id) => {
     <div v-else>
       <!-- 활동 내역 제목 -->
       <p class="text-2xl font-bold text-black9 dark:text-black1 mb-2">활동내역</p>
-      <p
-        class="text-sm text-black6 dark:text-black3 w-full max-w-[800px] leading-relaxed break-keep mb-8"
-      >
-        내가 작성한 게시글과 질문들을 한눈에 확인할 수 있습니다. 작성한 글을 수정하거나 삭제할 수
-        있으며, 필요한 정보를 빠르게 찾아볼 수 있습니다. 내가 남긴 기록을 관리하며 커뮤니티에서
-        활발하게 소통해보세요!
+      <p class="text-sm text-black6 dark:text-black3 w-full max-w-[800px] leading-relaxed break-keep mb-8">
+        내가 작성한 게시글과 질문들을 한눈에 확인할 수 있습니다. 작성한 글을 수정하거나 삭제할 수 있으며, 필요한 정보를 빠르게 찾아볼 수 있습니다. 내가 남긴 기록을 관리하며 커뮤니티에서 활발하게 소통해보세요!
       </p>
 
       <!-- 작성한 게시글 -->
       <div class="mb-12">
-        <p
-          class="text-lg font-bold text-black9 dark:text-black1 flex items-center gap-2 mb-4"
-          @click="goToPostDetail(posts._id)"
-        >
+        <p class="text-lg font-bold text-black9 dark:text-black1 flex items-center gap-2 mb-4" @click="goToPostDetail(posts._id)">
           작성한 게시글 ✍️
           <span class="text-lg">({{ displayedPosts.length }})</span>
         </p>
 
-        <div
-          v-if="displayedPosts.length === 0"
-          class="text-black6 dark:text-black3 text-center mt-[100px]"
-        >
+        <div v-if="displayedPosts.length === 0" class="text-black6 dark:text-black3 text-center mt-[100px]">
           작성한 게시물이 없습니다.
         </div>
 
@@ -317,6 +308,9 @@ const deleteQuestion = async (id) => {
           @click="goToPostDetail(post.id, post.channel)"
           class="w-[800px] h-[165px] border p-5 rounded-lg shadow-sm bg-black1 dark:bg-black8 mt-4 relative"
         >
+          <button @click.stop="goToEdit(post.id)" class="absolute top-5 right-14">
+            <EditIcon class="w-5 h-5 cursor-pointer dark:text-black1" />
+          </button>
           <!-- 삭제 아이콘 -->
           <button @click.stop="deletePost(post.id)" class="absolute top-5 right-5">
             <TrashIcon class="w-5 h-5 cursor-pointer dark:text-black1" />
@@ -351,18 +345,12 @@ const deleteQuestion = async (id) => {
 
       <!-- 작성한 질문 -->
       <div class="mt-6">
-        <p
-          class="text-lg font-bold text-black9 dark:text-black1 flex items-center gap-2 mb-4"
-          :class="{ 'mt-[150px]': displayedQuestions.length === 0 }"
-        >
+        <p class="text-lg font-bold text-black9 dark:text-black1 flex items-center gap-2 mb-4" :class="{ 'mt-[150px]': displayedQuestions.length === 0 }">
           작성한 질문 ❓
           <span class="text-lg">({{ displayedQuestions.length }})</span>
         </p>
 
-        <div
-          v-if="displayedQuestions.length === 0"
-          class="text-black6 dark:text-black3 text-center mt-[100px]"
-        >
+        <div v-if="displayedQuestions.length === 0" class="text-black6 dark:text-black3 text-center mt-[100px]">
           작성한 질문이 없습니다.
         </div>
 
