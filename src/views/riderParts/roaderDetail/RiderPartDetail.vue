@@ -14,16 +14,16 @@ const productData = ref(null);
 const loading = ref(true);
 const error = ref(null);
 const relevantProducts = ref([]);
+const keyword = ref(route.query.keyword || route.params.keyword || "");
+const productId = ref(route.query.productId || route.params.keyword || "");
 const item = ref(null);
 const union = ref([]);
 const isLiked = ref(false);
 const user = JSON.parse(localStorage.getItem('user'));
 
 const fetchProductData = async () => {
-  const keyword = route.query.keyword;
-  const productId = route.query.productId;
 
-  if (!keyword || !productId) {
+  if (!keyword.value || !productId.value) {
     error.value = '잘못된 접근, (키워드 또는 상품ID 누락)';
     loading.value = false; // 로딩 상태 해제
     return;
@@ -33,7 +33,7 @@ const fetchProductData = async () => {
   error.value = null;
 
   try {
-    console.log(`🔍 검색 요청: keyword=${keyword}, productId=${productId}`);
+    console.log(`🔍 검색 요청: keyword=${keyword.value}, productId=${productId.value}`);
     const item = await getNaverItemById(keyword, productId);
 
     if (item) {

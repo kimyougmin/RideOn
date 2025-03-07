@@ -54,11 +54,15 @@ watch(searchQuery, async () => {
 });
 
 const goToDetail = (item) => {
-  if (!item || !item.productId) {
-    return;
-  }
-  itemStore.setSelectedItem(item);
-  router.push(`/riderPartsDetail/${item.productId}`);
+  if (!item || !item.productId) return;
+
+  router.push({
+    path: `/riderPartsDetail`,
+    query: {
+      keyword: searchQuery.value,
+      productId: item.productId,
+    },
+  });
 };
 
 onMounted(async () => {
