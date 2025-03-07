@@ -10,7 +10,7 @@
           가장 가볍고 빠른 슈퍼바이크의 놀라운 조합으로 완전히 새롭게 탄생한 마돈 8세대를 타고
           질주해 보세요.
         </p>
-        <router-link to="bicycleSearch">
+        <router-link to="bicycleSearch/1">
           <div class="border-2 rounded-full w-[160px] border-black9 dark:border-black1 mb-10">
             <p class="text-center font-impact my-2 dark:text-black1">더 알아보기</p>
           </div>

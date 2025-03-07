@@ -5,7 +5,7 @@
       <img
         src="/main/main_banner_text.png"
         alt="banner text"
-        class="absolute bottom-0 left-1/2 -translate-x-1/2"
+        class="absolute -bottom-1 left-1/2 -translate-x-1/2"
       />
     </div>
   </section>

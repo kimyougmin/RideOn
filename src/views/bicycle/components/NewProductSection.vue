@@ -49,7 +49,7 @@ const handleSlideChange = (swiper) => {
       </h3>
       <hr class="w-full border-black4" />
       <router-link
-        to="bicycleSearch"
+        to="bicycleSearch/1"
         class="flex gap-1 justify-center items-center text-sub-title text-black1 bg-black9 dark:bg-black1 dark:text-black9 min-w-44 px-4 py-2 rounded-3xl"
       >
         구매하러 가기
@@ -127,7 +127,21 @@ const handleSlideChange = (swiper) => {
             <div v-for="(item, i) in group" :key="i" class="flex flex-col">
               <div class="flex flex-col gap-1">
                 <div class="w-full h-[280px] border mb-1">
-                  <router-link :to="{ name: `bicycleDetail`, params: {id: item.id}, query: { id: item.id, rating: item.rating, brand: item.brand, category: item.category, name: item.name, price: item.price, image: item.image }}">
+                  <router-link
+                    :to="{
+                      name: `bicycleDetail`,
+                      params: { id: item.id },
+                      query: {
+                        id: item.id,
+                        rating: item.rating,
+                        brand: item.brand,
+                        category: item.category,
+                        name: item.name,
+                        price: item.price,
+                        image: item.image,
+                      },
+                    }"
+                  >
                     <img :src="item.image" alt="Bike Image" class="size-full object-cover" />
                   </router-link>
                 </div>
