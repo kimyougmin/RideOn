@@ -122,7 +122,7 @@ defineProps({
       </svg>
     </button>
     <div class="block text-center bottom-0 right-0 text-body1 text-primaryRed">
-      {{ likes.length }}
+      {{ likes?.length || 0 }}
     </div>
   </article>
 </template>

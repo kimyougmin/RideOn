@@ -2,28 +2,76 @@
 import { ref, computed, onMounted } from 'vue'
 import { fetchUserLikesApi } from '@/apis/userLikesApi'
 import { fetchLikeRemoveApi } from '@/apis/fetchLikeRemoveApi'
+import AlertMessage from './components/Alert.vue'
+import bikeCategoryData from '@/../public/bike_category_data.json'
+import { getNaverItems } from '@/apis/naverSearchApi'
+
+// 알림창 상태
+const showAlert = ref(false)
+const alertMessage = ref('')
+const alertType = ref('success')
+
 // 기본 이미지 URL
 const defaultImage =
   'https://img.danawa.com/prod_img/500000/437/092/img/28092437_1.jpg?shrink=330:*&_v=20240108170952'
 
-// 로컬스토리지에서 `_id` 가져오기
 const userData = JSON.parse(localStorage.getItem('user'))
 const userId = userData?._id || null
 
 // 찜 목록 데이터
 const wishlist = ref([])
 
-// 필터 옵션
 const filters = ref([
   { id: 'bike', text: '자전거' },
   { id: 'parts', text: '자전거부품' },
   { id: 'gear', text: '라이더용품' },
 ])
 
-// 현재 선택된 필터 (기본값: 자전거)
 const activeFilter = ref('bike')
 
-// API 호출 후 데이터 세팅
+// 기존 카테고리 매핑 함수 (알고있는 카테고리가 있다면 추가해주세요!)
+const mapCategory = (category) => {
+  const bikeCategories = ['MTB', 'KID', '로드', 'HYBRID', 'EBIKE', 'PIXIE'] // 자전거
+  const partsCategories = ['기타자전거 부품', '자전거 부품', '부품', '자전거부품'] // 자전거 부품
+
+  if (bikeCategories.includes(category)) {
+    return 'bike'
+  }
+  if (partsCategories.includes(category)) {
+    return 'parts'
+  }
+
+  return 'gear'
+}
+
+const findRatingForItem = (wishlistItem) => {
+  for (const category in bikeCategoryData) {
+    const product = bikeCategoryData[category].find(prod => {
+      const prodName = prod.name.trim().toLowerCase()
+      const wishName = wishlistItem.name.trim().toLowerCase()
+      return prodName.includes(wishName) || wishName.includes(prodName)
+    })
+    if (product) {
+      return product.rating !== undefined ? product.rating : ''
+    }
+  }
+  return ''
+}
+
+const findProductDetails = (wishlistItem) => {
+  for (const cat in bikeCategoryData) {
+    const product = bikeCategoryData[cat].find(prod => {
+      const prodName = prod.name.trim().toLowerCase()
+      const wishName = wishlistItem.name.trim().toLowerCase()
+      return prodName.includes(wishName) || wishName.includes(prodName)
+    })
+    if (product) {
+      return product
+    }
+  }
+  return null
+}
+
 const fetchWishlist = async () => {
   if (!userId) {
     console.error('사용자 ID가 없음 - 없으면 안됨')
@@ -33,17 +81,22 @@ const fetchWishlist = async () => {
   try {
     const data = await fetchUserLikesApi(userId)
 
-    wishlist.value = data.map((item) => ({
-      id: item.like_key,
-      title: item.title,
-      name: item.name,
-      price: Number(item.price),
-      image: item.image || defaultImage,
-      brand: item.brand,
-      category: ['MTB', 'KID', '로드', 'HYBRID', 'EBIKE', 'PIXIE'].includes(item.category)
-        ? 'bike'
-        : item.category,
-    }))
+    wishlist.value = data.map((item) => {
+      const mappedItem = {
+        id: item.like_key, 
+        title: item.title,
+        name: item.name,
+        price: Number(item.price),
+        image: item.image || defaultImage,
+        brand: item.brand,
+        category: mapCategory(item.category),
+        rating: item.rating !== undefined ? item.rating : ''
+      }
+      if (mappedItem.rating === '' || mappedItem.rating === 0) {
+        mappedItem.rating = findRatingForItem(mappedItem) || ''
+      }
+      return mappedItem
+    })
   } catch (error) {
     console.error('찜 목록 불러오기 실패:', error)
   }
@@ -61,6 +114,13 @@ const removeFromWishlist = async (item) => {
 
     if (response?.status === 200) {
       wishlist.value = wishlist.value.filter((w) => w.id !== item.id)
+
+      alertMessage.value = '찜 목록에서 제거되었습니다.'
+      alertType.value = 'success'
+      showAlert.value = true
+      setTimeout(() => {
+        showAlert.value = false
+      }, 1000)
     } else {
       console.error(' 찜 삭제 실패:', response.message || response)
     }
@@ -92,9 +152,57 @@ const loadMore = () => {
 // 필터 변경
 const setActiveFilter = (filter) => {
   activeFilter.value = filter
-  itemsPerPage.value = 9 // 필터 변경 시 처음 9개만 보이도록 리셋
+  itemsPerPage.value = 9 
+}
+
+
+const goToDetailPage = async (item) => {
+  // parts 카테고리 상품이라면 네이버 쇼핑 API를 호출해서 productId를 가져온다.
+  if (item.category === 'parts' || item.category === 'gear') {
+    const results = await getNaverItems(item.name, 1)
+    if (results && results.length > 0) {
+      const naverProductId = results[0].productId || results[0].itemId
+      if (naverProductId) {
+        window.location.href = `/riderPartsDetail/${naverProductId}`
+        return
+      }
+    }
+  }
+  
+  // 네이버 API로 productId를 얻지 못했거나, parts가 아니라면 기존 JSON 매칭 로직을 사용
+  const productDetails = findProductDetails(item)
+  if (productDetails) {
+    const queryParams = new URLSearchParams({
+      id: productDetails.id,
+      rating: productDetails.rating,
+      brand: productDetails.brand,
+      category: productDetails.category,
+      name: productDetails.name,
+      price: productDetails.price,
+      image: productDetails.image,
+    }).toString()
+    window.location.href = `/bicycleDetail/${productDetails.id}?${queryParams}`
+  } else {
+    const queryParams = new URLSearchParams({
+      id: item.id, 
+      rating: item.rating || '',
+      brand: item.brand,
+      category: item.category,
+      name: item.name,
+      price: item.price,
+      image: item.image,
+    }).toString()
+    window.location.href = `/bicycleDetail/${item.id}?${queryParams}`
+  }
+}
+
+
+const truncatedName = (name) => {
+  const maxLength = 22
+  return name.length > maxLength ? name.slice(0, maxLength) + '...' : name
 }
 </script>
+
 
 <template>
   <section class="w-full ml-[10px]">
@@ -138,6 +246,7 @@ const setActiveFilter = (filter) => {
             :src="item.image || defaultImage"
             alt="상품 이미지"
             class="w-[180px] h-auto object-contain"
+            @click="goToDetailPage(item)"
           />
         </div>
 
@@ -150,7 +259,7 @@ const setActiveFilter = (filter) => {
 
           <!-- 상품명 -->
           <p class="sub-title font-bold text-black9 dark:text-black1 leading-tight mb-1">
-            {{ item.name }}
+            {{ truncatedName(item.name) }}
           </p>
 
           <!-- 가격 & 하트 아이콘 -->
@@ -179,4 +288,10 @@ const setActiveFilter = (filter) => {
       </button>
     </div>
   </section>
+  <AlertMessage
+    :message="alertMessage"
+    :type="alertType"
+    :visible="showAlert"
+    @close="showAlert = false"
+  />
 </template>

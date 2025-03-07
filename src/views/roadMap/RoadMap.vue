@@ -21,6 +21,7 @@ const isToggled = ref({
   repairShops: false
 });
 const isModalOpen = ref(false);
+const isLoadingMarkers = ref(false); 
 
 onMounted(() => {
   if (mapContainer.value) {
@@ -35,12 +36,18 @@ onMounted(() => {
 const toggleBikeStations = async () => {
   if (!map.value) return;
 
-  if (!isToggled.value.bikeStations) {
-    if (bikeMarkers.value.length > 0) {
-      bikeMarkers.value.forEach(marker => map.value.removeLayer(marker));
-      bikeMarkers.value = [];
-    }
+  isLoadingMarkers.value = true;
 
+  if (isToggled.value.bikeStations) {
+    bikeMarkers.value.forEach(marker => {
+      if (map.value.hasLayer(marker)) {
+        map.value.removeLayer(marker);
+      }
+    });
+
+
+    bikeMarkers.value = [];
+  } else {
     const newMarkers = await fetchPlaces(map.value, userLatLng.value, (stationData) => {
       selectedFacility.value = {
         type: "bikeStation",
@@ -53,14 +60,11 @@ const toggleBikeStations = async () => {
     });
 
     bikeMarkers.value = newMarkers || [];
-  } else {
-    bikeMarkers.value.forEach(marker => map.value.removeLayer(marker));
-    bikeMarkers.value = [];
   }
 
   isToggled.value.bikeStations = !isToggled.value.bikeStations;
+  isLoadingMarkers.value = false;
 };
-
 const toggleConvenienceFacilities = async (type) => {
   if (!map.value) return;
   
@@ -77,6 +81,8 @@ const toggleConvenienceFacilities = async (type) => {
     targetMarkers = repairMarkers;
     toggleKey = "repairShops";
   }
+
+  isLoadingMarkers.value = true;
 
   if (!isToggled.value[toggleKey]) {
     const newMarkers = await fetchConvenienceFacilities(map.value, userLatLng.value, type, (facilityData) => {
@@ -95,6 +101,7 @@ const toggleConvenienceFacilities = async (type) => {
   }
 
   isToggled.value[toggleKey] = !isToggled.value[toggleKey];
+  isLoadingMarkers.value = false;
 };
 
 watch(selectedFacility, (newVal) => {
@@ -102,13 +109,16 @@ watch(selectedFacility, (newVal) => {
     isModalOpen.value = true;
   }
 });
+
 </script>
 
 <template>
   <div class="w-screen h-screen relative">
     <div ref="mapContainer" class="absolute w-full h-full z-0"></div>
     <MapHeader />
-
+    <div v-if="isLoadingMarkers" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-lg font-medium dark:bg-black9 dark:text-black1 bg-black1 p-5 rounded-lg shadow-[0px_8px_25px_rgba(50,50,50,0.4)]">
+      ⏳ 주변 시설 정보를 불러오는 중...
+    </div>
     <MapModal v-if="isModalOpen" :facility="selectedFacility" @close="isModalOpen = false" />
 
     <div class="relative flex top-[2.5%] w-full h-[42px] text-lg font-medium">

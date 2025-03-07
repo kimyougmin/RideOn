@@ -8,6 +8,7 @@ import bikeBrand from '../../../../public/bike_brand_data.json'
 import { fetchUserLikesApi } from '@/apis/userLikesApi.js'
 import { fetchLikeCreateApi } from '@/apis/fetchLikeCreateApi.js'
 import { fetchLikeRemoveApi } from '@/apis/fetchLikeRemoveApi.js'
+import { useRoute } from 'vue-router'
 
 const groupList = ref([]);
 const groupListShot = ref([]);
@@ -15,6 +16,8 @@ const union = ref([]);
 const searchValue = ref("");
 const seeMore = ref(true);
 const selectOption = ref([]);
+const route = useRoute();
+const { brand } = route.query;
 
 const receiveHandler = (newValue) => {
   searchValue.value = newValue;
@@ -33,6 +36,9 @@ const onSelectDeleteHandler = (e) => {
 };
 
 onMounted(async () => {
+  if(brand !== undefined) {
+    selectOption.value = [...selectOption.value, brand.toUpperCase()]
+  }
   const user = JSON.parse(localStorage.getItem('user'));
   if(user._id !== undefined){
     const date = await fetchUserLikesApi(user._id);
@@ -266,7 +272,7 @@ const likeRemoveHandler = async (item) => {
           </div>
           <div v-if="!seeMore" class="grid grid-cols-2 gap-4">
             <div  v-for="item in groupList" :key="item.id" class="flex">
-              <router-link :to="{ name: `bicycleDetail`, params: {id: item.id}, query: { id: item.id, rating: item.rating, category: item.category, name: item.name, price: item.price, image: item.image }}">
+              <router-link :to="{ name: `bicycleDetail`, params: {id: item.id}, query: { id: item.id, rating: item.rating, brand: item.brand, category: item.category, name: item.name, price: item.price, image: item.image }}">
                 <img :src="item.image" class="border rounded-lg w-[200px] h-[200px] mr-4">
               </router-link>
               <div>

@@ -15,9 +15,10 @@ const BICYCLE_ROUTES = [
     props: true,
   },
   {
-    path: '/bicycleSearch',
+    path: '/bicycleSearch/:id',
     name: 'bicycleSearch',
     component: BicycleSearch,
+    props: true,
   },
 ]
 
