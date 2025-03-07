@@ -48,13 +48,14 @@ const goToDetail = (item) => {
   router.push({
     path: `/riderPartsDetail`,
     query: {
-      keyword: encodeURIComponent(item.title.replace(/<\/?[^>]+(>|$)/g, "")), // 🔹 제목을 keyword로 설정
+      keyword: encodeURIComponent(item.title.replace(/<\/?[^>]+(>|$)/g, "")),
       productId: item.productId,
       title: encodeURIComponent(item.title.replace(/<\/?[^>]+(>|$)/g, "")),
       image: encodeURIComponent(item.image),
       price: item.lprice|| item.hprice || "0",
       mallName: encodeURIComponent(item.mallName || ""),
       link: encodeURIComponent(item.link || ""),
+      category: encodeURIComponent(item.category4 || '자전거부품'),
     },
   });
 };

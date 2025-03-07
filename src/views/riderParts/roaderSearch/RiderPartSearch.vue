@@ -81,6 +81,7 @@ const goToDetail = (item) => {
       price: item.lprice || item.hprice || '0',
       mallName: encodeURIComponent(item.mallName || ''),
       link: encodeURIComponent(item.link || ''),
+      category: encodeURIComponent(item.category4 || '자전거부품'),
     },
   })
 }
