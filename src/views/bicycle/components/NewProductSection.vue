@@ -43,10 +43,10 @@ const handleSlideChange = (swiper) => {
 <template>
   <article class="w-full flex flex-col gap-8">
     <div class="flex items-center gap-8">
-      <div class="text-primaryRed text-title">
+      <h3 class="text-primaryRed text-title font-bold">
         New <br />
         Product
-      </div>
+      </h3>
       <hr class="w-full border-black4" />
       <router-link
         to="bicycleSearch"
@@ -127,12 +127,14 @@ const handleSlideChange = (swiper) => {
             <div v-for="(item, i) in group" :key="i" class="flex flex-col">
               <div class="flex flex-col gap-1">
                 <div class="w-full h-[280px] border mb-1">
-                  <img :src="item.image" alt="Bike Image" class="size-full object-cover" />
+                  <router-link :to="{ name: `bicycleDetail`, params: {id: item.id}, query: { id: item.id, rating: item.rating, brand: item.brand, category: item.category, name: item.name, price: item.price, image: item.image }}">
+                    <img :src="item.image" alt="Bike Image" class="size-full object-cover" />
+                  </router-link>
                 </div>
                 <p class="text-body1 text-left dark:text-black3 m-0">
                   {{ item.brand }}
                 </p>
-                <p class="text-sub-title text-left dark:text-black1 truncate mb-4">
+                <p class="text-sub-title font-bold text-left dark:text-black1 truncate mb-4">
                   {{ item.name }}
                 </p>
               </div>

@@ -28,7 +28,7 @@ defineProps({
 <template>
   <article class="flex flex-col justify-center gap-2">
     <router-link
-      to="/qnaBoard"
+      to="/riderCrewBoard"
       class="max-h-10 px-3 py-2 border rounded flex items-center justify-center bg-black1 dark:bg-black7 dark:border-black5"
     >
       <svg
@@ -122,7 +122,7 @@ defineProps({
       </svg>
     </button>
     <div class="block text-center bottom-0 right-0 text-body1 text-primaryRed">
-      {{ likes?.length || 0 }}
+      {{ likes.length }}
     </div>
   </article>
 </template>
