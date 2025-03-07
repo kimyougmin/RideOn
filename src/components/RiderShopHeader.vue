@@ -22,11 +22,9 @@ const toggleDarkMode = () => {
   }
 }
 
-// ✅ 검색 실행 함수
 const searchHandler = () => {
   if (!searchQuery.value.trim()) return;
 
-  // ✅ 검색어를 쿼리로 전달하고 검색 페이지로 이동
   router.push({
     path: '/riderPartsSearch',
     query: { keyword: searchQuery.value },
