@@ -37,7 +37,7 @@ const isAuthor = (comment) => {
     <li v-for="comment in comments" :key="comment._id" class="flex gap-4">
       <div class="w-11 h-10 rounded-full overflow-hidden">
         <img
-          :src="comment.author.coverImage || 'https://placehold.co/100x100?text=RideOn'"
+          :src="comment.author.image || 'https://placehold.co/100x100?text=RideOn'"
           alt="profile image"
           class="w-full h-full object-cover"
         />
