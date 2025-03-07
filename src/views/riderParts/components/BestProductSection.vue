@@ -52,10 +52,10 @@ const goToDetail = (item) => {
 <template>
   <article class="w-full flex flex-col gap-8">
     <div class="flex items-center gap-8">
-      <div class="text-primaryRed text-title">
+      <h3 class="text-primaryRed text-title font-bold">
         Best <br />
         Product
-      </div>
+      </h3>
       <hr class="w-full border-black4" />
       <router-link
         to="riderPartsSearch"
@@ -141,7 +141,7 @@ const goToDetail = (item) => {
                 <p class="text-body1 text-left dark:text-black3 m-0">
                   {{ item.mallName || item.brand }}
                 </p>
-                <p class="text-sub-title text-left dark:text-black1 truncate mb-4">
+                <p class="text-sub-title font-bold text-left dark:text-black1 truncate mb-4">
                   {{ item.title.replace(/<\/?[^>]+(>|$)/g, '') }}
                 </p>
               </div>
