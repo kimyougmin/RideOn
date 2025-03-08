@@ -104,7 +104,7 @@ onMounted(() => {
           </svg>
 
           자전거 뉴스
-          <span class="ml-2 text-sm font-normal bg-primaryRed text-white px-2 py-1 rounded-full"
+          <span class="ml-2 text-sm font-normal bg-primaryRed text-white px-3 py-1 rounded-full"
             >최신</span
           >
         </h3>
@@ -135,7 +135,7 @@ onMounted(() => {
                 </svg>
                 <span>{{ item.title }}</span>
               </h4>
-              <p class="text-body1 text-gray-600 dark:text-gray-400 truncate mt-1 ml-4">
+              <p class="text-body1 text-gray-600 dark:text-gray-400 truncate m-0 mb-2 mt-1 ml-6">
                 {{ item.description }}
               </p>
               <div class="text-body2 text-gray-500 mt-1 ml-6">{{ formatDate(item.pubDate) }}</div>
@@ -199,7 +199,7 @@ onMounted(() => {
             ></path>
           </svg>
           자전거 블로그
-          <span class="ml-2 text-sm font-normal bg-blue-500 text-white px-2 py-1 rounded-full"
+          <span class="ml-2 text-sm font-normal bg-blue-500 text-white px-3 py-1 rounded-full"
             >인기</span
           >
         </h3>
@@ -229,7 +229,7 @@ onMounted(() => {
 
                 <span>{{ item.title }}</span>
               </h4>
-              <p class="text-body1 text-gray-600 dark:text-gray-400 truncate mt-1 ml-4">
+              <p class="text-body1 text-gray-600 dark:text-gray-400 truncate m-0 mb-2 mt-1 ml-6">
                 {{ item.description }}
               </p>
               <div class="text-body2 text-gray-500 mt-1 ml-6">{{ item.bloggername }}</div>
