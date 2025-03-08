@@ -1,6 +1,6 @@
 import RiderParts from '@/views/riderParts/RiderParts.vue'
-import RiderPartDetail from '@/views/riderParts/roaderDetail/RiderPartDetail.vue'
-import RiderPartSearch from '@/views/riderParts/roaderSearch/RiderPartSearch.vue'
+import RiderPartDetail from '@/views/riderParts/riderPartsDetail/RiderPartDetail.vue'
+import RiderPartSearch from '@/views/riderParts/riderPartsSearch/RiderPartSearch.vue'
 
 const RIDERPARTS_ROUTES = [
   {
@@ -21,7 +21,6 @@ const RIDERPARTS_ROUTES = [
       keyword: route.query.keyword,
       productId: route.query.productId,
     }),
-  }
+  },
 ]
-export default RIDERPARTS_ROUTES;
-
+export default RIDERPARTS_ROUTES
