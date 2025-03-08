@@ -8,6 +8,15 @@ const axiosApi = axios.create({
   },
 })
 
+export const naverApiInstance = axios.create({
+  baseURL: '/v1/search',
+  headers: {
+    'Content-Type': 'application/json',
+    'X-Naver-Client-Id': import.meta.env.VITE_NAVER_SHOPPING_CLIENT_ID,
+    'X-Naver-Client-Secret': import.meta.env.VITE_NAVER_SHOPPING_CLIENT_SECRET,
+  },
+})
+
 const getToken = () => {
   const user = localStorage.getItem('user')
   if (!user) return null
