@@ -13,7 +13,7 @@ const route = useRoute()
 const selectedSort = ref('sim')
 const items = ref([])
 const visibleItems = ref([])
-const itemsPerPage = 9
+const itemsPerPage = 12
 const searchQuery = ref(route.query.keyword || '자전거부품')
 const router = useRouter()
 const user = JSON.parse(localStorage.getItem('user'))
@@ -271,7 +271,7 @@ onMounted(async () => {
         </div>
 
         <!-- 상품 목록 -->
-        <div class="grid grid-cols-3 gap-6 mt-8">
+        <div class="grid grid-cols-4 gap-6 mt-8">
           <ProductItem
             v-for="(item, index) in visibleItems"
             :key="index"
