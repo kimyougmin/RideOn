@@ -13,8 +13,8 @@ const fetchNewsAndBlog = async () => {
 
     // 뉴스와 블로그 데이터를 병렬로 가져옴
     const [newsData, blogData] = await Promise.all([
-      searchNews('자전거', 5, 1, 'date'),
-      searchBlog('자전거', 5, 1, 'date'),
+      searchNews('자전거', 5, 1, 'sim'),
+      searchBlog('자전거', 5, 1, 'sim'),
     ])
 
     // 데이터 가공 (HTML 태그 제거 및 엔티티 코드 변환)
