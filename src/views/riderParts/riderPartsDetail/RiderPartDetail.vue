@@ -256,7 +256,9 @@ const likeRemoveHandler = async () => {
                     stroke-linejoin="round"
                   />
                 </svg>
-                <p class="mb-0 ml-1 text-sm">장바구니</p>
+                <a
+                  :href="item.link"
+                  class="mb-0 ml-1 text-sm">장바구니</a>
               </div>
             </div>
           </div>
