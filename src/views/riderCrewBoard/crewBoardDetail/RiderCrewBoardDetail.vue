@@ -50,6 +50,7 @@ const riderCrewStore = useRiderCrewBoardStore()
 const userStore = useUserStore()
 
 const isLiked = ref(false)
+const isJoined = ref(false)
 
 const riderCrew = ref(DUMMY_RIDER_CREW)
 const isLoading = ref(false)
@@ -130,8 +131,16 @@ const handleJoin = async () => {
 
   try {
     isLoading.value = true
-    await riderCrewStore.joinCrew(crewId)
-    riderCrew.value = riderCrewStore.currentPost
+    const updatedCrew = await riderCrewStore.joinCrew(crewId)
+    riderCrew.value = updatedCrew
+
+    // 참여 후 UI 업데이트를 위한 추가 처리
+    if (updatedCrew.memberInfo && updatedCrew.memberInfo.current >= updatedCrew.memberInfo.max) {
+      isRecruiting.value = false
+    }
+
+    // 참여 상태 업데이트
+    isJoined.value = true
   } catch (error) {
     console.error('크루 참여 중 오류가 발생했습니다:', error)
   } finally {
@@ -180,6 +189,12 @@ onMounted(async () => {
     isAuthor.value = userStore.user._id === riderCrewStore.currentPost.author._id
 
     isRecruiting.value = riderCrewStore.currentPost.status === 'RECRUITING'
+
+    // 사용자가 이미 크루에 참여했는지 확인
+    isJoined.value =
+      riderCrewStore.currentPost.memberInfo?.members?.some(
+        (member) => member._id === userStore.user._id || member === userStore.user._id,
+      ) || false
   } catch (error) {
     console.error('게시글을 불러오는데 실패했습니다:', error)
     router.push('/riderCrewBoard')
@@ -229,13 +244,13 @@ onMounted(async () => {
           v-else
           class="w-full text-white rounded-lg p-4 text-center"
           :class="{
-            'bg-black7': !isRecruiting,
-            'bg-blue-500': isRecruiting,
+            'bg-black7': !isRecruiting || isJoined,
+            'bg-blue-500': isRecruiting && !isJoined,
           }"
           @click="handleJoin"
-          :disabled="isLoading || !isRecruiting"
+          :disabled="isLoading || !isRecruiting || isJoined"
         >
-          {{ isRecruiting ? '함께하기' : '모집 마감됨' }}
+          {{ isJoined ? '참가완료' : isRecruiting ? '함께하기' : '모집 마감됨' }}
         </button>
         <router-link
           to="/riderCrewBoard/write"

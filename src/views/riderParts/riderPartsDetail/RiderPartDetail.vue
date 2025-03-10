@@ -1,70 +1,128 @@
 <script setup>
-import ShopHeader from '@/components/ShopHeader.vue'
+import RiderShopHeader from '@/components/RiderShopHeader.vue'
 import BasicFooter from '@/components/BasicFooter.vue'
+import { ref, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
-import bikeCategory from '../../../../public/bike_category_data.json'
-import { onMounted, ref } from 'vue'
 import { fetchLikeCreateApi } from '@/apis/fetchLikeCreateApi.js'
 import { fetchLikeRemoveApi } from '@/apis/fetchLikeRemoveApi.js'
 import { fetchUserLikesApi } from '@/apis/userLikesApi.js'
+import { getNaverItems } from '@/apis/naverSearchApi'
 
-const relevantProduct = ref([])
-const union = ref([])
 const route = useRoute()
-const { id, category, name, price, image, rating, brand } = route.query
+const productData = ref({
+  productId: '',
+  title: '',
+  image: '',
+  price: '',
+  mallName: '',
+  link: '',
+  category: '',
+  rating: 0,
+})
+const relevantProducts = ref([])
+const productId = ref('')
+const item = ref([])
+const isLiked = ref(false)
 const user = JSON.parse(localStorage.getItem('user'))
 
-function getRandomInt(max) {
-  return Math.floor(Math.random() * max)
-}
-onMounted(async () => {
-  if (user._id !== undefined) {
-    const date = await fetchUserLikesApi(user._id)
-    union.value = date.map((e) => e.title)
+const fetchRelevantProducts = async (searchKeyword) => {
+  if (!searchKeyword) return
+  try {
+    const items = await getNaverItems(searchKeyword, 10)
+    relevantProducts.value = items.filter((item) => item.productId !== productId.value).slice(0, 3)
+  } catch (err) {
+    console.error('❌ 관련 상품 가져오기 실패:', err)
   }
-  const tempList = []
-  for (const item in bikeCategory) {
-    if (item === category) {
-      for (let i = 0; i < 3; i++) {
-        tempList.push(bikeCategory[item][getRandomInt(bikeCategory[item].length)])
-      }
+}
+
+watch(
+  () => route.query,
+  (query) => {
+    if (!query || !query.productId || !query.title) {
+      console.error('❌ 잘못된 접근: 데이터가 부족합니다.')
+      return
+    }
+    productId.value = query.productId || ''
+    productData.value = {
+      productId: query.productId,
+      title: decodeURIComponent(query.title).replace(/<\/?[^>]+(>|$)/g, ''),
+      image: decodeURIComponent(query.image),
+      price: query.price,
+      mallName: decodeURIComponent(query.mallName),
+      link: decodeURIComponent(query.link),
+      category: decodeURIComponent(query.category),
+    }
+    fetchRelevantProducts(productData.value.title.slice(0, 4))
+    item.value = {
+      productId: productId.value,
+      cleanTitle: productData.value.title,
+      lprice: productData.value.price,
+      image: productData.value.image,
+      mallName: productData.value.mallName,
+      category4: productData.value.category,
+    }
+  },
+  { immediate: true },
+)
+
+onMounted(async () => {
+  if (user && user._id !== undefined) {
+    try {
+      const likeData = await fetchUserLikesApi(user._id)
+      isLiked.value = likeData.some((e) => e.title === productId.value)
+    } catch (error) {
+      console.error('❌ 찜한 상품 불러오기 실패:', error)
     }
   }
-  relevantProduct.value = tempList
 })
+
 const likeCreateHandler = async () => {
-  if (user._id !== undefined) {
-    union.value = [...union.value, `${id}`]
-    await fetchLikeCreateApi({
-      _id: id,
-      title: user._id,
-      name: name,
-      price: price,
-      image: image,
-      brand: brand,
-      category: category,
-    })
+  if (user && user._id !== undefined && item.value) {
+    try {
+      await fetchLikeCreateApi({
+        _id: item.value.productId,
+        title: user._id,
+        name: item.value.cleanTitle,
+        price: item.value.lprice,
+        image: item.value.image,
+        brand: item.value.mallName,
+        category: item.value.category4,
+      })
+      isLiked.value = true
+    } catch (error) {
+      console.error('❌ 찜하기 실패:', error)
+    }
   }
 }
+
 const likeRemoveHandler = async () => {
-  if (user._id !== undefined) {
-    union.value = union.value.filter((e) => e !== `${id}`)
-    await fetchLikeRemoveApi({ id: user._id, title: id })
+  if (user && user._id !== undefined && item.value) {
+    try {
+      await fetchLikeRemoveApi({
+        id: user._id,
+        title: item.value.productId,
+      })
+      isLiked.value = false
+    } catch (error) {
+      console.error('❌ 찜하기 취소 실패:', error)
+    }
   }
 }
 </script>
 
 <template>
   <div class="w-full block h-full dark:bg-black9">
-    <ShopHeader />
+    <RiderShopHeader />
     <div class="bg-black2 pt-[37px] pb-[100px] dark:bg-black8">
       <div class="w-[1044px] mx-auto">
         <div class="flex pb-[100px]">
-          <img :src="image" class="border rounded-lg w-[514px] h-[514px]" />
+          <img :src="productData?.image" class="border rounded-lg w-[514px] h-[514px]" />
           <div class="pl-8 py-4 grid grid-cols-1 content-between">
             <div>
-              <p class="text-sub-title text-black7 dark:text-black3">{{ brand }}</p>
-              <p class="text-title m-0 dark:text-black1">{{ name }}</p>
+              <p class="text-sub-title text-black7 dark:text-black3">{{ productData?.mallName }}</p>
+              <p class="text-title m-0 dark:text-black1">
+                {{ productData?.title.replace(/<\/?[^>]+(>|$)/g, '') }}
+              </p>
               <v-rating
                 hover
                 :length="5"
@@ -76,18 +134,22 @@ const likeRemoveHandler = async () => {
             </div>
             <div>
               <p class="font-impact text-right text-3xl dark:text-black1">
-                {{ Intl.NumberFormat('ko-KR').format(Number(price || 0)) }}원
+                {{ Intl.NumberFormat('ko-KR').format(Number(productData?.price || 0)) }}원
               </p>
               <div class="bg-primaryRed p-2 rounded-lg mb-2">
-                <p class="text-black1 mb-0 font-bold text-center">구매하러 가기</p>
+                <a
+                  :href="productData?.link"
+                  target="_blank"
+                  class="text-black1 mb-0 font-bold text-center block"
+                  >구매하러 가기</a
+                >
               </div>
               <div class="grid grid-cols-2 gap-2">
                 <div
-                  v-if="union.includes(`${id}`)"
+                  v-if="isLiked"
                   @click="likeRemoveHandler"
                   class="flex border border-black7 bg-black1 rounded-lg justify-center align-center py-2"
                 >
-                  <!-- 찜 -->
                   <svg
                     width="16"
                     height="15"
@@ -107,7 +169,6 @@ const likeRemoveHandler = async () => {
                   @click="likeCreateHandler"
                   class="flex border border-black7 bg-black1 rounded-lg justify-center align-center py-2"
                 >
-                  <!-- 채워진찜 -->
                   <svg
                     width="16"
                     height="15"
@@ -128,7 +189,6 @@ const likeRemoveHandler = async () => {
                 <div
                   class="flex border bg-black1 border-black7 rounded-lg justify-center align-center py-2"
                 >
-                  <!--   장바구니    -->
                   <svg
                     width="17"
                     height="17"
@@ -148,12 +208,6 @@ const likeRemoveHandler = async () => {
                       stroke-linecap="round"
                       stroke-linejoin="round"
                     />
-                    <path
-                      d="M8.75 3.625C8.75 2.93464 8.19037 2.375 7.5 2.375C6.80963 2.375 6.25 2.93464 6.25 3.625"
-                      stroke="black"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
                   </svg>
                   <p class="mb-0 ml-2 text-body1">장바구니</p>
                 </div>
@@ -164,14 +218,16 @@ const likeRemoveHandler = async () => {
         <div>
           <p class="font-impact text-3xl dark:text-black1">관련 상품</p>
           <div class="grid grid-cols-3 gap-8">
-            <div v-for="item in relevantProduct" :key="item.id">
+            <div v-for="item in relevantProducts" :key="item.productId">
               <div class="w-full">
                 <img :src="item.image" class="size-full border mb-2 object-cover" />
               </div>
-              <p class="text-body2 mb-1 dark:text-black1">{{ item.brand }}</p>
-              <p class="text-sub-title mb-2 truncate dark:text-black1">{{ item.name }}</p>
+              <p class="text-body2 mb-1 dark:text-black1">{{ item.mallName }}</p>
+              <p class="text-sub-title mb-2 truncate dark:text-black1">
+                {{ item.title.replace(/<\/?[^>]+(>|$)/g, '') }}
+              </p>
               <p class="font-bold mb-4 text-2xl dark:text-black1">
-                {{ Intl.NumberFormat('ko-KR').format(Number(item.price || 0)) }}원
+                {{ Intl.NumberFormat('ko-KR').format(Number(item.lprice || 0)) }}원
               </p>
               <div class="flex bg-black1 justify-center align-center py-2">
                 <svg

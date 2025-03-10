@@ -4,6 +4,7 @@ import { RIDEON_RIDERCREW_CHANNEL_ID } from '@/constants/channelId'
 import { getRiderCrewPosts, updateRiderCrewPost } from '@/apis/riderCrewApi'
 import { likePost, unlikePost } from '@/apis/likeApi'
 import { createComment, deleteComment } from '@/apis/commentApi'
+import { useUserStore } from '@/stores/user'
 
 const riderCrewStore = usePostStore({
   getPostsApi: getRiderCrewPosts,
@@ -24,9 +25,71 @@ export const useRiderCrewBoardStore = defineStore('riderCrew', {
   actions: {
     ...riderCrewStore.actions,
 
-    async joinCrew() {
-      alert('크루 참여 기능은 현재 개발 중입니다.')
-      throw new Error('크루 참여 기능은 현재 개발 중입니다.')
+    async joinCrew(crewId) {
+      try {
+        // 현재 게시글 정보 가져오기
+        const crew = await this.fetchPostById(crewId, true)
+
+        // 사용자 정보 가져오기 (Pinia 스토어 간 접근)
+        const userStore = useUserStore()
+        const currentUser = userStore.user
+
+        // 이미 참여한 멤버인지 확인
+        const memberExists = crew.memberInfo?.members?.some(
+          (member) => member._id === currentUser._id || member === currentUser._id,
+        )
+
+        if (memberExists) {
+          alert('이미 참여한 크루입니다.')
+          return crew
+        }
+
+        // 모집 인원이 다 찼는지 확인
+        if (crew.memberInfo.current >= crew.memberInfo.max) {
+          alert('모집 인원이 마감되었습니다.')
+          return crew
+        }
+
+        // 현재 사용자 정보
+        const user = {
+          _id: currentUser._id,
+          name: currentUser.name || currentUser.fullName,
+          email: currentUser.email,
+        }
+
+        // 기존 멤버 목록
+        const members = Array.isArray(crew.memberInfo.members) ? [...crew.memberInfo.members] : []
+
+        // 새 멤버 추가
+        members.push(user)
+
+        // 로컬 상태만 업데이트 (실제 API 호출 없음)
+        const updatedCrew = {
+          ...crew,
+          memberInfo: {
+            ...crew.memberInfo,
+            members: members,
+            current: members.length,
+          },
+        }
+
+        // 현재 게시글 상태 업데이트
+        if (this.currentPost && this.currentPost._id === crewId) {
+          this.currentPost = updatedCrew
+        }
+
+        // posts 배열의 해당 게시글도 업데이트
+        const postIndex = this.posts.findIndex((post) => post._id === crewId)
+        if (postIndex !== -1) {
+          this.posts[postIndex] = updatedCrew
+        }
+
+        alert(`🥳크루에 참여했습니다! \n (임시 기능: 페이지를 새로고침하면 초기화됩니다)`)
+        return updatedCrew
+      } catch (error) {
+        console.error('크루 참여 실패:', error)
+        throw error
+      }
     },
 
     filterByKeyword(posts, keyword = '') {
