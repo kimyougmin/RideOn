@@ -6,6 +6,7 @@ import BicycleSection from './components/BicycleSection.vue'
 import RidingGearSection from './components/RidingGearSection.vue'
 import BikeFacilitiesSection from './components/BikeFacilitiesSection.vue'
 import BikeRoutesSection from './components/BikeRoutesSection.vue'
+import BicycleNewsSection from './components/BicycleNewsSection.vue'
 </script>
 
 <template>
@@ -19,6 +20,7 @@ import BikeRoutesSection from './components/BikeRoutesSection.vue'
       <BikeFacilitiesSection />
       <BicycleSection />
       <RidingGearSection />
+      <BicycleNewsSection />
     </section>
 
     <BasicFooter />

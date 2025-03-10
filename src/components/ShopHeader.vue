@@ -112,28 +112,30 @@ watchEffect(() => {
         </svg>
 
         <!-- userIcon  -->
-        <svg
-          width="25"
-          height="26"
-          viewBox="0 0 25 26"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M6 22.1663V21.1247C6 17.0976 9.26459 13.833 13.2917 13.833C17.3187 13.833 20.5833 17.0976 20.5833 21.1247V22.1663"
-            stroke="#707070"
-            stroke-width="2.08333"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M13.2917 13.8333C15.5928 13.8333 17.4583 11.9678 17.4583 9.66667C17.4583 7.36548 15.5928 5.5 13.2917 5.5C10.9905 5.5 9.125 7.36548 9.125 9.66667C9.125 11.9678 10.9905 13.8333 13.2917 13.8333Z"
-            stroke="#707070"
-            stroke-width="2.08333"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
+        <router-link to="/myPage">
+          <svg
+            width="25"
+            height="26"
+            viewBox="0 0 25 26"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M6 22.1663V21.1247C6 17.0976 9.26459 13.833 13.2917 13.833C17.3187 13.833 20.5833 17.0976 20.5833 21.1247V22.1663"
+              stroke="#707070"
+              stroke-width="2.08333"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M13.2917 13.8333C15.5928 13.8333 17.4583 11.9678 17.4583 9.66667C17.4583 7.36548 15.5928 5.5 13.2917 5.5C10.9905 5.5 9.125 7.36548 9.125 9.66667C9.125 11.9678 10.9905 13.8333 13.2917 13.8333Z"
+              stroke="#707070"
+              stroke-width="2.08333"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </router-link>
       </div>
     </div>
     <div class="flex h-[45px] mt-4">
@@ -213,7 +215,7 @@ watchEffect(() => {
         </div>
       </div>
       <div class="flex w-[120px] max-w-[120px] justify-between">
-        <div class="mr-2">
+        <router-link to="/myPage" class="mr-2">
           <svg
             v-if="!isDarkMode"
             class="mx-auto"
@@ -263,8 +265,8 @@ watchEffect(() => {
             />
           </svg>
           <p class="text-[13px] dark:text-black1">마이쇼핑</p>
-        </div>
-        <div>
+        </router-link>
+        <router-link to="/myPage" class="mr-2">
           <svg
             v-if="!isDarkMode"
             class="mx-auto"
@@ -314,7 +316,7 @@ watchEffect(() => {
             />
           </svg>
           <p class="text-[13px] dark:text-black1">장바구니</p>
-        </div>
+        </router-link>
       </div>
     </div>
   </div>

@@ -1,13 +1,5 @@
 import axios from 'axios'
 
-// Axios 인스턴스 생성
-const axiosApi = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-})
-
 const getToken = () => {
   const user = localStorage.getItem('user')
   if (!user) return null
@@ -20,6 +12,23 @@ const getToken = () => {
     return null
   }
 }
+
+// Axios 인스턴스 생성
+const axiosApi = axios.create({
+  baseURL: import.meta.env.VITE_API_BASE_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+})
+
+export const naverApiInstance = axios.create({
+  baseURL: '/naver-api/v1/search',
+  headers: {
+    'Content-Type': 'application/json',
+    'X-Naver-Client-Id': import.meta.env.VITE_NAVER_SHOPPING_CLIENT_ID,
+    'X-Naver-Client-Secret': import.meta.env.VITE_NAVER_SHOPPING_CLIENT_SECRET,
+  },
+})
 
 // 요청 인터셉터 설정 (토큰 추가)
 axiosApi.interceptors.request.use(

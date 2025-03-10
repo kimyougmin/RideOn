@@ -13,7 +13,7 @@ const route = useRoute()
 const selectedSort = ref('sim')
 const items = ref([])
 const visibleItems = ref([])
-const itemsPerPage = 9
+const itemsPerPage = 12
 const searchQuery = ref(route.query.keyword || '자전거부품')
 const router = useRouter()
 const user = JSON.parse(localStorage.getItem('user'))
@@ -183,7 +183,7 @@ onMounted(async () => {
     <div class="bg-black2 dark:bg-black8">
       <div class="flex flex-col w-[1440px] px-[93px] mx-auto">
         <!-- 연관 검색어 부분 -->
-        <div class="w-full flex items-center gap-4 dark:bg-black9 mt-4">
+        <div class="w-full flex items-center gap-4 mt-4">
           <p class="text-2xl font-bold dark:text-black1 py-3 m-0">연관</p>
           <div class="flex items-center gap-2 grow-0">
             <div
@@ -200,7 +200,7 @@ onMounted(async () => {
           </div>
         </div>
         <!-- 검색 안내 문구 및 이미지 -->
-        <div class="flex flex-col w-[1256px] mt-8 dark:bg-black9">
+        <div class="flex flex-col w-[1256px] mt-8">
           <p class="text-[40px] font-impact font-light dark:text-black1 m-0 mb-2">
             Find Your Perfect Part
           </p>
@@ -217,7 +217,7 @@ onMounted(async () => {
         </div>
 
         <!-- 정렬 옵션 -->
-        <div class="flex flex-col w-[1256px] gap-8 mt-10 dark:bg-black9">
+        <div class="flex flex-col w-[1256px] gap-8 mt-10">
           <div class="flex gap-4">
             <p
               v-for="sort in sortOptions"
@@ -237,7 +237,7 @@ onMounted(async () => {
         </div>
 
         <!-- 검색된 상품 수 -->
-        <div class="flex justify-between items-center gap-6 dark:bg-black9 mt-3">
+        <div class="flex justify-between items-center gap-6 mt-3">
           <hr class="w-full h-[2px] border-black4" />
           <div class="flex items-center gap-2">
             <svg
@@ -271,7 +271,7 @@ onMounted(async () => {
         </div>
 
         <!-- 상품 목록 -->
-        <div class="grid grid-cols-3 gap-6 mt-8">
+        <div class="grid grid-cols-4 gap-6 mt-8">
           <ProductItem
             v-for="(item, index) in visibleItems"
             :key="index"
