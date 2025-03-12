@@ -162,7 +162,7 @@
 
 ### 1️⃣ **프로젝트 클론**
 ```bash
-git clone https://github.com/Sugwan-p/ride-on.git
+git clone (https://github.com/kimyougmin/RideOn)
 ```
 
 ### 2️⃣ **프로젝트 폴더 이동**
