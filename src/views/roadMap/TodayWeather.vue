@@ -77,14 +77,14 @@ const toggleModal = () => {
 </button>
 
 <!-- 모달 -->
-<div v-if="weatherModal" class="absolute flex bg-black1 dark:bg-black9 z-10 rounded-3xl w-[350px] max-w-none h-44 top-20 shadow-[0px_8px_25px_rgba(50,50,50,0.4)] p-4">
+<div v-if="weatherModal" class="absolute flex bg-black1 dark:bg-black9 z-10 rounded-3xl w-[350px] max-w-none h-44 top-20 shadow-[0px_8px_25px_rgba(50,50,50,0.4)] p-2">
     <div class="flex flex-col w-1/2 gap-2">
       <div class="flex w-full h-1/2 gap-2 pt-3">
         <div class="flex items-center pt-4 justify-center w-1/2 text-6xl animate-[bounce_1s_infinite]">
   {{ weather.weatherIcon }}
 </div>
         <div class="flex flex-col items-center justify-center w-1/2 rounded-md dark:text-black1">
-  <span class="text-4xl font-bold pb-1 pt-3 pr-5">{{ weather.temperature }}</span>
+  <span class="text-4xl font-bold pb-1 pt-6 pr-5">{{ weather.temperature }}</span>
   <span class="font-normal text-lg whitespace-nowrap pr-5">{{ weather.weatherText }}</span>
 </div>
       </div>
@@ -98,7 +98,7 @@ const toggleModal = () => {
   </div>
 </div>
     </div>
-<div class="flex flex-col items-start justify-center w-1/2 pt-5 text-lg dark:text-black1">
+<div class="flex flex-col pl-2 items-start justify-center w-1/2 pt-5 text-lg dark:text-black1">
   <div class="flex w-full gap-x-4">
     <p class="font-bold w-16">습도</p>
     <p>{{ weather.humidity }}%</p>
