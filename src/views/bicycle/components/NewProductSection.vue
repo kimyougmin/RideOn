@@ -38,6 +38,14 @@ const handleSlideChange = (swiper) => {
   isBeginning.value = swiper.isBeginning
   isEnd.value = swiper.isEnd
 }
+
+const formatPrice = (price) => {
+  if (typeof price === 'string') {
+    return price
+  } else {
+    return Intl.NumberFormat('ko-KR').format(price)
+  }
+}
 </script>
 
 <template>
@@ -137,7 +145,7 @@ const handleSlideChange = (swiper) => {
                         brand: item.brand,
                         category: item.category,
                         name: item.name,
-                        price: item.price,
+                        price: formatPrice(item.price),
                         image: item.image,
                       },
                     }"
@@ -153,7 +161,7 @@ const handleSlideChange = (swiper) => {
                 </p>
               </div>
               <p class="text-2xl text-left font-bold dark:text-black1">
-                {{ Intl.NumberFormat('ko-KR').format(Number(item.price)) }}원
+                {{ formatPrice(item.price) }}원
               </p>
             </div>
           </div>
