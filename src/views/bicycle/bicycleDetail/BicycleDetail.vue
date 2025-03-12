@@ -52,6 +52,14 @@ const likeRemoveHandler = async () => {
     await fetchLikeRemoveApi({ id: user._id, title: id })
   }
 }
+
+const formatPrice = (price) => {
+  if (typeof price === 'string') {
+    return price
+  } else {
+    return Intl.NumberFormat('ko-KR').format(price)
+  }
+}
 </script>
 
 <template>
@@ -76,7 +84,7 @@ const likeRemoveHandler = async () => {
             </div>
             <div>
               <p class="font-impact text-right text-3xl dark:text-black1">
-                {{ Intl.NumberFormat('ko-KR').format(Number(price || 0)) }}원
+                {{ formatPrice(price) }}원
               </p>
               <div class="bg-primaryRed p-2 rounded-lg mb-2">
                 <p class="text-black1 mb-0 font-bold text-center">구매하러 가기</p>
@@ -170,9 +178,7 @@ const likeRemoveHandler = async () => {
               </div>
               <p class="text-body2 mb-1 dark:text-black1">{{ item.brand }}</p>
               <p class="text-sub-title mb-2 truncate dark:text-black1">{{ item.name }}</p>
-              <p class="font-bold mb-4 text-2xl dark:text-black1">
-                {{ Intl.NumberFormat('ko-KR').format(Number(item.price || 0)) }}원
-              </p>
+              <p class="font-bold mb-4 text-2xl dark:text-black1">{{ formatPrice(price) }}원</p>
               <div class="flex bg-black1 justify-center align-center py-2">
                 <svg
                   width="17"

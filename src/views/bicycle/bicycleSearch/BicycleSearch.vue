@@ -339,7 +339,7 @@ const formatPrice = (price) => {
                     brand: item.brand,
                     category: item.category,
                     name: item.name,
-                    price: item.price,
+                    price: formatPrice(item.price),
                     image: item.image,
                   },
                 }"
