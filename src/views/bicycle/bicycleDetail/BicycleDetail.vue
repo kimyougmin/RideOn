@@ -178,9 +178,7 @@ const formatPrice = (price) => {
               </div>
               <p class="text-body2 mb-1 dark:text-black1">{{ item.brand }}</p>
               <p class="text-sub-title mb-2 truncate dark:text-black1">{{ item.name }}</p>
-              <p class="font-bold mb-4 text-2xl dark:text-black1">
-                {{ Intl.NumberFormat('ko-KR').format(Number(item.price || 0)) }}원
-              </p>
+              <p class="font-bold mb-4 text-2xl dark:text-black1">{{ formatPrice(price) }}원</p>
               <div class="flex bg-black1 justify-center align-center py-2">
                 <svg
                   width="17"
