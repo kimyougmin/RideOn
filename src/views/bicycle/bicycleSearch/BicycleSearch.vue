@@ -39,7 +39,7 @@ onMounted(async () => {
     selectOption.value = [...selectOption.value, brand.toUpperCase()]
   }
   const user = JSON.parse(localStorage.getItem('user'))
-  if (user._id !== undefined) {
+  if (user !== null) {
     const date = await fetchUserLikesApi(user._id)
     union.value = date.map((e) => e.title)
   }
@@ -327,7 +327,7 @@ const formatPrice = (price) => {
         <div
           class="ml-4 bg-white w-[1120px] max-w-[1120px] p-4 drop-shadow-custom rounded-lg dark:bg-black8"
         >
-          <div v-if="seeMore && union.length > 0" class="grid grid-cols-2 gap-8">
+          <div v-if="seeMore" class="grid grid-cols-2 gap-8">
             <div v-for="item in groupListShot" :key="item.id" class="flex gap-4">
               <router-link
                 :to="{
