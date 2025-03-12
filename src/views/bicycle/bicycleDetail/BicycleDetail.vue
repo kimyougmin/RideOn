@@ -84,7 +84,7 @@ const formatPrice = (price) => {
             </div>
             <div>
               <p class="font-impact text-right text-3xl dark:text-black1">
-                {{ formatPrice(item.price) }}원
+                {{ formatPrice(price) }}원
               </p>
               <div class="bg-primaryRed p-2 rounded-lg mb-2">
                 <p class="text-black1 mb-0 font-bold text-center">구매하러 가기</p>
