@@ -161,6 +161,7 @@ const handleCloseRecruiting = async () => {
       image: riderCrew.value.image,
       status: 'COMPLETED',
       memberInfo: riderCrew.value.memberInfo,
+      imageToDeletePublicId: '',
     }
 
     await riderCrewStore.updatePost(crewData)
